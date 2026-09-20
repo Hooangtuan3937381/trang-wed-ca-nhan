@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechPulse - Thế Giới Công Nghệ & Sản Phẩm Đột Phá</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            accent: '#6366f1'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(100,100,100,0.2);
+            border-radius: 3px;
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+        }
+        .dark .glassmorphism {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col justify-between">
+
+    <!-- Header/Navbar -->
+    <header class="sticky top-0 z-50 glassmorphism border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="resetView()">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white text-xl font-black shadow-lg shadow-cyan-500/30">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <span class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 bg-clip-text text-transparent">
+                        TechPulse
+                    </span>
+                </div>
+
+                <!-- Desktop Navigation Menu -->
+                <nav class="hidden md:flex space-x-8 text-sm font-medium">
+                    <a href="#hero" class="hover:text-cyan-500 transition-colors py-2">Trang Chủ</a>
+                    <a href="#products" class="hover:text-cyan-500 transition-colors py-2">Sản Phẩm</a>
+                    <a href="#compare" class="hover:text-cyan-500 transition-colors py-2">So Sánh Specs</a>
+                    <a href="#news" class="hover:text-cyan-500 transition-colors py-2">Tin Tức AI & Tech</a>
+                    <!-- Nút Quay về Trang Cá Nhân -->
+                    <a href="./index.html" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-cyan-500 hover:text-white text-slate-800 dark:text-slate-100 rounded-lg text-sm font-medium transition-all duration-200">
+                    <i class="fas fa-arrow-left"></i>
+                        <span>Về Trang Cá Nhân</span>
+                    </a>
+                </nav>
+
+                <!-- Action Controls -->
+                <div class="flex items-center space-x-4">
+                    <!-- Search Input Box -->
+                    <div class="relative hidden sm:block">
+                        <input type="text" id="searchInput" onkeyup="filterProducts()" placeholder="Tìm sản phẩm, tin tức..." 
+                            class="bg-slate-100 dark:bg-slate-800/80 text-sm rounded-full pl-9 pr-4 py-2 border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 w-48 lg:w-64 transition-all">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-sm"></i>
+                    </div>
+
+                    <!-- Theme Toggle Button -->
+                    <button id="themeToggleBtn" onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-amber-400 hover:ring-2 hover:ring-cyan-500 transition-all">
+                        <i class="fa-solid fa-sun hidden dark:block text-lg"></i>
+                        <i class="fa-solid fa-moon block dark:hidden text-lg"></i>
+                    </button>
+
+                    <!-- Cart / Comparison Badge -->
+                    <button onclick="scrollToSection('compare')" class="relative p-2 text-slate-600 dark:text-slate-300 hover:text-cyan-500 transition-colors">
+                        <i class="fa-solid fa-scale-balanced text-xl"></i>
+                        <span id="compareCount" class="absolute -top-1 -right-1 bg-cyan-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                    </button>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-600 dark:text-slate-300">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 px-4 pt-2 pb-4 space-y-2">
+            <div class="mb-3">
+                <input type="text" id="searchInputMobile" onkeyup="filterProductsMobile()" placeholder="Tìm kiếm..." 
+                    class="w-full bg-slate-200 dark:bg-slate-800 text-sm rounded-lg px-3 py-2 border border-slate-300 dark:border-slate-700 focus:outline-none">
+            </div>
+            <a href="#hero" onclick="toggleMobileMenu()" class="block py-2 font-medium hover:text-cyan-500">Trang Chủ</a>
+            <a href="#products" onclick="toggleMobileMenu()" class="block py-2 font-medium hover:text-cyan-500">Sản Phẩm</a>
+            <a href="#compare" onclick="toggleMobileMenu()" class="block py-2 font-medium hover:text-cyan-500">So Sánh Specs</a>
+            <a href="#news" onclick="toggleMobileMenu()" class="block py-2 font-medium hover:text-cyan-500">Tin Tức AI & Tech</a>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- Hero Slider Section -->
+        <section id="hero" class="relative max-w-7xl mx-auto my-6 px-4 sm:px-6 lg:px-8">
+            <div class="relative overflow-hidden rounded-3xl bg-slate-900 text-white h-[420px] md:h-[480px] shadow-2xl">
+                <!-- Slides Container -->
+                <div id="sliderContainer" class="flex transition-transform duration-700 ease-out h-full">
+                    <!-- Slide 1 -->
+                    <div class="min-w-full h-full relative flex items-center">
+                        <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=1200&q=80" alt="Smartphone" class="absolute inset-0 w-full h-full object-cover opacity-40">
+                        <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent"></div>
+                        <div class="relative z-10 max-w-2xl px-6 md:px-12 space-y-4">
+                            <span class="inline-block px-3 py-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-full text-xs font-semibold tracking-wide uppercase">Siêu Phẩm 2026</span>
+                            <h1 class="text-3xl md:text-5xl font-black leading-tight">Thế Hệ AI Phone Đột Phá Tiếp Theo</h1>
+                            <p class="text-slate-300 text-sm md:text-base">Trải nghiệm sức mạnh xử lý trí tuệ nhân tạo tích hợp trực tiếp trên chip bán dẫn tiên tiến nhất.</p>
+                            <button onclick="scrollToSection('products')" class="px-6 py-3 bg-gradient-to-r from-cyan-500 to-indigo-600 rounded-full font-semibold text-white shadow-lg shadow-cyan-500/30 hover:scale-105 transition-transform">
+                                Khám Phá Ngay <i class="fa-solid fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="min-w-full h-full relative flex items-center">
+                        <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1200&q=80" alt="Laptop" class="absolute inset-0 w-full h-full object-cover opacity-40">
+                        <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent"></div>
+                        <div class="relative z-10 max-w-2xl px-6 md:px-12 space-y-4">
+                            <span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full text-xs font-semibold tracking-wide uppercase">Laptop Đồ Họa & Gaming</span>
+                            <h1 class="text-3xl md:text-5xl font-black leading-tight">Màn Hình OLED Quantum 240Hz</h1>
+                            <p class="text-slate-300 text-sm md:text-base">Mỏng nhẹ tuyệt đối, thời lượng pin vượt trội cùng hiệu năng GPU thế hệ mới.</p>
+                            <button onclick="scrollToSection('products')" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full font-semibold text-white shadow-lg shadow-purple-500/30 hover:scale-105 transition-transform">
+                                Xem Cấu Hình <i class="fa-solid fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="min-w-full h-full relative flex items-center">
+                        <img src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=1200&q=80" alt="Gadgets" class="absolute inset-0 w-full h-full object-cover opacity-40">
+                        <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent"></div>
+                        <div class="relative z-10 max-w-2xl px-6 md:px-12 space-y-4">
+                            <span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-semibold tracking-wide uppercase">Thiết Bị Đeo Thông Minh</span>
+                            <h1 class="text-3xl md:text-5xl font-black leading-tight">Hệ Sinh Thái AI Gadgets</h1>
+                            <p class="text-slate-300 text-sm md:text-base">Tai nghe chống ồn chủ động thích ứng AI & Đồng hồ theo dõi chỉ số sức khỏe sinh học.</p>
+                            <button onclick="scrollToSection('products')" class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full font-semibold text-white shadow-lg shadow-emerald-500/30 hover:scale-105 transition-transform">
+                                Trải Nghiệm <i class="fa-solid fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slider Controls -->
+                <button onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur flex items-center justify-center transition-all">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur flex items-center justify-center transition-all">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+
+                <!-- Slide Dots -->
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+                    <button onclick="goToSlide(0)" class="slide-dot w-3 h-3 rounded-full bg-white/50 transition-all"></button>
+                    <button onclick="goToSlide(1)" class="slide-dot w-3 h-3 rounded-full bg-white/50 transition-all"></button>
+                    <button onclick="goToSlide(2)" class="slide-dot w-3 h-3 rounded-full bg-white/50 transition-all"></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Showcase Section -->
+        <section id="products" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Sản Phẩm Công Nghệ Mới Nhất</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Lựa chọn thiết bị đỉnh cao với đánh giá chi tiết từ chuyên gia.</p>
+                </div>
+
+                <!-- Category Filters -->
+                <div class="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0 custom-scrollbar">
+                    <button onclick="filterCategory('all')" class="cat-btn active px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-cyan-500 text-white">Tất Cả</button>
+                    <button onclick="filterCategory('phone')" class="cat-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-200 dark:bg-slate-800 hover:bg-cyan-500/20 text-slate-700 dark:text-slate-300">Điện Thoại</button>
+                    <button onclick="filterCategory('laptop')" class="cat-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-200 dark:bg-slate-800 hover:bg-cyan-500/20 text-slate-700 dark:text-slate-300">Laptop</button>
+                    <button onclick="filterCategory('ai')" class="cat-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-200 dark:bg-slate-800 hover:bg-cyan-500/20 text-slate-700 dark:text-slate-300">Thiết Bị AI</button>
+                    <button onclick="filterCategory('gadget')" class="cat-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-200 dark:bg-slate-800 hover:bg-cyan-500/20 text-slate-700 dark:text-slate-300">Gadgets</button>
+                </div>
+            </div>
+
+            <!-- Product Grid Container -->
+            <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Products dynamically inserted via JS -->
+            </div>
+        </section>
+
+        <!-- Product Specs Comparison Tool -->
+        <section id="compare" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 my-6 bg-slate-100 dark:bg-slate-800/50 rounded-3xl border border-slate-200 dark:border-slate-800">
+            <div class="text-center max-w-2xl mx-auto mb-8">
+                <span class="text-cyan-500 font-semibold text-sm uppercase tracking-wider">Tính Năng Độc Quyền</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold mt-1">So Sánh Thông Số Kỹ Thuật</h2>
+                <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Chọn tối đa 2 sản phẩm từ danh sách bên trên để đối chiếu thông số chi tiết.</p>
+            </div>
+
+            <div id="compareContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[300px]">
+                <!-- Empty state placeholder -->
+                <div class="col-span-full text-center py-12 text-slate-400 dark:text-slate-500">
+                    <i class="fa-solid fa-code-compare text-5xl mb-3"></i>
+                    <p class="text-base font-medium">Chưa có sản phẩm nào được chọn để so sánh.</p>
+                    <p class="text-xs mt-1">Bấm vào nút <i class="fa-solid fa-scale-balanced mx-1"></i> trên từng card sản phẩm để thêm vào đây.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest Tech News Section -->
+        <section id="news" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Tin Tức Công Nghệ & AI</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Cập nhật xu hướng xu hướng trí tuệ nhân tạo và công nghệ tương lai.</p>
+                </div>
+                <a href="#" class="text-cyan-500 font-semibold hover:underline text-sm hidden sm:inline-flex items-center">
+                    Xem tất cả bài viết <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                </a>
+            </div>
+
+            <!-- News Grid -->
+            <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- News dynamically inserted via JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Product Detail -->
+    <div id="productModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar p-6 relative shadow-2xl">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-9 h-9 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-full flex items-center justify-center hover:text-red-500 transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <div id="modalContent">
+                <!-- Content inserted dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 text-slate-400 pt-12 pb-8 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <!-- Col 1 -->
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white font-bold">
+                            <i class="fa-solid fa-bolt text-sm"></i>
+                        </div>
+                        <span class="text-xl font-bold text-white">TechPulse</span>
+                    </div>
+                    <p class="text-xs leading-relaxed">Cổng thông tin tin tức, đánh giá chuyên sâu và so sánh sản phẩm công nghệ đột phá hàng đầu tại Việt Nam.</p>
+                </div>
+
+                <!-- Col 2 -->
+                <div>
+                    <h4 class="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Danh Mục</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">Điện Thoại AI</a></li>
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">Laptop Đồ Họa</a></li>
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">Thiết Bị Siêu Vi</a></li>
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">Phần Mềm & AI Tools</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3 -->
+                <div>
+                    <h4 class="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Liên Kết Chín</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#hero" class="hover:text-cyan-400 transition-colors">Trang Chủ</a></li>
+                        <li><a href="#products" class="hover:text-cyan-400 transition-colors">Sản Phẩm Hot</a></li>
+                        <li><a href="#compare" class="hover:text-cyan-400 transition-colors">Công Cụ So Sánh</a></li>
+                        <li><a href="#news" class="hover:text-cyan-400 transition-colors">Tin Tức Mới Nhất</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4 -->
+                <div class="space-y-3">
+                    <h4 class="text-white font-semibold text-sm mb-2 uppercase tracking-wider">Đăng Ký Nhận Tin</h4>
+                    <p class="text-xs">Nhận cập nhật công nghệ hot nhất mỗi tuần qua Email.</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Email của bạn..." class="bg-slate-900 text-xs px-3 py-2 rounded-l-lg border border-slate-800 focus:outline-none w-full text-white">
+                        <button class="bg-cyan-500 text-white px-4 py-2 rounded-r-lg text-xs font-semibold hover:bg-cyan-600 transition-colors">Gửi</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-900 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs">
+                <p>&copy; 2026 TechPulse Studio. Tất cả quyền được bảo lưu.</p>
+                <div class="flex space-x-4 mt-4 sm:mt-0 text-base">
+                    <a href="#" class="hover:text-cyan-400"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#" class="hover:text-cyan-400"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" class="hover:text-cyan-400"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" class="hover:text-cyan-400"><i class="fa-brands fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Application Logic Script -->
+    <script>
+        // Sample Data: Products
+        const products = [
+            {
+                id: 1,
+                name: "UltraPhone Pro AI 2026",
+                category: "phone",
+                price: "29.990.000₫",
+                rating: 4.9,
+                reviewsCount: 128,
+                image: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=600&q=80",
+                specs: {
+                    screen: "6.8 inch Dynamic AMOLED 2K+, 144Hz",
+                    chip: "Snapdragon 8 Gen 5 AI Enhanced",
+                    ram: "16GB LPDDR5X",
+                    storage: "512GB UFS 4.1",
+                    battery: "5500 mAh, Sạc nhanh 120W"
+                },
+                desc: "Chiếc điện thoại tích hợp chip xử lý AI dedicated trợ giúp dịch thuật realtime, chụp ảnh đêm siêu vi và tối ưu năng lượng thông minh."
+            },
+            {
+                id: 2,
+                name: "ZenBook Vision OLED 16",
+                category: "laptop",
+                price: "42.500.000₫",
+                rating: 4.8,
+                reviewsCount: 84,
+                image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80",
+                specs: {
+                    screen: "16 inch OLED Touch, 3.2K 120Hz",
+                    chip: "Intel Core Ultra 9 200H",
+                    ram: "32GB DDR5 Dual Channel",
+                    storage: "1TB NVMe Gen 5 SSD",
+                    battery: "90Whr, Thời lượng 14h"
+                },
+                desc: "Thiết kế vỏ nhôm nguyên khối siêu nhẹ, tích hợp màn hình phụ cảm ứng hỗ trợ tối đa công việc sáng tạo nội dung và thiết kế 3D."
+            },
+            {
+                id: 3,
+                name: "NeuralPin AI Assistant Badge",
+                category: "ai",
+                price: "8.990.000₫",
+                rating: 4.6,
+                reviewsCount: 56,
+                image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=600&q=80",
+                specs: {
+                    screen: "Không màn hình (Giao diện Laze Projection)",
+                    chip: "Custom Neural Processing Chip v2",
+                    ram: "8GB Integrated",
+                    storage: "128GB Cloud Sync",
+                    battery: "Dùng liên tục 18 giờ"
+                },
+                desc: "Huy hiệu thông minh đính áo, kết nối không khoảng cách với LLM AI trợ lý cá nhân, hỗ trợ ghi chú cuộc họp và điều khiển giọng nói."
+            },
+            {
+                id: 4,
+                name: "AcousticPulse ANC Headphones",
+                category: "gadget",
+                price: "6.490.000₫",
+                rating: 4.7,
+                reviewsCount: 210,
+                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80",
+                specs: {
+                    screen: "N/A",
+                    chip: "Hi-Res Audio Spatial Engine",
+                    ram: "N/A",
+                    storage: "N/A",
+                    battery: "45 giờ chơi nhạc liên tục"
+                },
+                desc: "Tai nghe trùm đầu chống ồn chủ động thích ứng với môi trường xung quanh, âm thanh chuẩn Lossless Hi-Res Spatial 3D."
+            },
+            {
+                id: 5,
+                name: "CyberWatch Ultra Pro",
+                category: "gadget",
+                price: "12.990.000₫",
+                rating: 4.9,
+                reviewsCount: 95,
+                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",
+                specs: {
+                    screen: "1.95 inch Sapphire Crystal AMOLED",
+                    chip: "S9 Bio-Metric Chip",
+                    ram: "4GB",
+                    storage: "32GB",
+                    battery: "7 ngày chế độ thường"
+                },
+                desc: "Đồng hồ thông minh vỏ Titanium siêu bền, đo huyết áp, ECG tâm thất và đưa ra cảnh báo sức khỏe sinh học bằng mô hình AI."
+            },
+            {
+                id: 6,
+                name: "FoldPhone Next Gen 3",
+                category: "phone",
+                price: "41.990.000₫",
+                rating: 4.7,
+                reviewsCount: 73,
+                image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80",
+                specs: {
+                    screen: "7.9 inch Foldable AMOLED 120Hz",
+                    chip: "Snapdragon 8 Gen 5",
+                    ram: "16GB LPDDR5X",
+                    storage: "1TB UFS 4.0",
+                    battery: "5000 mAh, Sạc không dây 50W"
+                },
+                desc: "Siêu phẩm màn hình gập không nếp gấp, hỗ trợ bút cảm ứng đa điểm và tối ưu hóa giao diện đa nhiệm không giới hạn."
+            }
+        ];
+
+        // Sample Data: News
+        const news = [
+            {
+                id: 1,
+                title: "Trí Tuệ Nhân Tạo Sinh Tạo Đạt Cột Mốc Mới Trong Thiết Kế Chip Bán Dẫn",
+                category: "Tin AI",
+                date: "20/09/2026",
+                image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80",
+                summary: "Các nhà khoa học vừa công bố mô hình AI tự thiết kế kiến trúc vi mạch 2nm giúp giảm 40% điện năng tiêu thụ."
+            },
+            {
+                id: 2,
+                title: "Đánh Giá Chi Tiết Màn Hình Lượng Tử Thế Hệ Mới Trên Các Dòng Laptop 2026",
+                category: "Đánh Giá",
+                date: "19/09/2026",
+                image: "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=600&q=80",
+                summary: "Công nghệ Quantum-OLED mang lại độ sáng lên tới 3000 nits và độ phủ màu 100% Rec.2020 ấn tượng."
+            },
+            {
+                id: 3,
+                title: "Tương Lai Của Điện Thoại Không Dây: Pin Quang Năng Và Sạc Qua Không Khí",
+                category: "Xu Hướng",
+                date: "18/09/2026",
+                image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
+                summary: "Giải pháp truyền tải năng lượng sóng vô tuyến đang đưa giấc mơ không bao giờ cần cắm sạc pin điện thoại thành hiện thực."
+            }
+        ];
+
+        // App State
+        let selectedCategory = 'all';
+        let compareList = [];
+        let currentSlide = 0;
+        const totalSlides = 3;
+
+        // Theme Toggle
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        // Mobile Menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Hero Slider Logic
+        function updateSlider() {
+            const container = document.getElementById('sliderContainer');
+            container.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            // Update active dots
+            const dots = document.querySelectorAll('.slide-dot');
+            dots.forEach((dot, idx) => {
+                if (idx === currentSlide) {
+                    dot.classList.add('bg-cyan-500', 'w-8');
+                    dot.classList.remove('bg-white/50', 'w-3');
+                } else {
+                    dot.classList.add('bg-white/50', 'w-3');
+                    dot.classList.remove('bg-cyan-500', 'w-8');
+                }
+            });
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateSlider();
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateSlider();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlider();
+        }
+
+        // Auto slide interval
+        setInterval(nextSlide, 5000);
+
+        // Render Products Grid
+        function renderProducts(items) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+
+            if(items.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">Không tìm thấy sản phẩm phù hợp.</div>`;
+                return;
+            }
+
+            items.forEach(prod => {
+                const isCompared = compareList.some(item => item.id === prod.id);
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700/60 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group";
+                
+                card.innerHTML = `
+                    <div class="relative overflow-hidden aspect-video bg-slate-100 dark:bg-slate-900 cursor-pointer" onclick="openModal(${prod.id})">
+                        <img src="${prod.image}" alt="${prod.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <span class="absolute top-3 left-3 bg-slate-950/70 text-white text-xs px-2.5 py-1 rounded-full backdrop-blur uppercase tracking-wider font-semibold">
+                            ${prod.category}
+                        </span>
+                    </div>
+
+                    <div class="p-5 flex flex-col flex-grow justify-between space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between text-xs text-amber-500 mb-1">
+                                <span><i class="fa-solid fa-star mr-1"></i>${prod.rating} (${prod.reviewsCount})</span>
+                                <span class="text-slate-400">Chính hãng</span>
+                            </div>
+                            <h3 onclick="openModal(${prod.id})" class="font-bold text-base hover:text-cyan-500 transition-colors cursor-pointer line-clamp-1">${prod.name}</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">${prod.desc}</p>
+                        </div>
+
+                        <div>
+                            <div class="text-lg font-black text-cyan-600 dark:text-cyan-400 mb-3">${prod.price}</div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="openModal(${prod.id})" class="w-full py-2 bg-slate-100 dark:bg-slate-700/60 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold transition-colors">
+                                    Chi Tiết
+                                </button>
+                                <button onclick="toggleCompare(${prod.id})" class="w-full py-2 ${isCompared ? 'bg-amber-500 text-white' : 'bg-cyan-500 hover:bg-cyan-600 text-white'} rounded-xl text-xs font-semibold transition-colors flex items-center justify-center">
+                                    <i class="fa-solid fa-scale-balanced mr-1.5"></i> ${isCompared ? 'Đã Chọn' : 'So Sánh'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Filter Category
+        function filterCategory(cat) {
+            selectedCategory = cat;
+            
+            // update button styles
+            const buttons = document.querySelectorAll('.cat-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active', 'bg-cyan-500', 'text-white');
+                btn.classList.add('bg-slate-200', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+            });
+
+            event.target.classList.add('active', 'bg-cyan-500', 'text-white');
+            event.target.classList.remove('bg-slate-200', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+
+            applyFilters();
+        }
+
+        // Search Filter
+        function filterProducts() {
+            applyFilters();
+        }
+
+        function filterProductsMobile() {
+            applyFilters(true);
+        }
+
+        function applyFilters(isMobile = false) {
+            const query = (isMobile ? document.getElementById('searchInputMobile').value : document.getElementById('searchInput').value).toLowerCase();
+            
+            const filtered = products.filter(p => {
+                const matchesCat = selectedCategory === 'all' || p.category === selectedCategory;
+                const matchesSearch = p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query);
+                return matchesCat && matchesSearch;
+            });
+
+            renderProducts(filtered);
+        }
+
+        // Compare Functionality
+        function toggleCompare(prodId) {
+            const prod = products.find(p => p.id === prodId);
+            const index = compareList.findIndex(p => p.id === prodId);
+
+            if (index > -1) {
+                compareList.splice(index, 1);
+            } else {
+                if (compareList.length >= 2) {
+                    compareList.shift(); // Remove first item if max 2 reached
+                }
+                compareList.push(prod);
+            }
+
+            updateCompareUI();
+            applyFilters();
+        }
+
+        function updateCompareUI() {
+            document.getElementById('compareCount').innerText = compareList.length;
+            const container = document.getElementById('compareContainer');
+
+            if (compareList.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-slate-400 dark:text-slate-500">
+                        <i class="fa-solid fa-code-compare text-5xl mb-3"></i>
+                        <p class="text-base font-medium">Chưa có sản phẩm nào được chọn để so sánh.</p>
+                        <p class="text-xs mt-1">Bấm vào nút <i class="fa-solid fa-scale-balanced mx-1"></i> trên từng card sản phẩm để thêm vào đây.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = compareList.map(prod => `
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 relative flex flex-col justify-between">
+                    <button onclick="toggleCompare(${prod.id})" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+
+                    <div>
+                        <div class="flex items-center space-x-4 mb-4">
+                            <img src="${prod.image}" alt="${prod.name}" class="w-16 h-16 rounded-xl object-cover">
+                            <div>
+                                <h4 class="font-bold text-base">${prod.name}</h4>
+                                <span class="text-cyan-500 font-extrabold text-sm">${prod.price}</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 text-xs border-t border-slate-100 dark:border-slate-800 pt-4">
+                            <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/50">
+                                <span class="text-slate-400">Màn Hình:</span>
+                                <span class="font-medium text-right">${prod.specs.screen}</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/50">
+                                <span class="text-slate-400">Chip / GPU:</span>
+                                <span class="font-medium text-right">${prod.specs.chip}</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/50">
+                                <span class="text-slate-400">RAM:</span>
+                                <span class="font-medium text-right">${prod.specs.ram}</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/50">
+                                <span class="text-slate-400">Lưu Trữ:</span>
+                                <span class="font-medium text-right">${prod.specs.storage}</span>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-slate-400">Pin / Nguồn:</span>
+                                <span class="font-medium text-right">${prod.specs.battery}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render News
+        function renderNews() {
+            const grid = document.getElementById('newsGrid');
+            grid.innerHTML = news.map(item => `
+                <article class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700/60 shadow-sm hover:shadow-lg transition-all flex flex-col group cursor-pointer">
+                    <div class="relative overflow-hidden aspect-video">
+                        <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <span class="absolute top-3 left-3 bg-cyan-500 text-white text-xs px-2.5 py-1 rounded-full font-semibold">
+                            ${item.category}
+                        </span>
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow justify-between space-y-3">
+                        <div>
+                            <span class="text-xs text-slate-400">${item.date}</span>
+                            <h3 class="font-bold text-base mt-1 group-hover:text-cyan-500 transition-colors line-clamp-2">${item.title}</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2">${item.summary}</p>
+                        </div>
+                        <span class="text-xs font-semibold text-cyan-500 flex items-center">
+                            Đọc bài viết <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
+                        </span>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // Modal Logic
+        function openModal(prodId) {
+            const prod = products.find(p => p.id === prodId);
+            const content = document.getElementById('modalContent');
+
+            content.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 aspect-square">
+                        <img src="${prod.image}" alt="${prod.name}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-xs font-semibold text-cyan-500 uppercase tracking-wider">${prod.category}</span>
+                            <h2 class="text-xl font-extrabold mt-1">${prod.name}</h2>
+                            <div class="flex items-center space-x-2 mt-2">
+                                <span class="text-amber-500 text-sm"><i class="fa-solid fa-star"></i> ${prod.rating}</span>
+                                <span class="text-xs text-slate-400">(${prod.reviewsCount} đánh giá từ người dùng)</span>
+                            </div>
+                        </div>
+
+                        <div class="text-2xl font-black text-cyan-500">${prod.price}</div>
+
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">${prod.desc}</p>
+
+                        <div class="border-t border-slate-200 dark:border-slate-800 pt-4">
+                            <h4 class="font-bold text-xs uppercase text-slate-400 mb-2">Thông số nổi bật:</h4>
+                            <ul class="text-xs space-y-1.5 text-slate-600 dark:text-slate-300">
+                                <li><strong class="text-slate-800 dark:text-slate-100">Màn hình:</strong> ${prod.specs.screen}</li>
+                                <li><strong class="text-slate-800 dark:text-slate-100">Vi xử lý:</strong> ${prod.specs.chip}</li>
+                                <li><strong class="text-slate-800 dark:text-slate-100">Bộ nhớ:</strong> ${prod.specs.ram} / ${prod.specs.storage}</li>
+                                <li><strong class="text-slate-800 dark:text-slate-100">Pin:</strong> ${prod.specs.battery}</li>
+                            </ul>
+                        </div>
+
+                        <button onclick="alert('Cảm ơn bạn đã quan tâm sản phẩm!')" class="w-full py-3 bg-gradient-to-r from-cyan-500 to-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-cyan-500/20 hover:scale-[1.02] transition-transform text-sm">
+                            Đặt Mua Ngay
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('productModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').classList.add('hidden');
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetView() {
+            selectedCategory = 'all';
+            document.getElementById('searchInput').value = '';
+            applyFilters();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initial Load
+        window.onload = function() {
+            updateSlider();
+            renderProducts(products);
+            renderNews();
+        }
+    </script>
+</body>
+</html>

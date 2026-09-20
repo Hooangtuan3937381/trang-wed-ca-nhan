@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex Nguyen - Senior Tech Specialist & Full-Stack Developer</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            cyan: '#06b6d4',
+                            indigo: '#6366f1',
+                            purple: '#a855f7',
+                            pink: '#ec4899',
+                            dark: '#0b0f17',
+                            cardDark: '#111827'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 3s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-12px)' },
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)' },
+                            '100%': { boxShadow: '0 0 35px rgba(99, 102, 241, 0.7)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            h1, h2, h3, h4, .font-heading {
+                font-family: 'Outfit', sans-serif;
+            }
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+        }
+        .dark .glass {
+            background: rgba(11, 15, 23, 0.82);
+            backdrop-filter: blur(16px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(100, 100, 100, 0.2);
+            border-radius: 4px;
+        }
+        .gradient-border {
+            position: relative;
+            border-radius: 1.5rem;
+            background: linear-gradient(135deg, rgba(6,182,212,0.5), rgba(168,85,247,0.5));
+            padding: 1px;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #06b6d4 0%, #6366f1 50%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-[#0b0f17] dark:text-slate-100 transition-colors duration-300 min-h-screen custom-scrollbar selection:bg-cyan-500 selection:text-white">
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-50 glass border-b border-slate-200/80 dark:border-slate-800/80 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Personal Brand Logo -->
+                <a href="#hero" class="flex items-center space-x-3 group">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-purple-600 flex items-center justify-center text-white text-xl font-black shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
+                        AN
+                    </div>
+                    <div>
+                        <span class="text-xl font-extrabold tracking-tight font-heading block leading-none">
+                            Alex<span class="text-cyan-500">.dev</span>
+                        </span>
+                        <span class="text-[10px] uppercase font-semibold tracking-widest text-slate-400 dark:text-slate-500">Tech Specialist</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav Navigation -->
+                <nav class="hidden md:flex items-center space-x-7 text-sm font-semibold">
+                    <a href="#about" class="hover:text-cyan-500 transition-colors py-1">Giới Thiệu</a>
+                    <a href="#skills" class="hover:text-cyan-500 transition-colors py-1">Kỹ Năng</a>
+                    <a href="#projects" class="hover:text-cyan-500 transition-colors py-1">Dự Án</a>
+                    <a href="#tech-hub-banner" class="hover:text-cyan-500 transition-colors py-1 text-cyan-500 font-bold flex items-center">
+                        <i class="fa-solid fa-bolt mr-1.5 animate-pulse"></i>Tech Hub
+                    </a>
+                    <a href="#blog" class="hover:text-cyan-500 transition-colors py-1">Blog</a>
+                    <a href="#contact" class="hover:text-cyan-500 transition-colors py-1">Liên Hệ</a>
+                </nav>
+
+                <!-- Actions Controls -->
+                <div class="flex items-center space-x-4">
+                    <!-- Quick Visit Button to Tech Portal -->
+                    <a href="./store.html" target="_blank" class="hidden sm:inline-flex items-center px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-cyan-500 to-indigo-600 rounded-xl shadow-md shadow-cyan-500/20 hover:scale-105 transition-all">
+                        <i class="fa-solid fa-globe mr-2"></i>Trang Tech Hub
+                    </a>
+
+                    <!-- Theme Toggle -->
+                    <button id="themeToggleBtn" onclick="toggleTheme()" aria-label="Switch Theme" class="w-10 h-10 rounded-xl bg-slate-200/80 dark:bg-slate-800/80 flex items-center justify-center text-slate-700 dark:text-amber-400 hover:ring-2 hover:ring-cyan-500 transition-all">
+                        <i class="fa-solid fa-sun hidden dark:block text-lg"></i>
+                        <i class="fa-solid fa-moon block dark:hidden text-lg"></i>
+                    </button>
+
+                    <!-- Mobile Menu Button -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-600 dark:text-slate-300">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-[#0b0f17]/95 backdrop-blur-xl px-6 pt-3 pb-6 space-y-3">
+            <a href="#about" onclick="toggleMobileMenu()" class="block py-2 text-base font-medium hover:text-cyan-500">Giới Thiệu</a>
+            <a href="#skills" onclick="toggleMobileMenu()" class="block py-2 text-base font-medium hover:text-cyan-500">Kỹ Năng</a>
+            <a href="#projects" onclick="toggleMobileMenu()" class="block py-2 text-base font-medium hover:text-cyan-500">Dự Án Nổi Bật</a>
+            <a href="#tech-hub-banner" onclick="toggleMobileMenu()" class="block py-2 text-base font-bold text-cyan-500"><i class="fa-solid fa-bolt mr-2"></i>Trang Tech Hub</a>
+            <a href="#blog" onclick="toggleMobileMenu()" class="block py-2 text-base font-medium hover:text-cyan-500">Bài Viết Công Nghệ</a>
+            <a href="#contact" onclick="toggleMobileMenu()" class="block py-2 text-base font-medium hover:text-cyan-500">Liên Hệ</a>
+            <a href="./index.html" target="_blank" class="block text-center w-full py-3 mt-2 text-sm font-bold text-white bg-gradient-to-r from-cyan-500 to-indigo-600 rounded-xl">
+                <i class="fa-solid fa-globe mr-2"></i>Mở Trang Tech Hub
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="relative min-h-[calc(100vh-80px)] flex items-center justify-center py-16 overflow-hidden">
+            <!-- Background Decorative Elements -->
+            <div class="absolute top-1/4 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute bottom-10 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <!-- Left Hero Content -->
+                    <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                        <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-bold tracking-wide">
+                            <span class="w-2 h-2 rounded-full bg-cyan-500 animate-ping"></span>
+                            <span>Sẵn sàng hợp tác & Đổi mới sáng tạo</span>
+                        </div>
+
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black font-heading tracking-tight leading-tight">
+                            Xin chào, Tôi là <br class="hidden sm:inline">
+                            <span class="gradient-text">Alex Nguyen</span>
+                        </h1>
+
+                        <!-- Dynamic Typewriter Effect Title -->
+                        <div class="text-xl sm:text-2xl font-bold text-slate-600 dark:text-slate-300 h-10 flex items-center justify-center lg:justify-start">
+                            <span>Tôi là một&nbsp;</span>
+                            <span id="typewriterText" class="text-cyan-500 border-r-2 border-cyan-500 pr-1 animate-pulse"></span>
+                        </div>
+
+                        <p class="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                            Chuyên gia nghiên cứu công nghệ & Kỹ sư Phần mềm Full-Stack. Tôi đam mê kiến tạo các sản phẩm kỹ thuật số hiện đại, tối ưu hóa AI, và xây dựng nền tảng trải nghiệm người dùng thế hệ mới.
+                        </p>
+
+                        <!-- Call To Actions -->
+                        <div class="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-4">
+                            <!-- Featured Button to Tech Hub Webpage -->
+                            <a href="./store.html" target="_blank" class="group relative px-6 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 text-white font-bold text-sm shadow-xl shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-[1.03] transition-all flex items-center space-x-3">
+                                <span class="p-1 rounded-lg bg-white/20"><i class="fa-solid fa-bolt text-amber-300"></i></span>
+                                <span>Khám Phá Trang Tech Hub</span>
+                                <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+
+                            <a href="#projects" class="px-6 py-3.5 rounded-2xl bg-slate-200 dark:bg-slate-800/80 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-sm transition-all border border-slate-300 dark:border-slate-700">
+                                Xem Dự Án
+                            </a>
+
+                            <a href="#contact" class="px-6 py-3.5 rounded-2xl border border-cyan-500/30 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500/10 font-semibold text-sm transition-all">
+                                Liên Hệ Ngay
+                            </a>
+                        </div>
+
+                        <!-- Quick Tech Specs Badge -->
+                        <div class="pt-6 flex items-center justify-center lg:justify-start space-x-6 text-xs text-slate-500 dark:text-slate-400">
+                            <span class="flex items-center"><i class="fa-solid fa-code text-cyan-500 mr-2"></i>Clean Code</span>
+                            <span class="flex items-center"><i class="fa-solid fa-brain text-purple-500 mr-2"></i>AI Integration</span>
+                            <span class="flex items-center"><i class="fa-solid fa-rocket text-indigo-500 mr-2"></i>High Performance</span>
+                        </div>
+                    </div>
+
+                    <!-- Right Tech Avatar 3D Frame -->
+                    <div class="lg:col-span-5 flex justify-center">
+                        <div class="relative w-72 h-72 sm:w-88 sm:h-88 lg:w-96 lg:h-96 animate-float">
+                            <!-- Neon Glow Outer Ring -->
+                            <div class="absolute -inset-2 rounded-3xl bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 opacity-75 blur-xl animate-pulse-slow"></div>
+                            
+                            <!-- Main Image Frame Container -->
+                            <div class="relative w-full h-full rounded-3xl overflow-hidden border-2 border-white/20 bg-slate-900 shadow-2xl group">
+                                <img src="./images/images.jpg" alt="Alex Nguyen Avatar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+
+                                <!-- Floating Badge Info -->
+                                <div class="absolute bottom-4 left-4 right-4 p-3.5 rounded-2xl glass border border-white/10 flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></div>
+                                        <div>
+                                            <p class="text-xs font-bold text-slate-800 dark:text-white">TechPulse Founder</p>
+                                            <p class="text-[10px] text-slate-500 dark:text-slate-400">Trang tin & So sánh công nghệ</p>
+                                        </div>
+                                    </div>
+                                    <a href="./index.html" target="_blank" class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center hover:bg-cyan-500 hover:text-white transition-all">
+                                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- About Me Section -->
+        <section id="about" class="py-20 bg-slate-100/50 dark:bg-slate-900/40 border-y border-slate-200/60 dark:border-slate-800/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-14">
+                    <span class="text-cyan-500 font-bold text-xs uppercase tracking-widest">Hồ Sơ Cá Nhân</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading mt-1">Về Tôi & Hành Trình Công Nghệ</h2>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                    <div class="lg:col-span-6 space-y-5">
+                        <h3 class="text-2xl font-bold font-heading">Sáng tạo giải pháp từ những dòng code tinh gọn & Công nghệ đột phá.</h3>
+                        <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+                            Với hơn 6 năm hoạt động trong lĩnh vực lập trình và phát triển phần mềm, tôi tập trung vào nghiên cứu hệ sinh thái AI, Web3, tối ưu hóa trải nghiệm giao diện người dùng và phát triển các sản phẩm phần mềm đột phá.
+                        </p>
+                        <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+                            Gần đây nhất, tôi vừa hoàn thành dự án <strong>TechPulse</strong> — Cổng thông tin tin tức công nghệ hiện đại tích hợp công cụ so sánh thông số kỹ thuật thiết bị di động & AI.
+                        </p>
+
+                        <!-- Key Highlights Info Tags -->
+                        <div class="pt-2 flex flex-wrap gap-2">
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300"><i class="fa-solid fa-check text-cyan-500 mr-1.5"></i>Full-Stack Web Dev</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300"><i class="fa-solid fa-check text-cyan-500 mr-1.5"></i>UI/UX Architecture</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300"><i class="fa-solid fa-check text-cyan-500 mr-1.5"></i>AI / Machine Learning</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300"><i class="fa-solid fa-check text-cyan-500 mr-1.5"></i>Cloud & DevOps</span>
+                        </div>
+                    </div>
+
+                    <!-- Counter Stats Cards Grid -->
+                    <div class="lg:col-span-6 grid grid-cols-2 gap-4">
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-sm text-center">
+                            <span class="block text-4xl font-extrabold font-heading text-cyan-500">6+</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 block">Năm Kinh Nghiệm</span>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-sm text-center">
+                            <span class="block text-4xl font-extrabold font-heading text-indigo-500">45+</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 block">Dự Án Hoàn Thành</span>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-sm text-center">
+                            <span class="block text-4xl font-extrabold font-heading text-purple-500">12</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 block">Giải Thưởng Tech Hackathon</span>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-sm text-center">
+                            <span class="block text-4xl font-extrabold font-heading text-emerald-500">100k+</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 block">Lượt Đọc Blog Công Nghệ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills & Tech Stack Section -->
+        <section id="skills" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <span class="text-cyan-500 font-bold text-xs uppercase tracking-widest">Năng Lực Chuyên Môn</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold font-heading mt-1">Kỹ Năng & Tech Stack Nòng Cốt</h2>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
+                <!-- Skill Card 1 -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-cyan-500 dark:hover:border-cyan-500 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fa-brands fa-js"></i>
+                    </div>
+                    <h4 class="font-bold text-sm">JavaScript ES6+</h4>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Advanced / Async</p>
+                </div>
+
+                <!-- Skill Card 2 -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-cyan-500 dark:hover:border-cyan-500 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fa-brands fa-react"></i>
+                    </div>
+                    <h4 class="font-bold text-sm">React & Next.js</h4>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Frontend Architecture</p>
+                </div>
+
+                <!-- Skill Card 3 -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-cyan-500 dark:hover:border-cyan-500 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
+                    <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fa-brands fa-css3-alt"></i>
+                    </div>
+                    <h4 class="font-bold text-sm">Tailwind CSS</h4>
+                    <p class="text-[11px] text-slate-400 mt-0.5">UI Systems Design</p>
+                </div>
+
+                <!-- Skill Card 4 -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-cyan-500 dark:hover:border-cyan-500 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fa-brands fa-python"></i>
+                    </div>
+                    <h4 class="font-bold text-sm">Python AI/ML</h4>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Data & LLM Models</p>
+                </div>
+
+                <!-- Skill Card 5 -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-cyan-500 dark:hover:border-cyan-500 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fa-brands fa-node"></i>
+                    </div>
+                    <h4 class="font-bold text-sm">Node.js API</h4>
+                    <p class="text-[11px] text-slate-400 mt-0.5">REST & GraphQL</p>
+                </div>
+
+                <!-- Skill Card 6 -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-cyan-500 dark:hover:border-cyan-500 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-cloud"></i>
+                    </div>
+                    <h4 class="font-bold text-sm">Cloud & Docker</h4>
+                    <p class="text-[11px] text-slate-400 mt-0.5">AWS & Deployments</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Projects Section -->
+        <section id="projects" class="py-20 bg-slate-100/50 dark:bg-slate-900/40 border-t border-slate-200/60 dark:border-slate-800/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                    <div>
+                        <span class="text-cyan-500 font-bold text-xs uppercase tracking-widest">Sản Phẩm Đột Phá</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold font-heading mt-1">Dự Án Tiêu Biểu</h2>
+                    </div>
+                    <p class="text-slate-500 text-sm max-w-md">Tuyển tập các sản phẩm web app, phần mềm và giao diện công nghệ tiên tiến do tôi thiết kế & phát triển.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    
+                    <!-- PROJECT #1 PINNED & FEATURED: TECH HUB PORTAL -->
+                    <div class="lg:col-span-12 rounded-3xl bg-white dark:bg-slate-800/90 border-2 border-cyan-500/50 shadow-2xl overflow-hidden relative group">
+                        <!-- Pinned Tag Badge -->
+                        <div class="absolute top-4 right-4 z-20 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-extrabold px-3.5 py-1.5 rounded-full shadow-lg flex items-center space-x-1.5">
+                            <i class="fa-solid fa-thumbtack"></i>
+                            <span>DỰ ÁN NỔI BẬT NHẤT</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 items-center">
+                            <!-- Image Preview -->
+                            <div class="lg:col-span-7 relative h-72 sm:h-96 overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1000&q=80" alt="TechPulse Portal Preview" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-slate-950/80 via-transparent to-transparent"></div>
+                            </div>
+
+                            <!-- Content Details -->
+                            <div class="lg:col-span-5 p-8 sm:p-10 space-y-5">
+                                <div class="flex items-center space-x-2 text-cyan-500 font-bold text-xs uppercase tracking-wider">
+                                    <i class="fa-solid fa-bolt"></i>
+                                    <span>Web App Công Nghệ & AI</span>
+                                </div>
+
+                                <h3 class="text-2xl sm:text-3xl font-extrabold font-heading">
+                                    TechPulse - Trang Web Tin Tức & So Sánh Specs
+                                </h3>
+
+                                <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+                                    Trang web cổng thông tin công nghệ toàn diện tích hợp trình diễn sản phẩm di động, tính năng so sánh thông số kỹ thuật 2 sản phẩm song song, bộ lọc thông minh và bài viết cập nhật xu hướng trí tuệ nhân tạo.
+                                </p>
+
+                                <div class="flex flex-wrap gap-2 pt-1">
+                                    <span class="px-3 py-1 rounded-lg bg-cyan-500/10 text-cyan-500 text-xs font-semibold">HTML5/Tailwind</span>
+                                    <span class="px-3 py-1 rounded-lg bg-indigo-500/10 text-indigo-400 text-xs font-semibold">JavaScript ES6</span>
+                                    <span class="px-3 py-1 rounded-lg bg-purple-500/10 text-purple-400 text-xs font-semibold">Responsive Spec Compare</span>
+                                </div>
+
+                                <div class="pt-4 flex items-center space-x-4">
+                                    <!-- SPECIAL DIRECT LINK BUTTON TO THE CREATED TECH WEBSITE -->
+                                    <a href="./index.html" target="_blank" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-600 hover:to-indigo-700 text-white font-bold text-sm shadow-lg shadow-cyan-500/30 hover:scale-105 transition-all flex items-center space-x-2">
+                                        <span>Truy Cập Trang Web Công Nghệ</span>
+                                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PROJECT #2 -->
+                    <div class="lg:col-span-6 rounded-3xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-lg overflow-hidden flex flex-col justify-between group hover:border-cyan-500 transition-colors">
+                        <div class="relative h-60 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80" alt="AI Agent Assistant" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <span class="text-xs font-bold text-indigo-500 uppercase tracking-wider">AI & Data</span>
+                            <h3 class="text-xl font-extrabold font-heading">Neural Chatbot Agent Pro</h3>
+                            <p class="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">
+                                Trợ lý ảo trí tuệ nhân tạo hỗ trợ doanh nghiệp tự động hóa phản hồi khách hàng và phân tích dữ liệu theo thời gian thực.
+                            </p>
+                            <div class="flex flex-wrap gap-2 text-[11px] font-semibold text-slate-500">
+                                <span class="bg-slate-100 dark:bg-slate-700/60 px-2.5 py-1 rounded-md">Python</span>
+                                <span class="bg-slate-100 dark:bg-slate-700/60 px-2.5 py-1 rounded-md">OpenAI API</span>
+                                <span class="bg-slate-100 dark:bg-slate-700/60 px-2.5 py-1 rounded-md">React</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PROJECT #3 -->
+                    <div class="lg:col-span-6 rounded-3xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-lg overflow-hidden flex flex-col justify-between group hover:border-cyan-500 transition-colors">
+                        <div class="relative h-60 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Crypto Dashboard" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <span class="text-xs font-bold text-purple-500 uppercase tracking-wider">Web3 & Finance</span>
+                            <h3 class="text-xl font-extrabold font-heading">SaaS Analytics & Crypto Dashboard</h3>
+                            <p class="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">
+                                Bảng điều khiển tài chính hiện đại quản lý dòng tiền, giao dịch tiền mã hóa và dự báo chỉ số kinh doanh bằng ML.
+                            </p>
+                            <div class="flex flex-wrap gap-2 text-[11px] font-semibold text-slate-500">
+                                <span class="bg-slate-100 dark:bg-slate-700/60 px-2.5 py-1 rounded-md">Next.js</span>
+                                <span class="bg-slate-100 dark:bg-slate-700/60 px-2.5 py-1 rounded-md">TypeScript</span>
+                                <span class="bg-slate-100 dark:bg-slate-700/60 px-2.5 py-1 rounded-md">Chart.js</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Special Featured Tech Website Banner Section -->
+        <section id="tech-hub-banner" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 text-white p-8 sm:p-12 shadow-2xl border border-cyan-500/30">
+                <!-- Glowing Orb Background Effect -->
+                <div class="absolute top-0 right-0 w-80 h-80 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-8 space-y-4 text-center lg:text-left">
+                        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold uppercase tracking-wider border border-cyan-500/40">
+                            <i class="fa-solid fa-star text-amber-400"></i>
+                            <span>Sản phẩm đặc sắc phát triển bởi Alex</span>
+                        </div>
+                        <h2 class="text-3xl sm:text-4xl font-black font-heading leading-tight">
+                            Ghé thăm <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-300">Trang Web Tin Tức & So Sánh Công Nghệ</span> Do Tôi Thiết Kế!
+                        </h2>
+                        <p class="text-slate-300 text-sm sm:text-base max-w-2xl">
+                            Khám phá giao diện sản phẩm công nghệ thế hệ mới, so sánh chi tiết thông số chip/RAM/pin giữa các siêu phẩm di động và đọc các bài phân tích AI mới nhất.
+                        </p>
+                    </div>
+
+                    <div class="lg:col-span-4 flex justify-center lg:justify-end">
+                        <a href="./index.html" target="_blank" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-black text-base shadow-xl shadow-cyan-500/30 hover:scale-105 transition-all text-center flex items-center justify-center space-x-3">
+                            <span>TRUY CẬP NGAY</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog / News Section -->
+        <section id="blog" class="py-20 bg-slate-100/50 dark:bg-slate-900/40 border-t border-slate-200/60 dark:border-slate-800/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-14">
+                    <span class="text-cyan-500 font-bold text-xs uppercase tracking-widest">Góc Chia Sẻ</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading mt-1">Bài Viết Công Nghệ Mới Nhất</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Article 1 -->
+                    <article class="bg-white dark:bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700/60 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between">
+                        <div>
+                            <div class="relative h-48 overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" alt="Blog Post 1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-3 left-3 bg-cyan-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">AI & Future</span>
+                            </div>
+                            <div class="p-6 space-y-2">
+                                <span class="text-xs text-slate-400">15/09/2026 • 5 phút đọc</span>
+                                <h3 class="text-lg font-bold font-heading group-hover:text-cyan-500 transition-colors">Xu hướng phát triển Chip bán dẫn tích hợp AI trong năm 2026</h3>
+                                <p class="text-slate-500 dark:text-slate-400 text-xs line-clamp-2">Phân tích sâu kiến trúc vi mạch mới giúp tăng tốc độ xử lý các mô hình LLM trực tiếp trên thiết bị di động.</p>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6 pt-2">
+                            <a href="#" onclick="alert('Cảm ơn bạn đã đọc bài viết!')" class="text-xs font-bold text-cyan-500 hover:underline inline-flex items-center">
+                                Đọc chi tiết <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Article 2 -->
+                    <article class="bg-white dark:bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700/60 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between">
+                        <div>
+                            <div class="relative h-48 overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=600&q=80" alt="Blog Post 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-3 left-3 bg-indigo-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Frontend</span>
+                            </div>
+                            <div class="p-6 space-y-2">
+                                <span class="text-xs text-slate-400">10/09/2026 • 8 phút đọc</span>
+                                <h3 class="text-lg font-bold font-heading group-hover:text-cyan-500 transition-colors">Tối ưu hóa Performance cho Single Page Application</h3>
+                                <p class="text-slate-500 dark:text-slate-400 text-xs line-clamp-2">Bí quyết giúp website đạt điểm số Lighthouse tối đa 100/100 với Tailwind CSS và Vanilla JS.</p>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6 pt-2">
+                            <a href="#" onclick="alert('Cảm ơn bạn đã đọc bài viết!')" class="text-xs font-bold text-cyan-500 hover:underline inline-flex items-center">
+                                Đọc chi tiết <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Article 3 -->
+                    <article class="bg-white dark:bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700/60 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between">
+                        <div>
+                            <div class="relative h-48 overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" alt="Blog Post 3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-3 left-3 bg-purple-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Tech Experience</span>
+                            </div>
+                            <div class="p-6 space-y-2">
+                                <span class="text-xs text-slate-400">02/09/2026 • 6 phút đọc</span>
+                                <h3 class="text-lg font-bold font-heading group-hover:text-cyan-500 transition-colors">Xây dựng Trang Tin Tức Công Nghệ Chuẩn SEO & Responsive</h3>
+                                <p class="text-slate-500 dark:text-slate-400 text-xs line-clamp-2">Hành trình thiết kế và hoàn thiện ứng dụng TechPulse Portal từ ý tưởng đến sản phẩm thực tế.</p>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6 pt-2">
+                            <a href="./index.html" target="_blank" class="text-xs font-bold text-cyan-500 hover:underline inline-flex items-center">
+                                Xem Demo Dự Án <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="text-cyan-500 font-bold text-xs uppercase tracking-widest">Kết Nối Với Tôi</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading">Hãy Bắt Đầu Một Dự Án Công Nghệ Đột Phá!</h2>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Bạn có ý tưởng dự án mới, cần tư vấn giải pháp phần mềm hoặc muốn trải nghiệm trang Tech Hub? Hãy liên hệ với tôi qua form hoặc mạng xã hội.
+                    </p>
+
+                    <div class="space-y-4 pt-2">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center">
+                                <i class="fa-solid fa-envelope text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-slate-400">Email Trực Tiếp</p>
+                                <p class="text-sm font-bold">alex.nguyen.tech@gmail.com</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
+                                <i class="fa-solid fa-location-dot text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-slate-400">Địa Điểm</p>
+                                <p class="text-sm font-bold">Hà Nội / Thành phố Hồ Chí Minh, Việt Nam</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Icons -->
+                    <div class="pt-4 flex space-x-3 text-lg">
+                        <a href="#" aria-label="Github Profile" class="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-cyan-500 hover:text-white transition-all"><i class="fa-brands fa-github"></i></a>
+                        <a href="#" aria-label="LinkedIn Profile" class="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-cyan-500 hover:text-white transition-all"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" aria-label="Facebook Profile" class="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-cyan-500 hover:text-white transition-all"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="#" aria-label="Telegram" class="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-cyan-500 hover:text-white transition-all"><i class="fa-brands fa-telegram"></i></a>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="lg:col-span-7 bg-white dark:bg-slate-800/80 p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-700/60 shadow-xl">
+                    <form onsubmit="handleFormSubmit(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold mb-1.5 text-slate-700 dark:text-slate-300">Họ & Tên</label>
+                                <input type="text" required placeholder="Nguyễn Văn A" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1.5 text-slate-700 dark:text-slate-300">Địa Chỉ Email</label>
+                                <input type="email" required placeholder="email@example.com" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold mb-1.5 text-slate-700 dark:text-slate-300">Tiêu Đề Messsage</label>
+                            <input type="text" placeholder="Hợp tác dự án / Đặt câu hỏi..." class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold mb-1.5 text-slate-700 dark:text-slate-300">Nội Dung Tin Nhắn</label>
+                            <textarea rows="4" required placeholder="Chi tiết yêu cầu của bạn..." class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-600 hover:to-indigo-700 text-white rounded-xl font-bold text-sm shadow-lg shadow-cyan-500/25 transition-all">
+                            Gửi Tin Nhắn
+                        </button>
+                    </form>
+                    
+                    <div id="formNotification" class="hidden mt-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 text-xs text-center font-bold">
+                        <i class="fa-solid fa-circle-check mr-2"></i>Tin nhắn của bạn đã được gửi thành công! Alex sẽ phản hồi sớm nhất.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
+                
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-xl bg-cyan-500 flex items-center justify-center text-slate-950 font-black">
+                        AN
+                    </div>
+                    <span class="text-white font-bold text-lg font-heading">Alex Nguyen Portfolio</span>
+                </div>
+
+                <div class="flex flex-wrap justify-center space-x-6 text-xs font-medium">
+                    <a href="#about" class="hover:text-cyan-400 transition-colors">Giới Thiệu</a>
+                    <a href="#projects" class="hover:text-cyan-400 transition-colors">Dự Án</a>
+                    <a href="./index.html" target="_blank" class="text-cyan-400 font-bold hover:underline">Trang Tech Hub</a>
+                    <a href="#blog" class="hover:text-cyan-400 transition-colors">Blog</a>
+                    <a href="#contact" class="hover:text-cyan-400 transition-colors">Liên Hệ</a>
+                </div>
+
+                <p class="text-xs text-slate-500">&copy; 2026 Alex Nguyen. Tất cả quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Theme Persistence with localStorage
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // 2. Typewriter Effect
+        const words = ["Full-Stack Developer", "AI Enthusiast", "Tech Blogger", "UI/UX Architect"];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function typeEffect() {
+            const currentWord = words[wordIndex];
+            const target = document.getElementById("typewriterText");
+
+            if(!target) return;
+
+            if (isDeleting) {
+                target.innerText = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                target.innerText = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 60 : 120;
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                typeSpeed = 2000; // Pause at end of word
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(typeEffect, typeSpeed);
+        }
+
+        // 3. Mobile Navigation Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // 4. Contact Form Handler
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const notification = document.getElementById('formNotification');
+            notification.classList.remove('hidden');
+            e.target.reset();
+
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Initialize App State
+        window.onload = function() {
+            initTheme();
+            typeEffect();
+        };
+    </script>
+</body>
+</html>
