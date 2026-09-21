@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhật Minh: Trốn Khỏi Căn Phòng Của Teaming</title>
+    <style>
+        /* === CSS STYLING === */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #050505;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 450px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+            border: 2px solid #222;
+            background-color: #111;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        /* UI Overlays */
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1 {
+            color: #ff3333;
+            text-shadow: 2px 2px 10px rgba(255, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #ccc;
+            margin: 5px 0;
+        }
+
+        .controls-guide {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #444;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            background: #444;
+            color: #fff;
+            border: 2px solid #666;
+            border-radius: 5px;
+            margin-top: 25px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: #ff3333;
+            border-color: #ff8888;
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.6);
+        }
+
+        /* HUD - Thanh Nín Thở */
+        #hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .hud-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #ddd;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        .breath-bar-bg {
+            width: 250px;
+            height: 22px;
+            background: #222;
+            border: 2px solid #555;
+            border-radius: 11px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        .breath-bar-fill {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00cc66);
+            transition: width 0.1s linear, background-color 0.2s;
+        }
+        
+        .danger .breath-bar-fill {
+            background: linear-gradient(90deg, #ff3333, #cc0000);
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <!-- Game Canvas -->
+    <canvas id="gameCanvas" width="800" height="450"></canvas>
+
+    <!-- HUD (Thanh Nín Thở) -->
+    <div id="hud" class="hidden">
+        <div class="hud-title">Thanh Nín Thở (Breath)</div>
+        <div class="breath-bar-bg">
+            <div class="breath-bar-fill" id="breathBar"></div>
+        </div>
+    </div>
+
+    <!-- Màn hình Bắt Đầu -->
+    <div id="ui-start" class="ui-layer">
+        <h1>NHẬT MINH:<br>TRỐN KHỎI CĂN PHÒNG CỦA TEAMING</h1>
+        <div class="controls-guide">
+            <p>🕹️ <b>A / D</b> hoặc <b>⬅️ / ➡️</b> : Di chuyển</p>
+            <p>⬆️ <b>SPACE</b> : Nhảy lên chướng ngại vật</p>
+            <p>⬇️ <b>C</b> hoặc <b>Mũi tên Xuống</b> : Trượt người để chui khe hẹp</p>
+        </div>
+        <p style="margin-top: 20px; color: #ff8888;">⚠️ <b>CẢNH BÁO:</b> Teaming xả khí độc mỗi 5 giây. Hãy NÍN THỞ!</p>
+        <p>Tìm cách trượt qua khe cửa ở cuối góc phải màn hình để thoát thân.</p>
+        <button class="btn" onclick="startGame()">Bắt Đầu Trốn Thoát</button>
+    </div>
+
+    <!-- Màn hình Thua (Game Over) -->
+    <div id="ui-gameover" class="ui-layer hidden">
+        <h1 style="font-size: 50px;">GAME OVER</h1>
+        <p>Bạn đã hít phải quá nhiều khí độc của Teaming...</p>
+        <button class="btn" onclick="startGame()">Thử Lại</button>
+    </div>
+
+    <!-- Màn hình Thắng (Win) -->
+    <div id="ui-win" class="ui-layer hidden">
+        <h1 style="color: #00ff88; font-size: 50px; text-shadow: 0 0 20px #00ff88;">THOÁT THÀNH CÔNG!</h1>
+        <p>Nhật Minh đã lách qua được khe cửa và trốn thoát khỏi Teaming!</p>
+        <button class="btn" onclick="startGame()">Chơi Lại</button>
+    </div>
+</div>
+
+<script>
+    /** === GAME ENGINE & LẬP TRÌNH LOGIC === */
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const breathBar = document.getElementById('breathBar');
+    
+    // UI Elements
+    const uiStart = document.getElementById('ui-start');
+    const uiGameOver = document.getElementById('ui-gameover');
+    const uiWin = document.getElementById('ui-win');
+    const hud = document.getElementById('hud');
+
+    // Các biến trạng thái Game
+    let gameState = 'START'; // START, PLAYING, GAMEOVER, WIN
+    let lastTime = 0;
+    let camera = { x: 0 };
+    const worldWidth = 2400; // Độ dài của màn chơi
+
+    // Nút bấm
+    const keys = {
+        left: false, right: false, up: false, slide: false
+    };
+
+    window.addEventListener('keydown', (e) => {
+        if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
+        if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
+        if (e.code === 'Space' || e.code === 'ArrowUp') keys.up = true;
+        if (e.code === 'ArrowDown' || e.code === 'KeyC') keys.slide = true;
+    });
+
+    window.addEventListener('keyup', (e) => {
+        if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
+        if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+        if (e.code === 'Space' || e.code === 'ArrowUp') keys.up = false;
+        if (e.code === 'ArrowDown' || e.code === 'KeyC') keys.slide = false;
+    });
+
+    // Cấu trúc Nhân vật Nhật Minh
+    const player = {
+        x: 100, y: 300,
+        w: 30, 
+        h_stand: 40, // Chiều cao đứng
+        h_slide: 20, // Chiều cao trượt
+        h: 40,
+        vx: 0, vy: 0,
+        speed: 4, jumpPower: 11, gravity: 0.6,
+        grounded: false, sliding: false,
+        maxBreath: 100, breath: 100
+    };
+
+    // Thiết kế Màn chơi (Level Design - Các khối chướng ngại vật)
+    // Sàn nhà ở y = 400. Mọi thứ vẽ từ trên xuống.
+    const blocks = [
+        { x: -100, y: 0, w: 100, h: 450 }, // Tường chặn bên trái
+        { x: 0, y: 400, w: 2500, h: 50 },  // Sàn nhà
+        
+        // Cụm chướng ngại vật 1: Chồng sách / Gối để nhảy
+        { x: 400, y: 350, w: 80, h: 50 },
+        { x: 480, y: 280, w: 80, h: 120 },
+        
+        // Cụm 2: Khe hẹp số 1 (Bắt buộc trượt)
+        // Chiều cao đứng 40. Gầm y=370 => khe hở 30px (chỉ chui lọt khi trượt h=20)
+        { x: 800, y: 0, w: 150, h: 370 }, 
+        
+        // Cụm 3: Bậc thang nhảy & chướng ngại
+        { x: 1100, y: 330, w: 60, h: 70 },
+        { x: 1250, y: 250, w: 60, h: 150 },
+        
+        // Cụm 4: ĐƯỜNG HẦM TỬ THẦN (Khe hẹp rất dài, yêu cầu canh thời gian khí độc)
+        { x: 1500, y: 0, w: 400, h: 370 },
+        
+        // Cụm 5: Bức tường cuối cùng & Cửa thoát hiểm
+        { x: 2100, y: 0, w: 100, h: 370 }, // Tường chắn trước cửa
+    ];
+
+    // Điểm chiến thắng (Nằm ngay sau bức tường cuối, lách qua là tới)
+    const winZone = { x: 2200, y: 370, w: 50, h: 30 };
+
+    // Cơ chế Khí Độc của Teaming
+    let gasTimer = 0;
+    let gasActive = false;
+    const GAS_CYCLE = 5000; // 5 giây 1 chu kỳ
+    const GAS_DURATION = 2000; // Khí độc tồn tại 2 giây trong mỗi chu kỳ
+    const GAS_Y_LEVEL = 330; // Khí độc lan từ độ cao này xuống sàn
+
+    function startGame() {
+        // Reset chỉ số
+        player.x = 100;
+        player.y = 300;
+        player.vx = 0;
+        player.vy = 0;
+        player.h = player.h_stand;
+        player.breath = player.maxBreath;
+        player.sliding = false;
+        
+        gasTimer = 0;
+        gasActive = false;
+        gameState = 'PLAYING';
+        
+        // Ẩn/Hiện UI
+        uiStart.classList.add('hidden');
+        uiGameOver.classList.add('hidden');
+        uiWin.classList.add('hidden');
+        hud.classList.remove('hidden');
+
+        lastTime = performance.now();
+        requestAnimationFrame(gameLoop);
+    }
+
+    function checkCollision(r1, r2) {
+        return r1.x < r2.x + r2.w &&
+               r1.x + r1.w > r2.x &&
+               r1.y < r2.y + r2.h &&
+               r1.y + r1.h > r2.y;
+    }
+
+    function update(dt) {
+        // --- 1. Xử lý Input & Di chuyển X ---
+        if (keys.right) {
+            player.vx = player.speed;
+        } else if (keys.left) {
+            player.vx = -player.speed;
+        } else {
+            player.vx = 0;
+        }
+
+        // Khi đang trượt, tốc độ di chuyển bị giảm
+        if (player.sliding) player.vx *= 0.6;
+
+        // Xử lý Cơ chế Trượt (Slide)
+        if (keys.slide && player.grounded) {
+            if (!player.sliding) {
+                player.sliding = true;
+                player.h = player.h_slide;
+                player.y += (player.h_stand - player.h_slide); // Dời y xuống để không bị lơ lửng
+            }
+        } else {
+            // Cố gắng đứng dậy nếu đang trượt
+            if (player.sliding) {
+                // Kiểm tra xem phía trên có bị kẹt trần nhà không (Mô phỏng đứng lên)
+                let tempPlayer = { x: player.x, y: player.y - (player.h_stand - player.h_slide), w: player.w, h: player.h_stand };
+                let canStand = !blocks.some(b => checkCollision(tempPlayer, b));
+                
+                if (canStand) {
+                    player.sliding = false;
+                    player.h = player.h_stand;
+                    player.y -= (player.h_stand - player.h_slide);
+                }
+                // Nếu bị kẹt (canStand = false), bắt buộc duy trì trạng thái trượt
+            }
+        }
+
+        // Áp dụng Vận tốc X và Check Va chạm X
+        player.x += player.vx;
+        for (let b of blocks) {
+            if (checkCollision(player, b)) {
+                if (player.vx > 0) player.x = b.x - player.w; // Đụng tường phải
+                else if (player.vx < 0) player.x = b.x + b.w; // Đụng tường trái
+            }
+        }
+
+        // --- 2. Xử lý Nhảy, Trọng lực & Va chạm Y ---
+        if (keys.up && player.grounded && !player.sliding) {
+            player.vy = -player.jumpPower;
+            player.grounded = false;
+        }
+
+        player.vy += player.gravity;
+        player.y += player.vy;
+        player.grounded = false;
+
+        for (let b of blocks) {
+            if (checkCollision(player, b)) {
+                if (player.vy > 0) { // Đang rơi xuống (Chạm sàn)
+                    player.y = b.y - player.h;
+                    player.grounded = true;
+                    player.vy = 0;
+                } else if (player.vy < 0) { // Nhảy đụng trần
+                    player.y = b.y + b.h;
+                    player.vy = 0;
+                }
+            }
+        }
+
+        // --- 3. Camera bám theo Nhân vật ---
+        camera.x = player.x - canvas.width / 3;
+        // Khóa camera không đi quá lề trái/phải
+        if (camera.x < 0) camera.x = 0;
+        if (camera.x > worldWidth - canvas.width) camera.x = worldWidth - canvas.width;
+
+        // --- 4. Logic Khí độc Teaming (Breath & Gas) ---
+        gasTimer += dt;
+        if (gasTimer >= GAS_CYCLE) gasTimer = 0;
+        
+        // Khí độc kích hoạt trong khoảng (Chu kỳ - GAS_DURATION) đến Chu kỳ
+        gasActive = gasTimer > (GAS_CYCLE - GAS_DURATION);
+
+        let inGasZone = (player.y + player.h > GAS_Y_LEVEL) && gasActive;
+
+        if (inGasZone) {
+            // Tụt thanh nín thở rất nhanh khi đứng trong khí độc
+            player.breath -= (45 * dt / 1000); 
+            breathBar.parentElement.classList.add('danger');
+        } else {
+            // Phục hồi từ từ khi an toàn
+            player.breath += (20 * dt / 1000);
+            breathBar.parentElement.classList.remove('danger');
+        }
+
+        // Giới hạn breath
+        if (player.breath > player.maxBreath) player.breath = player.maxBreath;
+        if (player.breath <= 0) {
+            player.breath = 0;
+            gameState = 'GAMEOVER';
+            hud.classList.add('hidden');
+            uiGameOver.classList.remove('hidden');
+        }
+
+        // Cập nhật UI thanh Nín thở
+        breathBar.style.width = `${(player.breath / player.maxBreath) * 100}%`;
+
+        // --- 5. Điều kiện Thắng (Win) ---
+        if (checkCollision(player, winZone)) {
+            gameState = 'WIN';
+            hud.classList.add('hidden');
+            uiWin.classList.remove('hidden');
+        }
+    }
+
+    function draw() {
+        // Vẽ nền mờ ám
+        ctx.fillStyle = '#111518';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.save();
+        ctx.translate(-camera.x, 0); // Di chuyển hệ tọa độ theo Camera
+
+        // --- Vẽ Boss Khổng lồ Teaming (Hiệu ứng Parallax ở nền) ---
+        let teamingX = camera.x * 0.9; // Background di chuyển chậm hơn tạo chiều sâu
+        
+        // Vẽ thân hình bóng tối khổng lồ
+        ctx.fillStyle = '#080808';
+        ctx.fillRect(teamingX, 20, 600, 430); 
+        
+        // Đôi mắt Teaming
+        ctx.fillStyle = gasActive ? '#ff0000' : '#440000'; // Đỏ rực khi xả khí
+        ctx.beginPath();
+        ctx.arc(teamingX + 200, 150, 25, 0, Math.PI * 2);
+        ctx.arc(teamingX + 350, 150, 25, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Vẽ mồm/Nguồn xả khí
+        if (gasActive) {
+            ctx.fillStyle = '#00ff44';
+            // Miệng hé mở xả khí
+            ctx.fillRect(teamingX + 180, 280, 190, 15);
+        }
+
+        // --- Vẽ Khí Độc (Gas) lan trên sàn ---
+        if (gasActive) {
+            // Lớp khí bao phủ sàn nhà
+            ctx.fillStyle = `rgba(30, 255, 50, ${0.4 + Math.sin(Date.now() / 100) * 0.1})`;
+            ctx.fillRect(camera.x, GAS_Y_LEVEL, canvas.width, 450 - GAS_Y_LEVEL);
+            
+            // Hạt khí bay lơ lửng ngẫu nhiên
+            ctx.fillStyle = 'rgba(50, 255, 50, 0.3)';
+            for (let i = 0; i < 25; i++) {
+                let pX = camera.x + ((Date.now() / (3 + i%3) + i * 80) % canvas.width);
+                let pY = 400 - Math.random() * 70 - Math.sin(Date.now() / 200 + i) * 20;
+                ctx.beginPath();
+                ctx.arc(pX, pY, 15 + (i%15), 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // --- Vẽ Map / Chướng ngại vật (Gothic Style) ---
+        for (let b of blocks) {
+            ctx.fillStyle = '#222'; // Màu khối tối
+            ctx.fillRect(b.x, b.y, b.w, b.h);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(b.x, b.y, b.w, b.h);
+            
+            // Chi tiết trên khối (giả lập gạch/gỗ cũ)
+            ctx.fillStyle = '#1a1a1a';
+            ctx.fillRect(b.x + 5, b.y + 5, b.w - 10, b.h - 10);
+        }
+
+        // --- Vẽ Cửa Thoát Hiểm (Goal) ---
+        ctx.fillStyle = '#ffffff'; // Ánh sáng cửa
+        ctx.shadowColor = '#ffffff';
+        ctx.shadowBlur = 20;
+        ctx.fillRect(winZone.x, winZone.y, 10, winZone.h); // Khe ánh sáng hắt ra
+        ctx.shadowBlur = 0; // Tắt shadow để vẽ các vật khác
+
+        // --- Vẽ Nhân vật Nhật Minh ---
+        ctx.fillStyle = '#00ccff'; // Áo/màu nhận diện của Nhật Minh (Sáng dễ nhìn)
+        ctx.fillRect(player.x, player.y, player.w, player.h);
+        
+        // Mắt của Nhật Minh (Đang hoảng sợ)
+        ctx.fillStyle = '#fff';
+        // Vị trí mắt thay đổi hướng tùy theo đang đi trái hay phải
+        let eyeOffsetX = player.vx < 0 ? 5 : (player.vx > 0 ? 15 : 10); 
+        ctx.fillRect(player.x + eyeOffsetX, player.y + 8, 5, 5);
+        ctx.fillRect(player.x + eyeOffsetX + 8, player.y + 8, 5, 5);
+        
+        ctx.restore();
+
+        // --- Hiệu ứng Spotlight (Vignette) tối tăm cho nguyên màn hình ---
+        let gradient = ctx.createRadialGradient(
+            player.x - camera.x + player.w/2, player.y + player.h/2, 50,
+            player.x - camera.x + player.w/2, player.y + player.h/2, 450
+        );
+        gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+        gradient.addColorStop(0.7, 'rgba(0, 0, 0, 0.7)');
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0.95)');
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // --- Vòng lặp Game (Game Loop) ---
+    function gameLoop(timestamp) {
+        if (gameState !== 'PLAYING') return;
+        
+        let dt = timestamp - lastTime;
+        // Giới hạn dt phòng trường hợp giật lag do chuyển tab
+        if (dt > 100) dt = 16; 
+        lastTime = timestamp;
+
+        update(dt);
+        draw();
+
+        requestAnimationFrame(gameLoop);
+    }
+
+    // Vẽ khung cảnh tối ban đầu lúc mới load trang
+    draw();
+</script>
+</body>
+</html>

@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full bg-slate-950 text-slate-100 select-none">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcade Cyber Fighters - Champion Edition</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Arcade Vibe -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Teko:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        .font-arcade { font-family: 'Orbitron', sans-serif; }
+        .font-score { font-family: 'Teko', sans-serif; }
+        
+        .glow-red { filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.75)); }
+        .glow-cyan { filter: drop-shadow(0 0 12px rgba(6, 182, 212, 0.75)); }
+        .glow-gold { filter: drop-shadow(0 0 15px rgba(234, 179, 8, 0.8)); }
+        
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+
+        .hp-delay-bar { transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
+        .hp-current-bar { transition: width 0.1s ease-out; }
+
+        @keyframes pulse-fast {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.08); opacity: 0.85; }
+        }
+        .animate-pulse-fast { animation: pulse-fast 0.8s infinite; }
+    </style>
+</head>
+<body class="h-full flex flex-col justify-between items-center p-2 sm:p-4 bg-slate-950 bg-grid-pattern overflow-x-hidden font-arcade">
+
+    <div class="w-full max-w-6xl flex flex-col items-center gap-3">
+        
+        <!-- Header & HUD -->
+        <header class="w-full bg-slate-900/90 border-2 border-slate-700/80 rounded-2xl p-3 sm:p-4 shadow-2xl backdrop-blur-md relative overflow-hidden">
+            <div class="absolute -top-10 -left-10 w-40 h-40 bg-red-600/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-cyan-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="grid grid-cols-12 gap-2 sm:gap-4 items-center relative z-10">
+                <!-- PLAYER 1 HUD -->
+                <div class="col-span-5 flex flex-col gap-1">
+                    <div class="flex justify-between items-baseline px-1">
+                        <span id="p1-name-display" class="text-xs sm:text-base font-black tracking-wider text-red-400 flex items-center gap-1.5 glow-red">
+                            <span class="inline-block w-2.5 h-2.5 rounded-full bg-red-500"></span> PLAYER 1
+                        </span>
+                        <span id="p1-hp-text" class="font-score text-lg sm:text-2xl text-red-300 font-bold tracking-widest">100 HP</span>
+                    </div>
+                    <div class="w-full h-5 sm:h-7 bg-slate-950 border border-red-500/40 rounded-lg p-0.5 relative overflow-hidden shadow-inner">
+                        <div id="p1-hp-delay" class="hp-delay-bar absolute top-0.5 bottom-0.5 left-0.5 bg-amber-400 rounded-md" style="width: 100%;"></div>
+                        <div id="p1-hp-bar" class="hp-current-bar absolute top-0.5 bottom-0.5 left-0.5 bg-gradient-to-r from-red-600 to-amber-500 rounded-md shadow-lg" style="width: 100%;"></div>
+                    </div>
+                    <div id="p1-skill-cd" class="text-[10px] text-amber-400 text-right h-3"></div>
+                </div>
+
+                <!-- MATCH TIMER -->
+                <div class="col-span-2 flex flex-col items-center justify-center">
+                    <div class="bg-slate-950 border-2 border-amber-500/80 rounded-xl px-2 sm:px-4 py-0.5 sm:py-1 text-center glow-gold shadow-lg">
+                        <div id="match-timer" class="font-score text-2xl sm:text-4xl leading-none text-amber-400 font-black tracking-widest">99</div>
+                    </div>
+                    <span class="text-[10px] sm:text-xs text-slate-400 font-bold tracking-widest mt-0.5">TIME</span>
+                </div>
+
+                <!-- PLAYER 2 HUD -->
+                <div class="col-span-5 flex flex-col gap-1">
+                    <div class="flex justify-between items-baseline px-1 flex-row-reverse">
+                        <span id="p2-name-display" class="text-xs sm:text-base font-black tracking-wider text-cyan-400 flex items-center gap-1.5 glow-cyan">
+                            PLAYER 2 <span class="inline-block w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                        </span>
+                        <span id="p2-hp-text" class="font-score text-lg sm:text-2xl text-cyan-300 font-bold tracking-widest">100 HP</span>
+                    </div>
+                    <div class="w-full h-5 sm:h-7 bg-slate-950 border border-cyan-500/40 rounded-lg p-0.5 relative overflow-hidden shadow-inner">
+                        <div id="p2-hp-delay" class="hp-delay-bar absolute top-0.5 bottom-0.5 right-0.5 bg-amber-400 rounded-md" style="width: 100%;"></div>
+                        <div id="p2-hp-bar" class="hp-current-bar absolute top-0.5 bottom-0.5 right-0.5 bg-gradient-to-l from-cyan-500 to-blue-600 rounded-md shadow-lg" style="width: 100%;"></div>
+                    </div>
+                    <div id="p2-skill-cd" class="text-[10px] text-amber-400 text-left h-3"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Arena -->
+        <div class="relative w-full aspect-video max-h-[600px] bg-slate-900 border-2 border-slate-700/80 rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center">
+            <canvas id="gameCanvas" width="1000" height="562" class="w-full h-full object-contain block bg-slate-950"></canvas>
+
+            <!-- Character & Map Selection Overlay -->
+            <div id="overlay-screen" class="absolute inset-0 bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center z-20 transition-opacity duration-300 overflow-y-auto p-4">
+                <div class="text-center p-4 max-w-2xl w-full my-auto">
+                    <h1 id="overlay-title" class="text-3xl sm:text-5xl font-black italic tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-amber-400 to-cyan-400 mb-1 glow-gold">
+                        CYBER FIGHTERS
+                    </h1>
+                    <p id="overlay-subtitle" class="text-slate-300 text-xs sm:text-sm font-semibold mb-4">
+                        CHỌN NHÂN VẬT & SÂN ĐẤU THI ĐẤU
+                    </p>
+                    
+                    <!-- Map Selection Box -->
+                    <div class="bg-slate-900/90 p-3.5 rounded-xl border-2 border-amber-500/80 w-full mb-4 shadow-lg text-left">
+                        <label class="text-amber-400 font-bold block mb-1 text-xs sm:text-sm flex items-center gap-2">
+                            <span>🏟️</span> CHỌN SÂN ĐẤU (STAGE / MAP):
+                        </label>
+                        <select id="map-select" class="w-full p-2.5 bg-slate-950 text-amber-300 font-bold text-xs sm:text-sm rounded-lg outline-none border border-amber-500/50 focus:border-amber-400 transition">
+                            <option value="bamboo">🌿 MAP 1: RỪNG TRE (Thanh bình & Sát khí)</option>
+                            <option value="colosseum">🏛️ MAP 2: ĐẤU TRƯỜNG CỔ (Rực lửa La Mã)</option>
+                            <option value="cyberpunk" selected>🌃 MAP 3: THÀNH PHỐ CYBERPUNK (Neon tương lai)</option>
+                        </select>
+                    </div>
+
+                    <!-- Character Select Boxes -->
+                    <div class="flex flex-col sm:flex-row justify-between gap-3 mb-6">
+                        <div class="bg-slate-900/80 p-3 rounded-xl border border-red-500/70 w-full sm:w-1/2 text-left">
+                            <label class="text-red-400 font-bold block mb-1 text-xs">PLAYER 1 (Phím B dùng skill)</label>
+                            <select id="p1-select" class="w-full p-2 bg-slate-950 text-white rounded text-xs sm:text-sm outline-none border border-slate-700 focus:border-red-500">
+                                <option value="blaze">BLAZE (Cân bằng)</option>
+                                <option value="frost">FROST (Cân bằng)</option>
+                                <option value="messi">MESSI (GOAT)</option>
+                                <option value="tung">TUNG SAHUR (Sát thủ)</option>
+                            </select>
+                        </div>
+                        <div class="bg-slate-900/80 p-3 rounded-xl border border-cyan-500/70 w-full sm:w-1/2 text-left">
+                            <label class="text-cyan-400 font-bold block mb-1 text-xs">PLAYER 2 (Phím 1 dùng skill)</label>
+                            <select id="p2-select" class="w-full p-2 bg-slate-950 text-white rounded text-xs sm:text-sm outline-none border border-slate-700 focus:border-cyan-500">
+                                <option value="messi" selected>MESSI (GOAT)</option>
+                                <option value="tung">TUNG SAHUR (Sát thủ)</option>
+                                <option value="blaze">BLAZE (Cân bằng)</option>
+                                <option value="frost">FROST (Cân bằng)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button id="start-btn" class="w-full sm:w-auto px-10 py-3 bg-gradient-to-r from-red-600 via-amber-500 to-cyan-500 hover:from-red-500 hover:to-cyan-400 text-white font-black text-base sm:text-xl rounded-xl shadow-xl transition transform hover:scale-105 active:scale-95 border border-amber-300/40 glow-gold">
+                        BẮT ĐẦU TRẬN ĐẤU
+                    </button>
+                </div>
+            </div>
+
+            <!-- Notice Banner -->
+            <div id="banner-text" class="absolute pointer-events-none inset-0 flex items-center justify-center z-10 opacity-0 transition-opacity duration-200">
+                <span id="banner-content" class="text-5xl sm:text-8xl font-black italic tracking-wider text-amber-400 glow-gold drop-shadow-[0_10px_20px_rgba(0,0,0,0.9)] animate-pulse-fast">
+                    READY?
+                </span>
+            </div>
+        </div>
+
+        <!-- Controls Footer -->
+        <footer class="w-full bg-slate-900/90 border-2 border-slate-700/80 rounded-2xl p-3 sm:p-4 shadow-xl backdrop-blur-md">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+                <!-- P1 Controls -->
+                <div class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-red-950/20 border border-red-800/30">
+                    <span class="font-bold text-red-400">ĐIỀU KHIỂN PLAYER 1</span>
+                    <div class="grid grid-cols-2 gap-1 text-slate-300 text-[11px] sm:text-xs">
+                        <div><b class="text-amber-300">A / D</b> : Di chuyển</div>
+                        <div><b class="text-amber-300">W</b> : Nhảy | <b class="text-amber-300">S</b> : Đỡ đòn</div>
+                        <div><b class="text-red-400">F</b> : Đấm | <b class="text-amber-400">G</b> : Đá</div>
+                        <div><b class="text-purple-400">B</b> : Dùng Tuyệt Kỹ</div>
+                    </div>
+                </div>
+
+                <!-- P2 Controls -->
+                <div class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-cyan-950/20 border border-cyan-800/30">
+                    <span class="font-bold text-cyan-400">ĐIỀU KHIỂN PLAYER 2</span>
+                    <div class="grid grid-cols-2 gap-1 text-slate-300 text-[11px] sm:text-xs">
+                        <div><b class="text-amber-300">← / →</b> : Di chuyển</div>
+                        <div><b class="text-amber-300">↑</b> : Nhảy | <b class="text-amber-300">↓</b> : Đỡ đòn</div>
+                        <div><b class="text-cyan-400">J</b> : Đấm | <b class="text-teal-300">K</b> : Đá</div>
+                        <div><b class="text-purple-400">Phím 1 (cạnh Arrow)</b> : Dùng Skill</div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3 pt-2 border-t border-slate-800 flex justify-between">
+                 <button id="sound-btn" class="px-3 py-1 bg-slate-800 text-slate-200 rounded text-xs border border-slate-600 hover:bg-slate-700">🔊 Âm thanh: BẬT</button>
+                 <button id="restart-btn" class="px-3 py-1 bg-amber-600 hover:bg-amber-500 text-slate-950 font-black rounded text-xs transition">🔄 Chọn lại / Đấu Lại</button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- MAIN GAME LOGIC -->
+    <script>
+        // ============================================================================
+        // 0. MAPS & CHARACTER CONFIGURATIONS (Cân bằng tốc độ = 5.5)
+        // ============================================================================
+        const CHARACTERS_CONFIG = {
+            blaze: { id: 'blaze', name: 'BLAZE', hp: 100, speed: 5.5, punch: 8, kick: 16, color: '#ef4444', accent: '#f59e0b', type: 'normal', skillCd: 5000 },
+            frost: { id: 'frost', name: 'FROST', hp: 100, speed: 5.5, punch: 8, kick: 16, color: '#06b6d4', accent: '#22d3ee', type: 'normal', skillCd: 5000 },
+            messi: { 
+                id: 'messi', name: 'LIONEL MESSI', hp: 500, speed: 5.5, punch: 25, kick: 30, 
+                color: '#75aadb', accent: '#ffffff', type: 'messi', skillCd: 25000 
+            },
+            tung: { 
+                id: 'tung', name: 'TUNG SAHUR', hp: 300, speed: 5.5, punch: 15, kick: 20, 
+                color: '#8b5cf6', accent: '#d946ef', type: 'tung', skillCd: 7500 
+            }
+        };
+
+        const MAPS_CONFIG = {
+            bamboo: {
+                id: 'bamboo',
+                name: 'Rừng Tre',
+                drawBackground: (ctx, width, height, groundY) => {
+                    // Nền trời xanh rậm rạp
+                    const bg = ctx.createLinearGradient(0, 0, 0, height);
+                    bg.addColorStop(0, '#022c22'); bg.addColorStop(0.7, '#064e3b'); bg.addColorStop(1, '#14532d');
+                    ctx.fillStyle = bg; ctx.fillRect(0, 0, width, height);
+
+                    // Hàng tre xa
+                    ctx.fillStyle = '#065f46';
+                    for (let x = 30; x < width; x += 60) {
+                        ctx.fillRect(x, 0, 16, groundY);
+                    }
+                    // Hàng tre gần
+                    ctx.fillStyle = '#047857';
+                    for (let x = 70; x < width; x += 110) {
+                        ctx.fillRect(x, 0, 24, groundY);
+                        // Đốt tre
+                        ctx.fillStyle = '#065f46';
+                        for (let y = 40; y < groundY; y += 80) ctx.fillRect(x - 2, y, 28, 6);
+                        ctx.fillStyle = '#047857';
+                    }
+
+                    // Sàn đất & cỏ
+                    ctx.fillStyle = '#14532d'; ctx.fillRect(0, groundY, width, height - groundY);
+                    ctx.fillStyle = '#22c55e'; ctx.fillRect(0, groundY, width, 8);
+                }
+            },
+            colosseum: {
+                id: 'colosseum',
+                name: 'Đấu Trường Cổ',
+                drawBackground: (ctx, width, height, groundY) => {
+                    // Nền hoàng hôn đỏ lửa
+                    const bg = ctx.createLinearGradient(0, 0, 0, height);
+                    bg.addColorStop(0, '#451a03'); bg.addColorStop(0.6, '#78350f'); bg.addColorStop(1, '#9a3412');
+                    ctx.fillStyle = bg; ctx.fillRect(0, 0, width, height);
+
+                    // Cột đá cổ đại
+                    ctx.fillStyle = '#292524';
+                    [{x: 80, w: 70}, {x: 280, w: 70}, {x: 650, w: 70}, {x: 850, w: 70}].forEach(p => {
+                        ctx.fillRect(p.x, 80, p.w, groundY - 80);
+                        ctx.fillRect(p.x - 10, 60, p.w + 20, 20); // Đầu cột
+                    });
+
+                    // Mặt trời lặn
+                    ctx.beginPath(); ctx.arc(width / 2, groundY - 20, 120, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(251, 146, 60, 0.25)'; ctx.fill();
+
+                    // Sàn đá
+                    ctx.fillStyle = '#1c1917'; ctx.fillRect(0, groundY, width, height - groundY);
+                    ctx.fillStyle = '#ea580c'; ctx.fillRect(0, groundY, width, 6);
+                }
+            },
+            cyberpunk: {
+                id: 'cyberpunk',
+                name: 'Thành Phố Cyberpunk',
+                drawBackground: (ctx, width, height, groundY) => {
+                    const bg = ctx.createLinearGradient(0, 0, 0, height);
+                    bg.addColorStop(0, '#020617'); bg.addColorStop(0.7, '#0f172a'); bg.addColorStop(1, '#1e1b4b');
+                    ctx.fillStyle = bg; ctx.fillRect(0, 0, width, height);
+
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)'; ctx.lineWidth = 1;
+                    for (let x = 0; x < width; x += 50) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, groundY); ctx.stroke(); }
+
+                    ctx.fillStyle = '#090d16';
+                    [{x: 50, w: 90, h: 220}, {x: 180, w: 110, h: 280}, {x: 340, w: 80, h: 180}, {x: 480, w: 120, h: 310}, {x: 640, w: 100, h: 240}, {x: 780, w: 130, h: 290}].forEach(b => {
+                        ctx.fillRect(b.x, groundY - b.h, b.w, b.h);
+                        ctx.fillStyle = 'rgba(234, 179, 8, 0.15)';
+                        for (let wx = b.x+10; wx < b.x+b.w-10; wx+=20) for (let wy = groundY-b.h+20; wy < groundY-20; wy+=35) ctx.fillRect(wx, wy, 8, 12);
+                        ctx.fillStyle = '#090d16';
+                    });
+
+                    ctx.fillStyle = '#0f172a'; ctx.fillRect(0, groundY, width, height - groundY);
+
+                    const neon = ctx.createLinearGradient(0, 0, width, 0);
+                    neon.addColorStop(0, '#ef4444'); neon.addColorStop(0.5, '#eab308'); neon.addColorStop(1, '#06b6d4');
+                    ctx.strokeStyle = neon; ctx.lineWidth = 4; ctx.shadowColor = '#eab308'; ctx.shadowBlur = 10;
+                    ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(width, groundY); ctx.stroke(); ctx.shadowBlur = 0;
+
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)'; ctx.lineWidth = 1;
+                    for (let i = 0; i < width; i += 80) { ctx.beginPath(); ctx.moveTo(i, groundY); ctx.lineTo(i + (i - width/2)*0.4, height); ctx.stroke(); }
+                }
+            }
+        };
+
+        // ============================================================================
+        // 1. SOUND ENGINE
+        // ============================================================================
+        class SoundFX {
+            constructor() { this.ctx = null; this.muted = false; }
+            init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); }
+            play(type) {
+                if (this.muted) return;
+                this.init();
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+                const now = this.ctx.currentTime;
+                try {
+                    if(type==='punch_swing'){ let osc=this.ctx.createOscillator(),g=this.ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(220,now);osc.frequency.exponentialRampToValueAtTime(60,now+0.1);g.gain.setValueAtTime(0.3,now);g.gain.exponentialRampToValueAtTime(0.01,now+0.1);osc.connect(g);g.connect(this.ctx.destination);osc.start(now);osc.stop(now+0.1); }
+                    else if(type==='kick_swing'){ let osc=this.ctx.createOscillator(),g=this.ctx.createGain();osc.type='triangle';osc.frequency.setValueAtTime(180,now);osc.frequency.exponentialRampToValueAtTime(40,now+0.16);g.gain.setValueAtTime(0.5,now);g.gain.exponentialRampToValueAtTime(0.01,now+0.16);osc.connect(g);g.connect(this.ctx.destination);osc.start(now);osc.stop(now+0.16); }
+                    else if(type==='hit_light'){ let bSize=this.ctx.sampleRate*0.08,b=this.ctx.createBuffer(1,bSize,this.ctx.sampleRate),d=b.getChannelData(0);for(let i=0;i<bSize;i++)d[i]=Math.random()*2-1;let n=this.ctx.createBufferSource();n.buffer=b;let f=this.ctx.createBiquadFilter();f.type='lowpass';f.frequency.setValueAtTime(800,now);let g=this.ctx.createGain();g.gain.setValueAtTime(0.6,now);g.gain.exponentialRampToValueAtTime(0.01,now+0.08);n.connect(f);f.connect(g);g.connect(this.ctx.destination);n.start(now); }
+                    else if(type==='hit_heavy'){ let osc=this.ctx.createOscillator(),g=this.ctx.createGain();osc.type='sawtooth';osc.frequency.setValueAtTime(150,now);osc.frequency.exponentialRampToValueAtTime(30,now+0.25);g.gain.setValueAtTime(0.8,now);g.gain.exponentialRampToValueAtTime(0.01,now+0.25);osc.connect(g);g.connect(this.ctx.destination);osc.start(now);osc.stop(now+0.25); }
+                    else if(type==='jump'){ let osc=this.ctx.createOscillator(),g=this.ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(150,now);osc.frequency.exponentialRampToValueAtTime(400,now+0.15);g.gain.setValueAtTime(0.2,now);g.gain.exponentialRampToValueAtTime(0.01,now+0.15);osc.connect(g);g.connect(this.ctx.destination);osc.start(now);osc.stop(now+0.15); }
+                    else if(type==='fight'){ [261.63, 329.63, 392.00, 523.25].forEach(f=>{let osc=this.ctx.createOscillator(),g=this.ctx.createGain();osc.type='triangle';osc.frequency.setValueAtTime(f,now);g.gain.setValueAtTime(0.2,now);g.gain.exponentialRampToValueAtTime(0.001,now+0.8);osc.connect(g);g.connect(this.ctx.destination);osc.start(now);osc.stop(now+0.8);}); }
+                    else if(type==='ko'){ let osc=this.ctx.createOscillator(),g=this.ctx.createGain();osc.type='sawtooth';osc.frequency.setValueAtTime(200,now);osc.frequency.exponentialRampToValueAtTime(40,now+0.8);g.gain.setValueAtTime(0.7,now);g.gain.exponentialRampToValueAtTime(0.01,now+0.8);osc.connect(g);g.connect(this.ctx.destination);osc.start(now);osc.stop(now+0.8); }
+                    else if(type==='skill'){ let osc=this.ctx.createOscillator(),g=this.ctx.createGain();osc.type='square';osc.frequency.setValueAtTime(400,now);osc.frequency.exponentialRampToValueAtTime(800,now+0.3);g.gain.setValueAtTime(0.4,now);g.gain.exponentialRampToValueAtTime(0.01,now+0.3);osc.connect(g);g.connect(this.ctx.destination);osc.start(now);osc.stop(now+0.3); }
+                } catch(e){}
+            }
+        }
+        const sound = new SoundFX();
+
+        // ============================================================================
+        // 2. CONSTANTS & FX SYSTEM
+        // ============================================================================
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const CANVAS_WIDTH = 1000, CANVAS_HEIGHT = 562, GROUND_Y = 480, GRAVITY = 0.7;
+
+        const keys = {};
+        window.addEventListener('keydown', (e) => { 
+            keys[e.code] = true; 
+            keys[e.key] = true;
+            if (e.code === 'KeyP') togglePause(); 
+        });
+        window.addEventListener('keyup', (e) => { 
+            keys[e.code] = false; 
+            keys[e.key] = false;
+        });
+
+        let particles = [], damageTexts = [], cameraShake = { x: 0, y: 0, intensity: 0, duration: 0 };
+        let activeProjectiles = [];
+
+        function addHitSparks(x, y, color) {
+            for (let i = 0; i < 15; i++) {
+                let angle = Math.random() * Math.PI * 2, speed = 3 + Math.random() * 8;
+                particles.push({ x, y, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, radius: 2+Math.random()*4, color, alpha: 1, decay: 0.03+Math.random()*0.04 });
+            }
+        }
+        function addFloatingText(x, y, text, color) { damageTexts.push({ x, y, text, color, vy: -2, alpha: 1, scale: 1.4 }); }
+        function triggerCameraShake(i, d) { cameraShake.intensity = i; cameraShake.duration = d; }
+
+        // ============================================================================
+        // 3. PROJECTILE (Tuyệt kỹ sút bóng Messi)
+        // ============================================================================
+        class SkillProjectile {
+            constructor(x, y, facing, ownerId) {
+                this.x = x;
+                this.y = y;
+                this.vx = facing * 20;
+                this.ownerId = ownerId;
+                this.active = true;
+                this.radius = 20;
+                this.rotation = 0;
+            }
+            update() {
+                this.x += this.vx;
+                this.rotation += 0.5;
+                if (this.x < -100 || this.x > CANVAS_WIDTH + 100) this.active = false;
+            }
+            draw(ctx) {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.beginPath();
+                ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = '#000000';
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.fillStyle = '#000000';
+                for(let i=0; i<5; i++){
+                    let a = (i*2*Math.PI)/5;
+                    ctx.lineTo(Math.cos(a)*10, Math.sin(a)*10);
+                }
+                ctx.fill();
+                ctx.restore();
+
+                addHitSparks(this.x, this.y, '#3b82f6');
+            }
+        }
+
+        // ============================================================================
+        // 4. FIGHTER CHARACTER CLASS
+        // ============================================================================
+        class Fighter {
+            constructor(id, x, configId, controls) {
+                this.id = id;
+                this.config = CHARACTERS_CONFIG[configId];
+                this.startX = x;
+                this.x = x;
+                this.y = GROUND_Y;
+                this.vx = 0; this.vy = 0;
+                
+                this.width = 60; this.height = 110;
+                this.controls = controls;
+                this.facing = id === 1 ? 1 : -1;
+                
+                this.maxHp = this.config.hp;
+                this.hp = this.config.hp;
+                this.delayedHp = this.config.hp;
+                this.speed = this.config.speed; // Bằng nhau hết = 5.5
+
+                this.isGrounded = true;
+                this.state = 'idle';
+                this.stateTimer = 0;
+                this.attackType = null;
+                this.hasHit = false;
+                this.cooldown = 0;
+                this.hitstun = 0;
+                this.animFrame = 0;
+
+                this.lastSkillTime = 0;
+            }
+
+            reset() {
+                this.x = this.startX; this.y = GROUND_Y; this.vx = 0; this.vy = 0;
+                this.facing = this.id === 1 ? 1 : -1;
+                this.hp = this.maxHp; this.delayedHp = this.maxHp;
+                this.state = 'idle'; this.stateTimer = 0;
+                this.hasHit = false; this.cooldown = 0; this.hitstun = 0;
+                this.lastSkillTime = 0;
+            }
+
+            getHurtbox() { return { x: this.x - this.width / 2, y: this.y - this.height, width: this.width, height: this.height }; }
+
+            getHitbox() {
+                if (this.state !== 'punch' && this.state !== 'kick') return null;
+                if (this.hasHit) return null;
+                if (this.state === 'punch' && (this.stateTimer < 3 || this.stateTimer > 12)) return null;
+                if (this.state === 'kick' && (this.stateTimer < 5 || this.stateTimer > 18)) return null;
+
+                const range = this.state === 'punch' ? 65 : 95;
+                const boxX = this.facing === 1 ? this.x : this.x - range;
+                return { x: boxX, y: this.y + (this.state === 'punch' ? -80 : -60), width: range, height: this.state === 'punch' ? 30 : 40 };
+            }
+
+            useSkill(opponent) {
+                const now = Date.now();
+                if (now - this.lastSkillTime < this.config.skillCd) return;
+                
+                this.lastSkillTime = now;
+                sound.play('skill');
+
+                if (this.config.type === 'messi') {
+                    activeProjectiles.push(new SkillProjectile(this.x + (this.facing*40), this.y - 50, this.facing, this.id));
+                    this.state = 'kick';
+                    this.stateTimer = 0;
+                } 
+                else if (this.config.type === 'tung') {
+                    this.x = opponent.x + (opponent.facing * 80);
+                    this.facing = opponent.facing === 1 ? -1 : 1;
+                    addHitSparks(this.x, this.y - 50, this.config.accent);
+                    if (this.x < 35) this.x = 40;
+                    if (this.x > CANVAS_WIDTH - 35) this.x = CANVAS_WIDTH - 40;
+                }
+            }
+
+            update(opponent) {
+                this.animFrame++;
+
+                if (this.state === 'ko') { this.vx *= 0.8; this.applyPhysics(); return; }
+                if (this.hitstun > 0) {
+                    this.hitstun--; this.state = 'hit'; this.vx *= 0.85; this.applyPhysics(); return;
+                }
+
+                if (this.cooldown > 0) this.cooldown--;
+                if (this.isGrounded && this.state !== 'punch' && this.state !== 'kick' && this.state !== 'block') {
+                    this.facing = opponent.x > this.x ? 1 : -1;
+                }
+
+                if (this.state === 'punch' || this.state === 'kick') {
+                    this.stateTimer++; this.vx *= 0.8;
+                    let limit = this.state === 'punch' ? 15 : 22;
+                    if (this.stateTimer > limit) { this.state = 'idle'; this.stateTimer = 0; }
+                } else {
+                    this.handleInput(opponent);
+                }
+
+                this.applyPhysics();
+            }
+
+            isSkillKeyPressed() {
+                const skillKeys = Array.isArray(this.controls.skill) ? this.controls.skill : [this.controls.skill];
+                return skillKeys.some(k => keys[k]);
+            }
+
+            handleInput(opponent) {
+                const c = this.controls;
+                
+                // SKILL CHECK (Hỗ trợ phím số 1 cạnh phím mũi tên)
+                if (this.isSkillKeyPressed()) {
+                    this.useSkill(opponent);
+                }
+
+                // BLOCK CHECK
+                if (keys[c.block] && this.isGrounded) {
+                    this.state = 'block';
+                    this.vx = 0;
+                    return;
+                }
+
+                if (this.cooldown === 0 && this.isGrounded) {
+                    if (keys[c.punch]) {
+                        this.state = 'punch'; this.attackType = 'punch'; this.stateTimer = 0;
+                        this.hasHit = false; this.cooldown = 22; sound.play('punch_swing'); return;
+                    }
+                    if (keys[c.kick]) {
+                        this.state = 'kick'; this.attackType = 'kick'; this.stateTimer = 0;
+                        this.hasHit = false; this.cooldown = 32; sound.play('kick_swing'); return;
+                    }
+                }
+
+                let moveDir = 0;
+                if (keys[c.left]) moveDir -= 1;
+                if (keys[c.right]) moveDir += 1;
+                this.vx = moveDir * this.speed;
+
+                if (this.isGrounded) {
+                    if (moveDir !== 0) this.state = 'walk';
+                    else if (this.state !== 'punch' && this.state !== 'kick') this.state = 'idle';
+
+                    if (keys[c.jump]) {
+                        this.vy = -16; this.isGrounded = false; this.state = 'jump'; sound.play('jump');
+                    }
+                }
+            }
+
+            applyPhysics() {
+                this.vy += GRAVITY;
+                this.x += this.vx; this.y += this.vy;
+                if (this.y >= GROUND_Y) {
+                    this.y = GROUND_Y; this.vy = 0; this.isGrounded = true;
+                    if (this.state === 'jump') this.state = 'idle';
+                }
+                // Wall bounds (Ranh giới biên trái phải)
+                const margin = 35;
+                if (this.x < margin) this.x = margin;
+                if (this.x > CANVAS_WIDTH - margin) this.x = CANVAS_WIDTH - margin;
+            }
+
+            takeDamage(amount, type, attackerFacing) {
+                this.hasHit = false;
+                
+                // Xử lý Block
+                let actualDamage = amount;
+                if (this.state === 'block') {
+                    actualDamage = Math.floor(amount * 0.2);
+                    sound.play('hit_light');
+                    addHitSparks(this.x, this.y - 60, '#cbd5e1');
+                    addFloatingText(this.x - 20, this.y - 100, `Block! -${actualDamage}`, '#cbd5e1');
+                    this.hp = Math.max(0, this.hp - actualDamage);
+                    // Đẩy lùi nhẹ khi đỡ đòn
+                    this.vx = attackerFacing * 8;
+                    return;
+                }
+
+                this.hp = Math.max(0, this.hp - actualDamage);
+                if (this.hp <= 0) {
+                    this.state = 'ko'; this.vy = -8; this.vx = attackerFacing * 10; sound.play('ko');
+                } else {
+                    this.state = 'hit';
+                    this.hitstun = type === 'kick' ? 24 : 14;
+                    this.vy = -4; 
+                    // Đẩy lùi rõ rệt để chống ngắt spam
+                    this.vx = attackerFacing * (type === 'kick' ? 14 : 9);
+                    sound.play(type === 'kick' ? 'hit_heavy' : 'hit_light');
+                }
+
+                addHitSparks(this.x, this.y - 60, type === 'kick' ? '#fbbf24' : '#ef4444');
+                addFloatingText(this.x - 20, this.y - 100, `-${actualDamage}`, type === 'kick' ? '#fbbf24' : '#ef4444');
+                triggerCameraShake(type === 'kick' ? 12 : 4, type === 'kick' ? 12 : 6);
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.scale(this.facing, 1);
+
+                const cMain = this.config.color;
+                const cGlow = this.config.accent;
+
+                if (this.state === 'hit' && Math.floor(this.animFrame / 2) % 2 === 0) ctx.fillStyle = '#ffffff';
+
+                // Shadow
+                ctx.beginPath(); ctx.ellipse(0, 0, 30, 8, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.fill();
+
+                if (this.state === 'ko') { ctx.rotate(-Math.PI / 2 * this.facing); ctx.translate(-50, 20); }
+
+                let armAngle = 0, legAngle = 0, bodyTilt = 0;
+                if (this.state === 'walk') { armAngle = Math.sin(this.animFrame * 0.25) * 0.5; legAngle = Math.sin(this.animFrame * 0.25) * 0.6; }
+                else if (this.state === 'jump') { legAngle = -0.4; armAngle = 0.6; }
+                else if (this.state === 'hit') bodyTilt = -0.3;
+                else if (this.state === 'block') { armAngle = -0.5; bodyTilt = 0.1; }
+
+                ctx.rotate(bodyTilt);
+
+                ctx.strokeStyle = cMain; ctx.lineWidth = 14; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+
+                // Vẽ chân
+                ctx.beginPath();
+                ctx.moveTo(0, -50); ctx.lineTo(-12 + Math.sin(legAngle)*15, -25); ctx.lineTo(-15 + Math.sin(legAngle)*20, 0);
+                ctx.moveTo(0, -50); ctx.lineTo(12 - Math.sin(legAngle)*15, -25); ctx.lineTo(15 - Math.sin(legAngle)*20, 0);
+                if (this.state === 'kick') { ctx.moveTo(0, -50); ctx.lineTo(35, -55); ctx.lineTo(75, -50); }
+                ctx.stroke();
+
+                // Vẽ Thân
+                ctx.beginPath(); ctx.moveTo(0, -50); ctx.lineTo(0, -90); ctx.stroke();
+
+                if (this.config.type === 'messi') {
+                    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 6;
+                    ctx.beginPath(); ctx.moveTo(0, -50); ctx.lineTo(0, -90); ctx.stroke();
+                }
+
+                ctx.beginPath(); ctx.arc(0, -70, 5, 0, Math.PI * 2); ctx.fillStyle = cGlow;
+                ctx.shadowColor = cGlow; ctx.shadowBlur = 10; ctx.fill(); ctx.shadowBlur = 0;
+
+                // Vẽ Tay
+                ctx.strokeStyle = cMain; ctx.lineWidth = 14;
+                ctx.beginPath();
+                if (this.state === 'punch') {
+                    ctx.moveTo(0, -82); ctx.lineTo(25, -82); ctx.lineTo(60, -82);
+                    ctx.moveTo(0, -82); ctx.lineTo(-15, -65);
+                } else if (this.state === 'block') {
+                    ctx.moveTo(0, -82); ctx.lineTo(15, -70); ctx.lineTo(10, -95);
+                    ctx.moveTo(0, -82); ctx.lineTo(5, -70); ctx.lineTo(20, -90);
+                } else {
+                    ctx.moveTo(0, -82); ctx.lineTo(15 + Math.sin(armAngle)*10, -65); ctx.lineTo(25 + Math.sin(armAngle)*10, -80);
+                    ctx.moveTo(0, -82); ctx.lineTo(-15 - Math.sin(armAngle)*10, -65); ctx.lineTo(-20 - Math.sin(armAngle)*10, -75);
+                }
+                ctx.stroke();
+
+                // Vẽ Đầu
+                ctx.beginPath(); ctx.arc(0, -102, 15, 0, Math.PI * 2); ctx.fillStyle = cMain; ctx.fill();
+                ctx.beginPath(); ctx.roundRect(this.facing === 1 ? 2 : -10, -107, 12, 6, 3);
+                ctx.fillStyle = cGlow; ctx.shadowColor = cGlow; ctx.shadowBlur = 12; ctx.fill(); ctx.shadowBlur = 0;
+
+                if (this.state === 'block') {
+                    ctx.beginPath(); ctx.arc(10, -70, 50, -1.5, 1.5);
+                    ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 4; ctx.stroke();
+                }
+
+                if (this.state === 'punch' && this.stateTimer > 2 && this.stateTimer < 10) {
+                    ctx.beginPath(); ctx.arc(35, -82, 30, -0.4, 0.4); ctx.strokeStyle = cGlow; ctx.lineWidth = 4; ctx.stroke();
+                } else if (this.state === 'kick' && this.stateTimer > 4 && this.stateTimer < 14) {
+                    ctx.beginPath(); ctx.arc(30, -50, 45, -0.6, 0.6); ctx.strokeStyle = cGlow; ctx.lineWidth = 6; ctx.stroke();
+                }
+
+                ctx.restore();
+            }
+        }
+
+        // ============================================================================
+        // 5. GAME ENGINE, COLLISION & MAP DRAWING
+        // ============================================================================
+        let player1, player2;
+        let selectedMapKey = 'cyberpunk';
+
+        function checkAttackHit(attacker, defender) {
+            const hitbox = attacker.getHitbox();
+            if (!hitbox) return;
+            const hurtbox = defender.getHurtbox();
+
+            if (hitbox.x < hurtbox.x + hurtbox.width && hitbox.x + hitbox.width > hurtbox.x &&
+                hitbox.y < hurtbox.y + hurtbox.height && hitbox.y + hitbox.height > hurtbox.y) {
+                attacker.hasHit = true;
+                const damage = attacker.state === 'kick' ? attacker.config.kick : attacker.config.punch;
+                
+                // Đẩy lùi nhẹ người tấn công để tạo phản lực chống áp sát liên tục
+                attacker.vx = -attacker.facing * 4;
+                defender.takeDamage(damage, attacker.state, attacker.facing);
+            }
+        }
+
+        function resolveBodyPushbox(p1, p2) {
+            const dx = p2.x - p1.x;
+            const minDist = (p1.width + p2.width) * 0.45;
+            if (Math.abs(dx) < minDist) {
+                const overlap = minDist - Math.abs(dx);
+                if (dx > 0) { p1.x -= overlap / 2; p2.x += overlap / 2; } 
+                else { p1.x += overlap / 2; p2.x -= overlap / 2; }
+            }
+        }
+
+        function drawStage(ctx) {
+            const mapObj = MAPS_CONFIG[selectedMapKey] || MAPS_CONFIG.cyberpunk;
+            mapObj.drawBackground(ctx, CANVAS_WIDTH, CANVAS_HEIGHT, GROUND_Y);
+        }
+
+        // ============================================================================
+        // 7. MATCH STATE MANAGEMENT & UI
+        // ============================================================================
+        let gameState = 'START', matchTime = 99, timerInterval = null;
+
+        const p1Select = document.getElementById('p1-select');
+        const p2Select = document.getElementById('p2-select');
+        const mapSelect = document.getElementById('map-select');
+        const overlayScreen = document.getElementById('overlay-screen');
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        document.getElementById('sound-btn').addEventListener('click', (e) => {
+            sound.muted = !sound.muted; e.target.textContent = sound.muted ? "🔇 Âm thanh: TẮT" : "🔊 Âm thanh: BẬT";
+        });
+
+        startBtn.addEventListener('click', () => { sound.init(); startMatch(); });
+        restartBtn.addEventListener('click', () => {
+            overlayScreen.style.opacity = '1'; overlayScreen.style.pointerEvents = 'auto';
+            document.getElementById('overlay-title').textContent = "CYBER FIGHTERS";
+            document.getElementById('overlay-subtitle').textContent = "CHỌN NHÂN VẬT & SÂN ĐẤU THI ĐẤU";
+            startBtn.textContent = "BẮT ĐẦU TRẬN ĐẤU";
+            gameState = 'START';
+        });
+
+        function togglePause() {
+            if (gameState === 'PLAYING') { gameState = 'PAUSED'; overlayScreen.style.opacity='1'; overlayScreen.style.pointerEvents='auto'; document.getElementById('overlay-title').textContent="TẠM DỪNG"; startBtn.textContent="TIẾP TỤC"; }
+            else if (gameState === 'PAUSED') { gameState = 'PLAYING'; overlayScreen.style.opacity='0'; overlayScreen.style.pointerEvents='none'; }
+        }
+
+        function showBanner(text, duration = 1000) {
+            document.getElementById('banner-content').textContent = text;
+            document.getElementById('banner-text').style.opacity = '1';
+            setTimeout(() => { document.getElementById('banner-text').style.opacity = '0'; }, duration);
+        }
+
+        function startMatch() {
+            const p1Conf = p1Select.value;
+            const p2Conf = p2Select.value;
+            selectedMapKey = mapSelect.value;
+
+            // Player 1 Control Keys
+            player1 = new Fighter(1, 280, p1Conf, { 
+                left: 'KeyA', right: 'KeyD', jump: 'KeyW', block: 'KeyS', 
+                punch: 'KeyF', kick: 'KeyG', skill: ['KeyB', 'b'] 
+            });
+
+            // Player 2 Control Keys (Skill hỗ trợ phím Digit1, Numpad1, và phím số '1')
+            player2 = new Fighter(2, 720, p2Conf, { 
+                left: 'ArrowLeft', right: 'ArrowRight', jump: 'ArrowUp', block: 'ArrowDown', 
+                punch: 'KeyJ', kick: 'KeyK', skill: ['Digit1', 'Numpad1', '1', 'End'] 
+            });
+            
+            document.getElementById('p1-name-display').innerHTML = `<span class="inline-block w-2.5 h-2.5 rounded-full" style="background:${player1.config.color}"></span> ${player1.config.name}`;
+            document.getElementById('p2-name-display').innerHTML = `${player2.config.name} <span class="inline-block w-2.5 h-2.5 rounded-full" style="background:${player2.config.color}"></span>`;
+
+            activeProjectiles = [];
+            matchTime = 99; document.getElementById('match-timer').textContent = matchTime;
+            overlayScreen.style.opacity = '0'; overlayScreen.style.pointerEvents = 'none';
+
+            if (timerInterval) clearInterval(timerInterval);
+            gameState = 'COUNTDOWN'; sound.play('fight'); showBanner('ROUND 1', 1200);
+
+            setTimeout(() => {
+                showBanner('FIGHT!', 800); gameState = 'PLAYING';
+                timerInterval = setInterval(() => {
+                    if (gameState === 'PLAYING') {
+                        matchTime--; document.getElementById('match-timer').textContent = matchTime;
+                        if (matchTime <= 0) endMatch('TIME OVER');
+                    }
+                }, 1000);
+            }, 1400);
+        }
+
+        function endMatch(reason) {
+            gameState = 'ENDED'; clearInterval(timerInterval);
+            let winnerText = player1.hp > player2.hp ? 'PLAYER 1 WINS!' : (player2.hp > player1.hp ? 'PLAYER 2 WINS!' : 'DRAW MATCH!');
+            showBanner(reason || 'K.O.', 2000);
+            setTimeout(() => {
+                document.getElementById('overlay-title').textContent = winnerText;
+                document.getElementById('overlay-subtitle').textContent = `Kết quả: P1 (${Math.ceil(player1.hp)} HP) VS P2 (${Math.ceil(player2.hp)} HP)`;
+                startBtn.textContent = "ĐẤU TRẬN MỚI";
+                overlayScreen.style.opacity = '1'; overlayScreen.style.pointerEvents = 'auto';
+            }, 1800);
+        }
+
+        function updateHUD() {
+            if(!player1 || !player2) return;
+            // P1
+            document.getElementById('p1-hp-bar').style.width = `${(player1.hp / player1.maxHp) * 100}%`;
+            document.getElementById('p1-hp-text').textContent = `${Math.ceil(player1.hp)} HP`;
+            player1.delayedHp -= (player1.delayedHp - player1.hp) * 0.05;
+            document.getElementById('p1-hp-delay').style.width = `${(player1.delayedHp / player1.maxHp) * 100}%`;
+            
+            let p1cd = Math.max(0, (player1.config.skillCd - (Date.now() - player1.lastSkillTime))/1000);
+            document.getElementById('p1-skill-cd').textContent = p1cd > 0 ? `Skill CD: ${p1cd.toFixed(1)}s` : "SKILL READY [B]";
+
+            // P2
+            document.getElementById('p2-hp-bar').style.width = `${(player2.hp / player2.maxHp) * 100}%`;
+            document.getElementById('p2-hp-text').textContent = `${Math.ceil(player2.hp)} HP`;
+            player2.delayedHp -= (player2.delayedHp - player2.hp) * 0.05;
+            document.getElementById('p2-hp-delay').style.width = `${(player2.delayedHp / player2.maxHp) * 100}%`;
+            
+            let p2cd = Math.max(0, (player2.config.skillCd - (Date.now() - player2.lastSkillTime))/1000);
+            document.getElementById('p2-skill-cd').textContent = p2cd > 0 ? `Skill CD: ${p2cd.toFixed(1)}s` : "SKILL READY [1]";
+        }
+
+        // ============================================================================
+        // 8. MAIN LOOP
+        // ============================================================================
+        function gameLoop() {
+            ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+            ctx.save();
+            if(cameraShake.duration > 0){ cameraShake.duration--; cameraShake.x=(Math.random()-0.5)*cameraShake.intensity; cameraShake.y=(Math.random()-0.5)*cameraShake.intensity; }
+            else { cameraShake.x=0; cameraShake.y=0; }
+            ctx.translate(cameraShake.x, cameraShake.y);
+
+            drawStage(ctx);
+
+            if (gameState === 'PLAYING' || gameState === 'ENDED') {
+                if (gameState === 'PLAYING') {
+                    player1.update(player2); player2.update(player1);
+                    checkAttackHit(player1, player2); checkAttackHit(player2, player1);
+                    resolveBodyPushbox(player1, player2);
+                    
+                    // Update projectiles (Messi Skill)
+                    for (let i = activeProjectiles.length - 1; i >= 0; i--) {
+                        let p = activeProjectiles[i];
+                        p.update();
+                        
+                        let target = p.ownerId === 1 ? player2 : player1;
+                        if (p.active && target.state !== 'ko') {
+                            let h = target.getHurtbox();
+                            if (p.x > h.x && p.x < h.x + h.width && p.y > h.y && p.y < h.y + h.height) {
+                                target.takeDamage(50, 'kick', p.vx > 0 ? 1 : -1);
+                                p.active = false;
+                            }
+                        }
+
+                        if (!p.active) activeProjectiles.splice(i, 1);
+                        else p.draw(ctx);
+                    }
+
+                    if ((player1.hp <= 0 || player2.hp <= 0) && gameState !== 'ENDED') endMatch('K.O.');
+                } else {
+                    player1.applyPhysics(); player2.applyPhysics();
+                }
+                player1.draw(ctx); player2.draw(ctx);
+            }
+
+            // FX
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i]; p.x+=p.vx; p.y+=p.vy; p.vy+=0.2; p.alpha-=p.decay;
+                if (p.alpha<=0){ particles.splice(i,1); continue; }
+                ctx.save(); ctx.globalAlpha=Math.max(0,p.alpha); ctx.fillStyle=p.color; ctx.shadowColor=p.color; ctx.shadowBlur=8;
+                ctx.beginPath(); ctx.arc(p.x,p.y,p.radius,0,Math.PI*2); ctx.fill(); ctx.restore();
+            }
+            for (let i = damageTexts.length - 1; i >= 0; i--) {
+                let dt = damageTexts[i]; dt.y+=dt.vy; dt.alpha-=0.02; if(dt.scale>1)dt.scale-=0.03;
+                if(dt.alpha<=0){ damageTexts.splice(i,1); continue; }
+                ctx.save(); ctx.globalAlpha=Math.max(0,dt.alpha); ctx.font=`900 ${Math.floor(28*dt.scale)}px 'Orbitron', sans-serif`; ctx.fillStyle=dt.color; ctx.shadowColor='#000'; ctx.shadowBlur=6; ctx.fillText(dt.text,dt.x,dt.y); ctx.restore();
+            }
+
+            ctx.restore();
+            updateHUD();
+            requestAnimationFrame(gameLoop);
+        }
+
+        window.onload = function() { gameLoop(); };
+    </script>
+</body>
+</html>

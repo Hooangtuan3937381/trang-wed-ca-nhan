@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+    <head>
+    <meta charset="UTF-8">
+        <title>EduSim Games - Trò Chơi Học Tập</title>
+
+        <!-- Thêm biểu tượng Favicon bên cạnh tên trang web -->
+        <link rel="icon" type="image/png" href="../logo.png">
+    </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSim Games - Trò Chơi Học Tập Tương Tác</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .game-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .game-card:hover {
+            transform: translateY(-8px);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-full flex flex-col selection:bg-purple-500 selection:text-white">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Nút Quay lại EduSim -->
+            <a href="../index.html" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-medium text-sm transition-all border border-slate-700">
+                <i class="fas fa-arrow-left"></i>
+                <span>Quay lại Trang Chủ EduSim</span>
+            </a>
+
+            <!-- Logo Game Hub -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-purple-500/30">
+                    <i class="fas fa-gamepad text-xl"></i>
+                </div>
+                <span class="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    EduSim GameHub
+                </span>
+            </div>
+
+            <!-- Profile / Info -->
+            <div class="text-xs text-slate-400 hidden sm:block">
+                <i class="fas fa-trophy text-amber-400 mr-1"></i> Kho Game Tri Thức
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Hero Banner -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-purple-900/60 via-slate-800 to-indigo-900/60 border border-purple-500/20 p-8 mb-10 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="space-y-3 max-w-2xl">
+                <span class="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-purple-300 bg-purple-500/20 rounded-full border border-purple-500/30">
+                    Vừa học vừa chơi
+                </span>
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                    Thử Thách Trí Tuệ & Giải Trí Học Tập
+                </h1>
+                <p class="text-slate-300 text-sm sm:text-base">
+                    Lựa chọn các trò chơi mô phỏng và câu hỏi ôn tập tương tác dưới đây để củng cố kiến thức môn học một cách thú vị nhất.
+                </p>
+            </div>
+            <div class="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 flex items-center justify-center bg-purple-500/10 rounded-2xl border border-purple-500/30 animate-pulse">
+                <i class="fas fa-dice text-5xl sm:text-6xl text-purple-400"></i>
+            </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="flex flex-col sm:flex-row gap-4 items-center justify-between mb-8">
+            <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0">
+                <button onclick="filterGames('all')" class="filter-btn active px-4 py-2 rounded-xl text-sm font-semibold bg-purple-600 text-white transition-all whitespace-nowrap">
+                    Tất cả Game
+                </button>
+                <button onclick="filterGames('vat-ly')" class="filter-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all whitespace-nowrap">
+                    <i class="fas fa-atom mr-1 text-blue-400"></i> Vật Lý
+                </button>
+                <button onclick="filterGames('hoa-hoc')" class="filter-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all whitespace-nowrap">
+                    <i class="fas fa-flask mr-1 text-emerald-400"></i> Hóa Học
+                </button>
+                <button onclick="filterGames('sinh-hoc')" class="filter-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all whitespace-nowrap">
+                    <i class="fas fa-dna mr-1 text-rose-400"></i> Sinh Học
+                </button>
+            </div>
+        </div>
+
+        <!-- Games Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Game 1: Vật Lý -->
+            <div class="game-card game-item vat-ly bg-slate-800/80 border border-slate-700/80 rounded-2xl overflow-hidden flex flex-col justify-between hover:border-purple-500/50 shadow-lg">
+                <div>
+                    <div class="h-44 bg-gradient-to-br from-blue-900 to-slate-900 flex items-center justify-center relative overflow-hidden">
+                        <i class="fas fa-car-side text-6xl text-blue-400/50 transform -rotate-12"></i>
+                        <span class="absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold bg-blue-500/20 text-blue-300 rounded-md border border-blue-500/30">
+                            Vật Lý
+                        </span>
+                    </div>
+                    <div class="p-5 space-y-2">
+                        <h3 class="text-lg font-bold text-white"> Trốn Thoát Khỏi Teaming </h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">
+                            Hù Linh Đắc
+                        </p>
+                    </div>
+                </div>
+                <div class="p-5 pt-0">
+                    <!-- Link tới file html game vật lý của bạn -->
+                    <a href="./doikhang/" class="block w-full text-center py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-sm transition-all shadow-md shadow-purple-600/30">
+                        <i class="fas fa-play mr-2"></i>Chơi Ngay
+                    </a>
+                </div>
+            </div>
+
+            <!-- Game 2: Hóa Học -->
+            <!-- Thẻ Game toàn bộ có thể nhấp chuột -->
+        <a href="./dabongd/" class="game-card game-item vat-ly bg-slate-800/80 border border-slate-700/80 rounded-2xl overflow-hidden flex flex-col justify-between hover:border-purple-500/50 shadow-lg block">
+            <div>
+                <!-- Phần Hình ảnh -->
+                <!-- Phần Hình ảnh -->
+            <div class="h-44 relative overflow-hidden rounded-t-2xl">
+                 <!-- Ảnh hiển thị full khung -->
+                <img src="../images/bongda.jpg" alt="Vật Lý" class="w-full h-full object-cover">
+
+                    <!-- Nhãn Vật Lý đè lên ảnh -->
+                     <span class="absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold bg-blue-500/30 text-blue-300 rounded-full border border-blue-500/40 backdrop-blur-md">
+                        Vật Lý
+                     </span>
+            </div>
+        
+                    
+                <div class="p-5 space-y-2">
+                    <h3 class="text-lg font-bold text-white">Dá bóng</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        Hù Linh Đắc
+                    </p>
+                 </div>
+            </div>
+    
+                    <!-- Nút bấm -->
+                        <div class="p-5 pt-0">
+                             <div class="w-full text-center py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-sm transition-all shadow-md shadow-purple-600/30">
+                                <i class="fas fa-play mr-2"></i>Chơi Ngay
+                            </div>
+                         </div>
+        </a>
+
+            <!-- Game 3: Sinh Học -->
+            <div class="game-card game-item sinh-hoc bg-slate-800/80 border border-slate-700/80 rounded-2xl overflow-hidden flex flex-col justify-between hover:border-purple-500/50 shadow-lg">
+                <div>
+                    <div class="h-44 bg-gradient-to-br from-rose-900 to-slate-900 flex items-center justify-center relative overflow-hidden">
+                        <i class="fas fa-puzzle-piece text-6xl text-rose-400/50"></i>
+                        <span class="absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold bg-rose-500/20 text-rose-300 rounded-md border border-rose-500/30">
+                            Sinh Học
+                        </span>
+                    </div>
+                    <div class="p-5 space-y-2">
+                        <h3 class="text-lg font-bold text-white">DỐI KHÁNG HAI NGƯỜI</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">
+                            Hù Linh Đắc
+                        </p>
+                    </div>
+                </div>
+                <div class="p-5 pt-0">
+                    <!-- Link tới file html game sinh học của bạn -->
+                    <a href="./doi_khang-hai/" class="block w-full text-center py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-sm transition-all shadow-md shadow-purple-600/30">
+                        <i class="fas fa-play mr-2"></i>Chơi Ngay
+                    </a>
+                </div>
+            </div>
+            <div class="game-card game-item sinh-hoc bg-slate-800/80 border border-slate-700/80 rounded-2xl overflow-hidden flex flex-col justify-between hover:border-purple-500/50 shadow-lg">
+                <div>
+                    <div class="h-44 bg-gradient-to-br from-rose-900 to-slate-900 flex items-center justify-center relative overflow-hidden">
+                        <i class="fas fa-puzzle-piece text-6xl text-rose-400/50"></i>
+                        <span class="absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold bg-rose-500/20 text-rose-300 rounded-md border border-rose-500/30">
+                            Giải Trí
+                        </span>
+                    </div>
+                    <div class="p-5 space-y-2">
+                        <h3 class="text-lg font-bold text-white">Trang Nghe Nhạc</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">
+                            Đinh Kiến Huy
+                        </p>
+                    </div>
+                </div>
+                <div class="p-5 pt-0">
+                    <!-- Link tới file html game sinh học của bạn -->
+                    <a href="../du_an_tu_tao/nghe_nhac/" class="block w-full text-center py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-sm transition-all shadow-md shadow-purple-600/30">
+                        <i class="fas fa-play mr-2"></i>Chơi Ngay
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+        <p>© EduSim Game Hub - Hệ thống Trò chơi Giáo dục Tương tác</p>
+    </footer>
+
+    <!-- Filter Script -->
+    <script>
+        function filterGames(category) {
+            const items = document.querySelectorAll('.game-item');
+            const buttons = document.querySelectorAll('.filter-btn');
+
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-purple-600', 'text-white');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            });
+
+            event.currentTarget.classList.remove('bg-slate-800', 'text-slate-300');
+            event.currentTarget.classList.add('bg-purple-600', 'text-white');
+
+            items.forEach(item => {
+                if (category === 'all' || item.classList.contains(category)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

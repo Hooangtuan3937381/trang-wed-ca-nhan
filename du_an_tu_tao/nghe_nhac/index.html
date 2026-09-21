@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trình Quản Lý & Nghe Nhạc Chuyên Nghiệp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --bg-gradient: linear-gradient(135deg, #1f1c2c, #928dab);
+            --accent-color: #1db954;
+            --accent-hover: #1ed760;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .music-container {
+            background: rgba(25, 25, 35, 0.88);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            width: 100%;
+            max-width: 520px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* Thanh cài đặt giao diện */
+        .theme-bar {
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .theme-options {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .color-btn {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color-btn:hover {
+            transform: scale(1.2);
+        }
+
+        /* Tải nhạc & Playlist */
+        .top-section {
+            padding: 12px 20px 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .top-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .upload-notice {
+            font-size: 0.78rem;
+            color: #1db954;
+            text-align: center;
+            background: rgba(29, 185, 84, 0.1);
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: 1px dashed rgba(29, 185, 84, 0.4);
+        }
+
+        .btn-main {
+            background: var(--accent-color);
+            color: #fff;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-main:hover {
+            background: var(--accent-hover);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Chọn Playlist & Tìm kiếm */
+        .playlist-selector {
+            padding: 10px 20px;
+            background: rgba(15, 15, 20, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .playlist-selector select {
+            flex-grow: 1;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .playlist-selector select option {
+            background: #222;
+            color: #fff;
+        }
+
+        .search-box {
+            padding: 8px 20px;
+            background: rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .search-box input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.8rem;
+            outline: none;
+        }
+
+        /* Khung hiển thị Ảnh bài hát & Thông tin */
+        .player-header {
+            padding: 20px 20px 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cover-art-wrapper {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin-bottom: 12px;
+        }
+
+        .cover-art {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            background: #111;
+            transition: transform 0.3s;
+        }
+
+        .cover-art.playing {
+            animation: rotateCover 12s linear infinite;
+        }
+
+        @keyframes rotateCover {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .song-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .song-artist {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-bottom: 6px;
+        }
+
+        .lyrics-btn-main {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .lyrics-btn-main:hover {
+            background: var(--accent-color);
+        }
+
+        .progress-container {
+            padding: 0 25px;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress {
+            background: var(--accent-color);
+            height: 100%;
+            width: 0%;
+            border-radius: 3px;
+        }
+
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        /* Nút điều khiển */
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding: 5px 0 15px;
+        }
+
+        .btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+        }
+
+        .btn:hover {
+            color: var(--accent-color);
+        }
+
+        .btn.active-mode {
+            color: var(--accent-color);
+            font-weight: 900;
+            font-size: 1.3rem;
+            text-shadow: 0 0 10px rgba(29, 185, 84, 0.8);
+            background: rgba(29, 185, 84, 0.2);
+            border-radius: 50%;
+            transform: scale(1.15);
+        }
+
+        .btn-play {
+            background: var(--accent-color);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
+        }
+
+        .btn-play:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Thanh âm lượng */
+        .volume-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding-bottom: 12px;
+            font-size: 0.8rem;
+        }
+
+        .volume-container input[type="range"] {
+            width: 100px;
+            accent-color: var(--accent-color);
+            cursor: pointer;
+        }
+
+        /* Danh sách bài hát */
+        .playlist-header {
+            padding: 8px 20px;
+            font-size: 0.82rem;
+            color: #aaa;
+            background: rgba(15, 15, 20, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .playlist-header-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .playlist-cover-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            object-fit: cover;
+            background: #333;
+        }
+
+        .playlist {
+            max-height: 160px;
+            overflow-y: auto;
+            background: rgba(10, 10, 15, 0.6);
+        }
+
+        .playlist::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .playlist::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .song-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            transition: 0.2s;
+        }
+
+        .song-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .song-item.active {
+            background: rgba(29, 185, 84, 0.15);
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .song-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .list-thumb {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            object-fit: cover;
+            background: #222;
+        }
+
+        .song-info-list {
+            overflow: hidden;
+        }
+
+        .song-info-list .title {
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 4px;
+        }
+
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: none;
+            padding: 4px 7px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .icon-btn:hover {
+            background: var(--accent-color);
+        }
+
+        .remove-btn:hover {
+            background: #e74c3c !important;
+        }
+
+        /* Giao diện Modal cắt ảnh & Lyrics */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .crop-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            border: 2px dashed var(--accent-color);
+            overflow: hidden;
+            border-radius: 12px;
+            background: #111;
+            cursor: grab;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .crop-container.bg-mode {
+            width: 320px;
+            height: 180px;
+        }
+
+        .crop-container:active {
+            cursor: grabbing;
+        }
+
+        .crop-img {
+            position: absolute;
+            user-select: none;
+            pointer-events: none;
+            transform-origin: center center;
+        }
+
+        .crop-controls {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 280px;
+        }
+
+        .zoom-label {
+            font-size: 0.8rem;
+            color: #ccc;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .crop-controls input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent-color);
+        }
+
+        .crop-btns {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .crop-btns button {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-save {
+            background: var(--accent-color);
+            color: #fff;
+        }
+
+        .btn-cancel {
+            background: #555;
+            color: #fff;
+        }
+
+        /* Modal Lyrics - Dynamic Sync */
+        .lyrics-box {
+            background: rgba(25, 25, 35, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            width: 90%;
+            max-width: 440px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .lyrics-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+        }
+
+        /* Container chứa lời cuộn */
+        .lyrics-content {
+            overflow-y: auto;
+            height: 280px;
+            font-size: 0.95rem;
+            line-height: 2;
+            color: #888;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            scroll-behavior: smooth;
+        }
+
+        .lyrics-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .lyrics-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+        }
+
+        /* Dòng lời hát */
+        .lyric-line {
+            padding: 6px 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .lyric-line:hover {
+            color: #bbb;
+        }
+
+        /* Dòng đang phát */
+        .lyric-line.active {
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.15rem;
+            text-shadow: 0 0 12px var(--accent-color);
+            background: rgba(29, 185, 84, 0.15);
+            transform: scale(1.03);
+        }
+
+        .lyrics-editor {
+            width: 100%;
+            height: 220px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            resize: none;
+            outline: none;
+            font-size: 0.85rem;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="music-container">
+        <!-- Đổi giao diện Web -->
+        <div class="theme-bar">
+            <span>Giao diện:</span>
+            <div class="theme-options">
+                <div class="color-btn" style="background: linear-gradient(135deg, #1f1c2c, #928dab);" onclick="setTheme('linear-gradient(135deg, #1f1c2c, #928dab)')"></div>
+                <div class="color-btn" style="background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);" onclick="setTheme('linear-gradient(135deg, #0f2027, #203a43, #2c5364)')"></div>
+                <div class="color-btn" style="background: linear-gradient(135deg, #3a1c71, #d76d77, #ffaf7b);" onclick="setTheme('linear-gradient(135deg, #3a1c71, #d76d77, #ffaf7b)')"></div>
+                <label for="bgImageUpload" class="icon-btn" style="margin-left: 5px;">📷 Đổi nền</label>
+                <input type="file" id="bgImageUpload" accept="image/*">
+            </div>
+        </div>
+
+        <!-- Tải nhạc & Playlist -->
+        <div class="top-section">
+            <div class="top-buttons">
+                <label for="audioUpload" class="btn-main">+ Tải nhạc lên kho</label>
+                <input type="file" id="audioUpload" accept="audio/*" multiple>
+                <button class="btn-main" id="createPlaylistBtn" style="background: #3498db;">+ Tạo List Mới</button>
+            </div>
+            <!-- Dòng thông báo tải nhạc ngoại tuyến -->
+            <div class="upload-notice">
+                🎵 Tải nhạc vào đây để nghe, có thể nghe không cần mạng
+            </div>
+        </div>
+
+        <!-- Selector Danh Sách -->
+        <div class="playlist-selector">
+            <span style="font-size: 0.8rem; color: #aaa;">Danh sách:</span>
+            <select id="playlistSelect"></select>
+            <button class="icon-btn" id="changePlaylistCoverBtn" title="Đổi ảnh cho Danh sách này">🖼️ Ảnh List</button>
+            <button class="icon-btn remove-btn" id="deletePlaylistBtn">Xóa List</button>
+        </div>
+
+        <!-- Tìm kiếm nhạc -->
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm bài hát trong list...">
+        </div>
+
+        <!-- Trình phát nhạc & Đĩa CD -->
+        <div class="player-header">
+            <div class="cover-art-wrapper">
+                <img id="coverArt" class="cover-art" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23555'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5s2.01-4.5 4.5-4.5 4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm0-5.5c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z'/></svg>" alt="Cover Art">
+            </div>
+            <div class="song-title" id="songTitle">Chưa có bài hát</div>
+            <div class="song-artist" id="songArtist">Hãy tải nhạc lên kho</div>
+            <button class="lyrics-btn-main" id="viewLyricsBtn" style="margin-top: 4px;">📜 Xem Lời Bài Hát (Synced)</button>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="time-info">
+                <span id="currentTime">00:00</span>
+                <span id="duration">00:00</span>
+            </div>
+        </div>
+
+        <!-- Điều khiển -->
+        <div class="controls">
+            <button class="btn" id="shuffleBtn" title="Phát ngẫu nhiên (Không lặp lại)">🔀</button>
+            <button class="btn" id="prevBtn">⏮</button>
+            <button class="btn btn-play" id="playBtn">▶</button>
+            <button class="btn" id="nextBtn">⏭</button>
+            <button class="btn" id="repeatBtn" title="Lặp lại bài hát hiện tại">🔁</button>
+        </div>
+
+        <!-- Âm lượng -->
+        <div class="volume-container">
+            <span>🔊</span>
+            <input type="range" id="volumeControl" min="0" max="1" step="0.05" value="1">
+        </div>
+
+        <div class="playlist-header">
+            <div class="playlist-header-info">
+                <img id="currentPlaylistCover" class="playlist-cover-thumb" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23555'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5s2.01-4.5 4.5-4.5 4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm0-5.5c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z'/></svg>">
+                <span id="currentPlaylistName">Tất cả nhạc</span>
+            </div>
+            <span id="songCount" style="font-size: 0.75rem;">0 bài</span>
+        </div>
+
+        <div class="playlist" id="playlist"></div>
+    </div>
+
+    <!-- Input file ẩn -->
+    <input type="file" id="coverUpload" accept="image/*">
+    <input type="file" id="playlistCoverUpload" accept="image/*">
+    <audio id="audioPlayer"></audio>
+
+    <!-- Modal Cắt & Thu Phóng Ảnh -->
+    <div class="modal-overlay" id="cropModal">
+        <div style="font-size: 0.9rem; margin-bottom: 10px; color: #fff;">Kéo thả vị trí & Dùng thanh trượt để phóng to/thu nhỏ</div>
+        <div class="crop-container" id="cropBox">
+            <img id="cropImg" class="crop-img">
+        </div>
+        <div class="crop-controls">
+            <div class="zoom-label">
+                <span>🔍 Thu nhỏ (0.1x)</span>
+                <span>Phóng to (3x) 🔎</span>
+            </div>
+            <input type="range" id="cropZoom" min="0.1" max="3" step="0.02" value="1">
+            <div class="crop-btns">
+                <button class="btn-cancel" id="cropCancelBtn">Hủy</button>
+                <button class="btn-save" id="cropSaveBtn">Cắt & Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Lyrics (Xem Synced & Chỉnh sửa) -->
+    <div class="modal-overlay" id="lyricsModal">
+        <div class="lyrics-box">
+            <div class="lyrics-title" id="lyricsTitle">Lời Bài Hát</div>
+            
+            <div id="lyricsViewSection">
+                <div class="lyrics-content" id="lyricsText">Chưa có lời bài hát.</div>
+                <div class="crop-btns" style="margin-top: 10px;">
+                    <button class="btn-cancel" onclick="closeLyricsModal()">Đóng</button>
+                    <button class="btn-save" id="editLyricsBtn">Sửa Lyrics</button>
+                </div>
+            </div>
+
+            <div id="lyricsEditSection" style="display: none;">
+                <textarea class="lyrics-editor" id="lyricsInput" placeholder="Nhập LRC dạng: [00:12.50] Dòng lời thứ nhất&#10;[00:18.20] Dòng lời thứ hai..."></textarea>
+                <div style="font-size: 0.75rem; color: #aaa; margin-top: 4px;">Hỗ trợ định dạng chuẩn LRC [mm:ss.xx] để lời chạy tự động.</div>
+                <div class="crop-btns" style="margin-top: 10px;">
+                    <button class="btn-cancel" id="insertLrcTemplateBtn" style="background: #e67e22;">Chèn mẫu LRC</button>
+                    <button class="btn-cancel" id="cancelEditLyricsBtn">Hủy</button>
+                    <button class="btn-save" id="saveLyricsBtn">Lưu Lời Bài Hát</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        const repeatBtn = document.getElementById('repeatBtn');
+        const volumeControl = document.getElementById('volumeControl');
+        const searchInput = document.getElementById('searchInput');
+        const songTitle = document.getElementById('songTitle');
+        const songArtist = document.getElementById('songArtist');
+        const coverArt = document.getElementById('coverArt');
+        const progressBar = document.getElementById('progressBar');
+        const progress = document.getElementById('progress');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationEl = document.getElementById('duration');
+        const playlistEl = document.getElementById('playlist');
+        const audioUpload = document.getElementById('audioUpload');
+        const coverUpload = document.getElementById('coverUpload');
+        const playlistCoverUpload = document.getElementById('playlistCoverUpload');
+        const changePlaylistCoverBtn = document.getElementById('changePlaylistCoverBtn');
+        const bgImageUpload = document.getElementById('bgImageUpload');
+        const playlistSelect = document.getElementById('playlistSelect');
+        const createPlaylistBtn = document.getElementById('createPlaylistBtn');
+        const deletePlaylistBtn = document.getElementById('deletePlaylistBtn');
+        const currentPlaylistName = document.getElementById('currentPlaylistName');
+        const currentPlaylistCover = document.getElementById('currentPlaylistCover');
+        const songCount = document.getElementById('songCount');
+
+        // Crop Modal elements
+        const cropModal = document.getElementById('cropModal');
+        const cropBox = document.getElementById('cropBox');
+        const cropImg = document.getElementById('cropImg');
+        const cropZoom = document.getElementById('cropZoom');
+        const cropSaveBtn = document.getElementById('cropSaveBtn');
+        const cropCancelBtn = document.getElementById('cropCancelBtn');
+
+        // Lyrics Modal elements
+        const lyricsModal = document.getElementById('lyricsModal');
+        const lyricsTitle = document.getElementById('lyricsTitle');
+        const lyricsText = document.getElementById('lyricsText');
+        const lyricsInput = document.getElementById('lyricsInput');
+        const viewLyricsBtn = document.getElementById('viewLyricsBtn');
+        const editLyricsBtn = document.getElementById('editLyricsBtn');
+        const saveLyricsBtn = document.getElementById('saveLyricsBtn');
+        const cancelEditLyricsBtn = document.getElementById('cancelEditLyricsBtn');
+        const insertLrcTemplateBtn = document.getElementById('insertLrcTemplateBtn');
+        const lyricsViewSection = document.getElementById('lyricsViewSection');
+        const lyricsEditSection = document.getElementById('lyricsEditSection');
+
+        let db = null;
+        let allSongs = [];
+        let playlists = JSON.parse(localStorage.getItem('music_playlists_v2')) || { "Tất cả nhạc": { songs: [], cover: null } };
+        let currentPlaylistKey = Object.keys(playlists)[0] || "Tất cả nhạc";
+        let currentSongIndex = 0;
+        let isPlaying = false;
+        let isShuffle = false;
+        let isRepeat = false;
+        let selectedSongIdForCover = null;
+        let selectedSongIdForLyrics = null;
+        let cropTargetType = null;
+
+        // Dynamic Lyrics Data
+        let parsedLyrics = [];
+        let activeLyricIndex = -1;
+
+        // Shuffle không trùng lặp
+        let unplayedShuffleIndices = [];
+
+        Object.keys(playlists).forEach(key => {
+            if (Array.isArray(playlists[key])) {
+                playlists[key] = { songs: playlists[key], cover: null };
+            }
+        });
+
+        const defaultCover = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23555'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5s2.01-4.5 4.5-4.5 4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm0-5.5c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z'/></svg>";
+
+        const request = indexedDB.open("MusicAppDB_V3", 1);
+        request.onupgradeneeded = function(e) {
+            db = e.target.result;
+            if (!db.objectStoreNames.contains('songs')) {
+                db.createObjectStore('songs', { keyPath: 'id' });
+            }
+        };
+        request.onsuccess = function(e) {
+            db = e.target.result;
+            loadThemeFromStorage();
+            loadAllSongsFromDB();
+        };
+
+        function setTheme(gradient) {
+            document.body.style.backgroundImage = gradient;
+            localStorage.setItem('web_theme', gradient);
+        }
+
+        function loadThemeFromStorage() {
+            const savedTheme = localStorage.getItem('web_theme');
+            if (savedTheme) document.body.style.backgroundImage = savedTheme;
+        }
+
+        function loadAllSongsFromDB() {
+            const tx = db.transaction(['songs'], 'readonly');
+            const store = tx.objectStore('songs');
+            const getAll = store.getAll();
+
+            getAll.onsuccess = function() {
+                allSongs = getAll.result;
+                playlists["Tất cả nhạc"].songs = allSongs.map(s => s.id);
+                savePlaylists();
+                renderPlaylist();
+
+                if (getCurrentPlaylistSongs().length > 0 && !audio.src) {
+                    loadSong(0);
+                }
+            };
+        }
+
+        function savePlaylists() {
+            localStorage.setItem('music_playlists_v2', JSON.stringify(playlists));
+        }
+
+        function getCurrentPlaylistSongs() {
+            const songIds = playlists[currentPlaylistKey]?.songs || [];
+            const query = searchInput.value.toLowerCase().trim();
+            const list = songIds.map(id => allSongs.find(s => s.id === id)).filter(s => s !== undefined);
+            if (!query) return list;
+            return list.filter(s => s.title.toLowerCase().includes(query));
+        }
+
+        function renderPlaylist() {
+            playlistSelect.innerHTML = '';
+            Object.keys(playlists).forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                if (name === currentPlaylistKey) opt.selected = true;
+                playlistSelect.appendChild(opt);
+            });
+
+            currentPlaylistName.textContent = currentPlaylistKey;
+            currentPlaylistCover.src = playlists[currentPlaylistKey]?.cover || defaultCover;
+
+            const songs = getCurrentPlaylistSongs();
+            playlistEl.innerHTML = '';
+            songCount.textContent = `${songs.length} bài`;
+
+            if (songs.length === 0) {
+                playlistEl.innerHTML = `<div style="text-align:center; padding: 15px; color: #777; font-size: 0.8rem;">List trống hoặc không tìm thấy bài hát!</div>`;
+                if (!audio.src) {
+                    songTitle.textContent = "Chưa có bài hát";
+                    songArtist.textContent = "List trống";
+                    coverArt.src = defaultCover;
+                }
+                return;
+            }
+
+            songs.forEach((song, index) => {
+                const item = document.createElement('div');
+                item.classList.add('song-item');
+                if (index === currentSongIndex) item.classList.add('active');
+
+                item.innerHTML = `
+                    <div class="song-item-left" onclick="selectAndPlay(${index})">
+                        <img class="list-thumb" src="${song.cover || defaultCover}">
+                        <div class="song-info-list">
+                            <div class="title">${song.title}</div>
+                        </div>
+                    </div>
+                    <div class="action-btns">
+                        <button class="icon-btn" onclick="event.stopPropagation(); openLyricsModalForSong('${song.id}')" title="Xem/Sửa Lyrics">📜</button>
+                        <button class="icon-btn" onclick="event.stopPropagation(); triggerCoverUpload('${song.id}')" title="Thu phóng & Cắt ảnh bài hát">🖼️</button>
+                        <button class="icon-btn" onclick="event.stopPropagation(); addToOtherPlaylist('${song.id}')" title="Thêm vào list khác">+</button>
+                        ${currentPlaylistKey !== "Tất cả nhạc" ? `<button class="icon-btn remove-btn" onclick="event.stopPropagation(); removeFromCurrentPlaylist('${song.id}')">Bỏ</button>` : `<button class="icon-btn remove-btn" onclick="event.stopPropagation(); deleteSongCompletely('${song.id}')">Xóa</button>`}
+                    </div>
+                `;
+                playlistEl.appendChild(item);
+            });
+        }
+
+        searchInput.addEventListener('input', () => {
+            currentSongIndex = 0;
+            resetShuffleList();
+            renderPlaylist();
+        });
+
+        // --- Logic Cắt & Phóng to / Thu nhỏ ảnh ---
+        let imgX = 0, imgY = 0;
+        let isDragging = false, startX, startY;
+
+        function openCropper(imageSrc, type) {
+            cropTargetType = type;
+            cropImg.src = imageSrc;
+            
+            if (type === 'background') {
+                cropBox.classList.add('bg-mode');
+            } else {
+                cropBox.classList.remove('bg-mode');
+            }
+
+            cropZoom.value = 1;
+            imgX = 0;
+            imgY = 0;
+            updateImgTransform();
+            cropModal.style.display = 'flex';
+        }
+
+        function updateImgTransform() {
+            cropImg.style.transform = `translate(${imgX}px, ${imgY}px) scale(${cropZoom.value})`;
+        }
+
+        cropZoom.addEventListener('input', updateImgTransform);
+
+        cropBox.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX - imgX;
+            startY = e.clientY - imgY;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            imgX = e.clientX - startX;
+            imgY = e.clientY - startY;
+            updateImgTransform();
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        cropCancelBtn.addEventListener('click', () => {
+            cropModal.style.display = 'none';
+        });
+
+        cropSaveBtn.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            const targetWidth = cropTargetType === 'background' ? 1280 : 400;
+            const targetHeight = cropTargetType === 'background' ? 720 : 400;
+            
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            const ctx = canvas.getContext('2d');
+
+            const scale = parseFloat(cropZoom.value);
+            const containerWidth = cropBox.clientWidth;
+            const containerHeight = cropBox.clientHeight;
+
+            ctx.fillStyle = "#111";
+            ctx.fillRect(0, 0, targetWidth, targetHeight);
+
+            const drawWidth = cropImg.naturalWidth * scale * (targetWidth / containerWidth);
+            const drawHeight = cropImg.naturalHeight * scale * (targetHeight / containerHeight);
+            
+            const drawX = (targetWidth / 2) - (drawWidth / 2) + (imgX * (targetWidth / containerWidth));
+            const drawY = (targetHeight / 2) - (drawHeight / 2) + (imgY * (targetHeight / containerHeight));
+
+            ctx.drawImage(cropImg, drawX, drawY, drawWidth, drawHeight);
+
+            const croppedBase64 = canvas.toDataURL('image/jpeg', 0.85);
+
+            if (cropTargetType === 'song' && selectedSongIdForCover) {
+                const tx = db.transaction(['songs'], 'readwrite');
+                const store = tx.objectStore('songs');
+                const getReq = store.get(selectedSongIdForCover);
+
+                getReq.onsuccess = function() {
+                    const song = getReq.result;
+                    song.cover = croppedBase64;
+                    store.put(song);
+                    tx.oncomplete = () => loadAllSongsFromDB();
+                };
+            } else if (cropTargetType === 'playlist') {
+                playlists[currentPlaylistKey].cover = croppedBase64;
+                savePlaylists();
+                renderPlaylist();
+            } else if (cropTargetType === 'background') {
+                const bgUrl = `url('${croppedBase64}')`;
+                setTheme(bgUrl);
+            }
+
+            cropModal.style.display = 'none';
+        });
+
+        function triggerCoverUpload(songId) {
+            selectedSongIdForCover = songId;
+            coverUpload.click();
+        }
+
+        coverUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function() {
+                openCropper(reader.result, 'song');
+            };
+            coverUpload.value = '';
+        });
+
+        changePlaylistCoverBtn.addEventListener('click', () => {
+            playlistCoverUpload.click();
+        });
+
+        playlistCoverUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function() {
+                openCropper(reader.result, 'playlist');
+            };
+            playlistCoverUpload.value = '';
+        });
+
+        bgImageUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function() {
+                openCropper(reader.result, 'background');
+            };
+            bgImageUpload.value = '';
+        });
+
+        // --- Logic Phân Tích & Quản lý Lời Bài Hát (LRC Parsing & Dynamic Sync) ---
+        function parseLRC(lrcText) {
+            if (!lrcText) return [];
+            const lines = lrcText.split('\n');
+            const result = [];
+            const timeRegex = /\[(\d{2}):(\d{2})(?:\.(\d{2,3}))?\]/;
+
+            lines.forEach(line => {
+                const match = timeRegex.exec(line);
+                if (match) {
+                    const minutes = parseInt(match[1], 10);
+                    const seconds = parseInt(match[2], 10);
+                    const milliseconds = match[3] ? parseInt(match[3], 10) / (match[3].length === 3 ? 1000 : 100) : 0;
+                    const time = minutes * 60 + seconds + milliseconds;
+                    const text = line.replace(timeRegex, '').trim();
+                    if (text) {
+                        result.push({ time, text });
+                    }
+                }
+            });
+
+            result.sort((a, b) => a.time - b.time);
+            return result;
+        }
+
+        function renderLyricsView(song) {
+            lyricsText.innerHTML = '';
+            parsedLyrics = parseLRC(song.lyrics);
+            activeLyricIndex = -1;
+
+            if (parsedLyrics.length > 0) {
+                parsedLyrics.forEach((item, idx) => {
+                    const p = document.createElement('div');
+                    p.classList.add('lyric-line');
+                    p.dataset.index = idx;
+                    p.textContent = item.text;
+                    p.onclick = () => {
+                        audio.currentTime = item.time;
+                        if (!isPlaying) playSong();
+                    };
+                    lyricsText.appendChild(p);
+                });
+            } else if (song.lyrics && song.lyrics.trim() !== '') {
+                lyricsText.innerHTML = `<div style="white-space: pre-wrap; color: #ddd; line-height: 1.6; text-align: left;">${song.lyrics}</div>`;
+            } else {
+                lyricsText.innerHTML = `<div style="padding-top: 80px;">Chưa có lời bài hát cho bài này.<br>Hãy bấm 'Sửa Lyrics' để thêm mốc thời gian dạng [mm:ss.xx].</div>`;
+            }
+        }
+
+        function updateLyricsHighlight(currentTime) {
+            if (!parsedLyrics || parsedLyrics.length === 0) return;
+
+            let currentIndex = -1;
+            for (let i = 0; i < parsedLyrics.length; i++) {
+                if (currentTime >= parsedLyrics[i].time) {
+                    currentIndex = i;
+                } else {
+                    break;
+                }
+            }
+
+            if (currentIndex !== activeLyricIndex) {
+                activeLyricIndex = currentIndex;
+                const lines = lyricsText.querySelectorAll('.lyric-line');
+                lines.forEach((line, idx) => {
+                    if (idx === activeLyricIndex) {
+                        line.classList.add('active');
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else {
+                        line.classList.remove('active');
+                    }
+                });
+            }
+        }
+
+        function openLyricsModalForSong(songId) {
+            selectedSongIdForLyrics = songId;
+            const song = allSongs.find(s => s.id === songId);
+            if (!song) return;
+
+            lyricsTitle.textContent = `Lyrics - ${song.title}`;
+            renderLyricsView(song);
+            lyricsInput.value = song.lyrics || '';
+
+            lyricsViewSection.style.display = 'block';
+            lyricsEditSection.style.display = 'none';
+            lyricsModal.style.display = 'flex';
+        }
+
+        viewLyricsBtn.addEventListener('click', () => {
+            const songs = getCurrentPlaylistSongs();
+            if (songs.length === 0 || !songs[currentSongIndex]) return;
+            openLyricsModalForSong(songs[currentSongIndex].id);
+        });
+
+        editLyricsBtn.addEventListener('click', () => {
+            lyricsViewSection.style.display = 'none';
+            lyricsEditSection.style.display = 'block';
+        });
+
+        cancelEditLyricsBtn.addEventListener('click', () => {
+            lyricsEditSection.style.display = 'none';
+            lyricsViewSection.style.display = 'block';
+        });
+
+        insertLrcTemplateBtn.addEventListener('click', () => {
+            lyricsInput.value = `[00:02.00] Dạo nhạc...
+[00:08.50] Dòng lời bài hát thứ nhất
+[00:14.20] Dòng lời bài hát thứ hai
+[00:20.00] Dòng lời bài hát tiếp theo...`;
+        });
+
+        saveLyricsBtn.addEventListener('click', () => {
+            if (!selectedSongIdForLyrics) return;
+            const newLyrics = lyricsInput.value;
+
+            const tx = db.transaction(['songs'], 'readwrite');
+            const store = tx.objectStore('songs');
+            const getReq = store.get(selectedSongIdForLyrics);
+
+            getReq.onsuccess = function() {
+                const song = getReq.result;
+                song.lyrics = newLyrics;
+                store.put(song);
+                tx.oncomplete = () => {
+                    loadAllSongsFromDB();
+                    openLyricsModalForSong(selectedSongIdForLyrics);
+                };
+            };
+        });
+
+        function closeLyricsModal() {
+            lyricsModal.style.display = 'none';
+        }
+
+        // --- Logic Phát ngẫu nhiên không trùng lặp (Strict Shuffle) ---
+        function resetShuffleList() {
+            const songs = getCurrentPlaylistSongs();
+            unplayedShuffleIndices = [];
+            for (let i = 0; i < songs.length; i++) {
+                if (i !== currentSongIndex) {
+                    unplayedShuffleIndices.push(i);
+                }
+            }
+        }
+
+        function getNextShuffleIndex() {
+            const songs = getCurrentPlaylistSongs();
+            if (songs.length <= 1) return 0;
+
+            if (unplayedShuffleIndices.length === 0) {
+                resetShuffleList();
+            }
+
+            const randomIndexInUnplayed = Math.floor(Math.random() * unplayedShuffleIndices.length);
+            const nextIndex = unplayedShuffleIndices[randomIndexInUnplayed];
+            
+            unplayedShuffleIndices.splice(randomIndexInUnplayed, 1);
+            return nextIndex;
+        }
+
+        function loadSong(index) {
+            const songs = getCurrentPlaylistSongs();
+            if (songs.length === 0) return;
+            currentSongIndex = index;
+            const song = songs[currentSongIndex];
+            songTitle.textContent = song.title;
+            songArtist.textContent = currentPlaylistKey;
+            coverArt.src = song.cover || defaultCover;
+            audio.src = song.data;
+            
+            parsedLyrics = parseLRC(song.lyrics);
+            activeLyricIndex = -1;
+
+            if (lyricsModal.style.display === 'flex') {
+                renderLyricsView(song);
+            }
+
+            renderPlaylist();
+        }
+
+        function playSong() {
+            if (getCurrentPlaylistSongs().length === 0) return;
+            isPlaying = true;
+            playBtn.textContent = '⏸';
+            coverArt.classList.add('playing');
+            audio.play().catch(e => console.log(e));
+        }
+
+        function pauseSong() {
+            isPlaying = false;
+            playBtn.textContent = '▶';
+            coverArt.classList.remove('playing');
+            audio.pause();
+        }
+
+        playBtn.addEventListener('click', () => isPlaying ? pauseSong() : playSong());
+        
+        prevBtn.addEventListener('click', () => {
+            const songs = getCurrentPlaylistSongs();
+            if (songs.length === 0) return;
+            currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+            loadSong(currentSongIndex);
+            playSong();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            const songs = getCurrentPlaylistSongs();
+            if (songs.length === 0) return;
+
+            if (isShuffle) {
+                currentSongIndex = getNextShuffleIndex();
+            } else {
+                currentSongIndex = (currentSongIndex + 1) % songs.length;
+            }
+            loadSong(currentSongIndex);
+            playSong();
+        });
+
+        shuffleBtn.addEventListener('click', () => {
+            isShuffle = !isShuffle;
+            shuffleBtn.classList.toggle('active-mode', isShuffle);
+            if (isShuffle) {
+                resetShuffleList();
+            }
+        });
+
+        repeatBtn.addEventListener('click', () => {
+            isRepeat = !isRepeat;
+            repeatBtn.classList.toggle('active-mode', isRepeat);
+        });
+
+        volumeControl.addEventListener('input', (e) => {
+            audio.volume = e.target.value;
+        });
+
+        function selectAndPlay(index) {
+            loadSong(index);
+            playSong();
+            if (isShuffle) {
+                unplayedShuffleIndices = unplayedShuffleIndices.filter(i => i !== index);
+            }
+        }
+
+        createPlaylistBtn.addEventListener('click', () => {
+            const name = prompt("Nhập tên danh sách phát mới:");
+            if (name && name.trim() !== "") {
+                const trimmedName = name.trim();
+                if (playlists[trimmedName]) return alert("Tên playlist đã tồn tại!");
+                playlists[trimmedName] = { songs: [], cover: null };
+                currentPlaylistKey = trimmedName;
+                savePlaylists();
+                resetShuffleList();
+                renderPlaylist();
+            }
+        });
+
+        deletePlaylistBtn.addEventListener('click', () => {
+            if (currentPlaylistKey === "Tất cả nhạc") return alert("Không thể xóa playlist mặc định này!");
+            if (confirm(`Bạn muốn xóa playlist "${currentPlaylistKey}"?`)) {
+                delete playlists[currentPlaylistKey];
+                currentPlaylistKey = "Tất cả nhạc";
+                savePlaylists();
+                resetShuffleList();
+                renderPlaylist();
+                if (getCurrentPlaylistSongs().length > 0) loadSong(0);
+            }
+        });
+
+        playlistSelect.addEventListener('change', (e) => {
+            currentPlaylistKey = e.target.value;
+            currentSongIndex = 0;
+            resetShuffleList();
+            renderPlaylist();
+            const songs = getCurrentPlaylistSongs();
+            if (songs.length > 0) {
+                loadSong(0);
+                if (isPlaying) playSong();
+            } else {
+                pauseSong();
+                audio.src = "";
+            }
+        });
+
+        window.addToOtherPlaylist = function(songId) {
+            const availableLists = Object.keys(playlists).filter(k => k !== currentPlaylistKey);
+            if (availableLists.length === 0) return alert("Vui lòng tạo Playlist mới trước!");
+            const targetName = prompt(`Nhập tên Playlist bạn muốn thêm vào:\n- ${availableLists.join("\n- ")}`);
+            if (targetName && playlists[targetName]) {
+                if (!playlists[targetName].songs.includes(songId)) {
+                    playlists[targetName].songs.push(songId);
+                    savePlaylists();
+                    alert(`Đã thêm vào "${targetName}"!`);
+                } else alert("Bài hát đã có trong Playlist này rồi!");
+            } else if (targetName) alert("Không tìm thấy Playlist này!");
+        };
+
+        window.removeFromCurrentPlaylist = function(songId) {
+            playlists[currentPlaylistKey].songs = playlists[currentPlaylistKey].songs.filter(id => id !== songId);
+            savePlaylists();
+            resetShuffleList();
+            renderPlaylist();
+            if (getCurrentPlaylistSongs().length > 0) loadSong(0);
+            else { pauseSong(); audio.src = ""; }
+        };
+
+        window.deleteSongCompletely = function(songId) {
+            if (!confirm("Xóa vĩnh viễn bài hát này khỏi kho?")) return;
+            const tx = db.transaction(['songs'], 'readwrite');
+            tx.objectStore('songs').delete(songId);
+            tx.oncomplete = function() {
+                Object.keys(playlists).forEach(key => {
+                    playlists[key].songs = playlists[key].songs.filter(id => id !== songId);
+                });
+                savePlaylists();
+                loadAllSongsFromDB();
+            };
+        };
+
+        audioUpload.addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files.length === 0) return;
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function() {
+                    const songId = 'song_' + Date.now() + Math.random().toString(36).substr(2, 4);
+                    const fileName = file.name.replace(/\.[^/.]+$/, "");
+                    const songData = { id: songId, title: fileName, data: reader.result, cover: null, lyrics: "" };
+                    const tx = db.transaction(['songs'], 'readwrite');
+                    tx.objectStore('songs').add(songData);
+                    tx.oncomplete = function() {
+                        playlists["Tất cả nhạc"].songs.push(songId);
+                        savePlaylists();
+                        loadAllSongsFromDB();
+                    };
+                };
+            });
+            audioUpload.value = '';
+        });
+
+        audio.addEventListener('timeupdate', (e) => {
+            const { currentTime, duration } = e.target;
+            if (duration) {
+                progress.style.width = `${(currentTime / duration) * 100}%`;
+                const cMin = Math.floor(currentTime / 60), cSec = Math.floor(currentTime % 60);
+                const dMin = Math.floor(duration / 60), dSec = Math.floor(duration % 60);
+                currentTimeEl.textContent = `${cMin < 10 ? '0' : ''}${cMin}:${cSec < 10 ? '0' : ''}${cSec}`;
+                durationEl.textContent = `${dMin < 10 ? '0' : ''}${dMin}:${dSec < 10 ? '0' : ''}${dSec}`;
+
+                updateLyricsHighlight(currentTime);
+            }
+        });
+
+        progressBar.addEventListener('click', (e) => {
+            if (audio.duration) audio.currentTime = (e.offsetX / progressBar.clientWidth) * audio.duration;
+        });
+
+        audio.addEventListener('ended', () => {
+            if (isRepeat) {
+                audio.currentTime = 0;
+                playSong();
+            } else {
+                nextBtn.click();
+            }
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.code === 'Space') {
+                e.preventDefault();
+                isPlaying ? pauseSong() : playSong();
+            } else if (e.code === 'ArrowRight') {
+                audio.currentTime = Math.min(audio.currentTime + 5, audio.duration);
+            } else if (e.code === 'ArrowLeft') {
+                audio.currentTime = Math.max(audio.currentTime - 5, 0);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="vi" class="dark scroll-smooth">
+<html lang="vi" class="scroll-smooth">
 <head>
+    <head>
+    <meta charset="UTF-8">
+        <title>EduSim Games - Trò Chơi Học Tập</title>
+
+        <!-- Thêm biểu tượng Favicon bên cạnh tên trang web -->
+        <link rel="icon" type="image/png" href="logo.png">
+    </head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nhat Tuan - Senior Tech Specialist & Full-Stack Developer</title>
-    <<link rel="icon" type="image/jpeg" href="images/images.jpg">
+    <title>EduHub - Cổng Học Tập & Kho Tài Liệu Giáo Dục</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -13,627 +19,791 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            cyan: '#06b6d4',
-                            indigo: '#6366f1',
-                            purple: '#a855f7',
-                            pink: '#ec4899',
-                            dark: '#0b0f17',
-                            cardDark: '#111827'
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af'
                         }
                     },
-                    animation: {
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'float': 'float 6s ease-in-out infinite',
-                        'glow': 'glow 3s ease-in-out infinite alternate',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-12px)' },
-                        },
-                        glow: {
-                            '0%': { boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)' },
-                            '100%': { boxShadow: '0 0 35px rgba(99, 102, 241, 0.7)' },
-                        }
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
-
-    <!-- FontAwesome & Google Fonts -->
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    
     <style>
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            h1, h2, h3, h4, .font-heading {
-                font-family: 'Outfit', sans-serif;
-            }
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
         }
-        .glass {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(16px);
-        }
-        .dark .glass {
-            background: rgba(11, 15, 23, 0.82);
-            backdrop-filter: blur(16px);
-        }
-        .custom-scrollbar::-webkit-scrollbar {
+        ::-webkit-scrollbar {
             width: 8px;
+            height: 8px;
         }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.05);
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
         }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(100, 100, 100, 0.2);
+        .dark ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
             border-radius: 4px;
         }
-        .gradient-border {
-            position: relative;
-            border-radius: 1.5rem;
-            background: linear-gradient(135deg, rgba(6,182,212,0.5), rgba(168,85,247,0.5));
-            padding: 1px;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
         }
-        .gradient-text {
-            background: linear-gradient(135deg, #06b6d4 0%, #6366f1 50%, #a855f7 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .glass-header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+        }
+        .dark .glass-header {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+        }
+        .element-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .element-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 dark:bg-[#0b0f17] dark:text-slate-100 transition-colors duration-300 min-h-screen custom-scrollbar selection:bg-cyan-500 selection:text-white">
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col justify-between selection:bg-blue-500 selection:text-white">
 
-    <!-- Navigation Header -->
-    <header class="sticky top-0 z-50 glass border-b border-slate-200/80 dark:border-slate-800/80 transition-colors">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <!-- Personal Brand Logo -->
-                <a href="#hero" class="flex items-center space-x-3 group">
-                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-purple-600 flex items-center justify-center text-white text-xl font-black shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
-                        AN
-                    </div>
-                    <div>
-                        <span class="text-xl font-extrabold tracking-tight font-heading block leading-none">
-                            Alex<span class="text-cyan-500">.dev</span>
-                        </span>
-                        <span class="text-[10px] uppercase font-semibold tracking-widest text-slate-400 dark:text-slate-500">Tech Specialist</span>
-                    </div>
-                </a>
-
-                <!-- Desktop Nav Navigation -->
-                <nav class="hidden md:flex items-center space-x-7 text-sm font-semibold">
-                    <a href="#about" class="hover:text-cyan-500 transition-colors py-1">Giới Thiệu</a>
-                    <a href="#skills" class="hover:text-cyan-500 transition-colors py-1">Kỹ Năng</a>
-                    <a href="#projects" class="hover:text-cyan-500 transition-colors py-1">Dự Án</a>
-                    <a href="#tech-hub-banner" class="hover:text-cyan-500 transition-colors py-1 text-cyan-500 font-bold flex items-center">
-                        <i class="fa-solid fa-bolt mr-1.5 animate-pulse"></i>Tech Hub
-                    </a>
-                    <a href="#blog" class="hover:text-cyan-500 transition-colors py-1">Blog</a>
-                    <a href="#contact" class="hover:text-cyan-500 transition-colors py-1">Liên Hệ</a>
-                </nav>
-
-                <!-- Actions Controls -->
-                <div class="flex items-center space-x-4">
-                    <!-- Quick Visit Button to Tech Portal -->
-
-                    <!-- Theme Toggle -->
-                    <button id="themeToggleBtn" onclick="toggleTheme()" aria-label="Switch Theme" class="w-10 h-10 rounded-xl bg-slate-200/80 dark:bg-slate-800/80 flex items-center justify-center text-slate-700 dark:text-amber-400 hover:ring-2 hover:ring-cyan-500 transition-all">
-                        <i class="fa-solid fa-sun hidden dark:block text-lg"></i>
-                        <i class="fa-solid fa-moon block dark:hidden text-lg"></i>
-                    </button>
-
-                    <!-- Mobile Menu Button -->
-                    <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-600 dark:text-slate-300">
-                        <i class="fa-solid fa-bars text-2xl"></i>
-                    </button>
+    <header class="sticky top-0 z-40 w-full glass-header border-b border-slate-200/80 dark:border-slate-800/80 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="/index.html" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xl font-black shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-graduation-cap"></i>
                 </div>
+                <div>
+                    <span class="text-xl font-black tracking-tight text-slate-900 dark:text-white leading-none block">
+                        Edu<span class="text-blue-600 dark:text-blue-400">Hub</span>
+                    </span>
+                    <span class="text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500">Cổng Học Tập Số</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-semibold">
+                <a href="#hero" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Trang Chủ</a>
+                <a href="#learning-paths" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Sách Điện Tử</a>
+                <a href="#labs" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Thí Nghiệm Ảo</a>
+                <a href="./game/" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Dự Án </a>
+            </nav>
+
+            <!-- Search Bar & Controls -->
+            <div class="flex items-center space-x-3">
+                <div class="relative hidden sm:block w-48 lg:w-64">
+                    <input type="text" id="globalSearchInput" oninput="handleGlobalSearch(this.value)" placeholder="Tìm bài giảng, sách..." class="w-full bg-slate-100 dark:bg-slate-800 text-xs text-slate-800 dark:text-slate-200 rounded-xl pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-transparent dark:border-slate-700">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-xs text-slate-400"></i>
+                </div>
+
+                <!-- Theme Toggle Button -->
+                <button onclick="toggleDarkMode()" id="themeToggleBtn" aria-label="Toggle Theme" class="w-10 h-10 rounded-xl bg-slate-200/80 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-amber-400 hover:ring-2 hover:ring-blue-500 transition-all">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block"></i>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileNav()" class="md:hidden p-2 text-slate-600 dark:text-slate-300">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
             </div>
         </div>
 
-        <!-- Mobile Navigation Menu Dropdown -->
-        <div id="mobileMenu" class="hidden md:hidden border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-[#0b0f17]/95 backdrop-blur-xl px-6 pt-3 pb-6 space-y-3">
-            <a href="#about" onclick="toggleMobileMenu()" class="block py-2 text-base font-medium hover:text-cyan-500">Giới Thiệu</a>
-            <a href="#skills" onclick="toggleMobileMenu()" class="block py-2 text-base font-medium hover:text-cyan-500">Kỹ Năng</a>
-            <a href="#projects" onclick="toggleMobileMenu()" class="block py-2 text-base font-medium hover:text-cyan-500">Dự Án Nổi Bật</a>
-            <a href="#tech-hub-banner" onclick="toggleMobileMenu()" class="block py-2 text-base font-bold text-cyan-500"><i class="fa-solid fa-bolt mr-2"></i>Trang Tech Hub</a>
-            <a href="#blog" onclick="toggleMobileMenu()" class="block py-2 text-base font-medium hover:text-cyan-500">Bài Viết Công Nghệ</a>
-            <a href="#contact" onclick="toggleMobileMenu()" class="block py-2 text-base font-medium hover:text-cyan-500">Liên Hệ</a>
-            <a href="./index.html" target="_blank" class="block text-center w-full py-3 mt-2 text-sm font-bold text-white bg-gradient-to-r from-cyan-500 to-indigo-600 rounded-xl">
-                <i class="fa-solid fa-globe mr-2"></i>Mở Trang Tech Hub
-            </a>
-        
+        <!-- Mobile Nav Dropdown -->
+        <div id="mobileNavMenu" class="hidden md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-4 space-y-3 font-semibold text-sm">
+            <a href="#hero" onclick="toggleMobileNav()" class="block py-1 hover:text-blue-600">Trang Chủ</a>
+            <a href="#learning-paths" onclick="toggleMobileNav()" class="block py-1 hover:text-blue-600">Lộ Trình Học Tập</a>
+            <a href="#labs" onclick="toggleMobileNav()" class="block py-1 hover:text-blue-600">Phòng Thí Nghiệm</a>
+            <a href="#library" onclick="toggleMobileNav()" class="block py-1 hover:text-blue-600">Kho Tài Liệu PDF</a>
+            <a href="#quiz" onclick="toggleMobileNav()" class="block py-1 hover:text-blue-600">Ôn Luyện Trắc Nghiệm</a>
+            <a href="#planner" onclick="toggleMobileNav()" class="block py-1 hover:text-blue-600">Lịch Học & Task</a>
         </div>
     </header>
 
-    <main>
-        <!-- Hero Section -->
-        <section id="hero" class="relative min-h-[calc(100vh-80px)] flex items-center justify-center py-16 overflow-hidden">
-            <!-- Background Decorative Elements -->
-            <div class="absolute top-1/4 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute bottom-10 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+    <main class="flex-grow">
+        <section id="hero" class="relative py-16 sm:py-24 overflow-hidden border-b border-slate-200/60 dark:border-slate-800/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                    
-                    <!-- Left Hero Content -->
                     <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
-                        <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-bold tracking-wide">
-                            <span class="w-2 h-2 rounded-full bg-cyan-500 animate-ping"></span>
-                            <span>Sẵn sàng hợp tác & Đổi mới sáng tạo</span>
+                        <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-bold">
+                            <span class="w-2 h-2 rounded-full bg-blue-500 animate-ping"></span>
+                            <span>Nền Tảng Giáo Dục Mở Tương Tác 4.0</span>
                         </div>
 
                         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black font-heading tracking-tight leading-tight">
-                            Xin chào, Tôi là <br class="hidden sm:inline">
-                            <span class="gradient-text">Nhat Tuan</span>
+                            Khám Phá Tri Thức <br class="hidden sm:inline">
+                            <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">Không Giới Hạn</span>
                         </h1>
 
-                        <!-- Dynamic Typewriter Effect Title -->
-                        <div class="text-xl sm:text-2xl font-bold text-slate-600 dark:text-slate-300 h-10 flex items-center justify-center lg:justify-start">
-                            <span>Tôi là một&nbsp;</span>
-                            <span id="typewriterText" class="text-cyan-500 border-r-2 border-cyan-500 pr-1 animate-pulse"></span>
-                        </div>
-
-                        <p class="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                            Chuyên gia nghiên cứu công nghệ & Kỹ sư Phần mềm Full-Stack. Tôi đam mê kiến tạo các sản phẩm kỹ thuật số hiện đại, tối ưu hóa AI, và xây dựng nền tảng trải nghiệm người dùng thế hệ mới.
+                        <p class="text-slate-600 dark:text-slate-300 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                            Cổng thông tin tích hợp kho tài liệu sách giáo khoa, đề thi thử, mô phỏng phòng thí nghiệm Vật lý - Hóa học - Tin học tương tác trực quan và công cụ quản lý lịch học thông minh.
                         </p>
 
-                        <!-- Call To Actions -->
-                        <div class="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-4">
-                            <!-- Featured Button to Tech Hub Webpage -->
-                            <!-- CODE MỚI (Mở ngay trên tab hiện tại) -->
-                            <a href="./store/" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-cyan-500 hover:text-white rounded-lg transition-all font-medium">
-                            <span>Trang Tech Hud</span>
+                        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                            <a href="#labs" class="px-6 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-lg shadow-blue-500/25 hover:scale-105 transition-all flex items-center space-x-2">
+                                <i class="fa-solid fa-flask"></i>
+                                <span>Vào Phòng Thí Nghiệm</span>
                             </a>
-
-                            <a href="#contact" class="px-6 py-3.5 rounded-2xl border border-cyan-500/30 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500/10 font-semibold text-sm transition-all">
-                                Liên Hệ Ngay
-                            </a>
-                            <a href="./game_cua_dachu/" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-cyan-500 hover:text-white rounded-lg transition-all font-medium">
-                            <span>Game của Đắc</span>
+                            <a href="#library" class="px-6 py-3.5 rounded-2xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-sm transition-all flex items-center space-x-2">
+                                <i class="fa-solid fa-book-open"></i>
+                                <span>Xem Kho Tài Liệu</span>
                             </a>
                         </div>
 
-                        <!-- Quick Tech Specs Badge -->
-                        <div class="pt-6 flex items-center justify-center lg:justify-start space-x-6 text-xs text-slate-500 dark:text-slate-400">
-                            <span class="flex items-center"><i class="fa-solid fa-code text-cyan-500 mr-2"></i>Clean Code</span>
-                            <span class="flex items-center"><i class="fa-solid fa-brain text-purple-500 mr-2"></i>AI Integration</span>
-                            <span class="flex items-center"><i class="fa-solid fa-rocket text-indigo-500 mr-2"></i>High Performance</span>
+                        <!-- Stats Bar -->
+                        <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-200 dark:border-slate-800 max-w-lg mx-auto lg:mx-0">
+                            <div>
+                                <span class="block text-2xl sm:text-3xl font-black text-blue-600 dark:text-blue-400">10,000+</span>
+                                <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Tài Liệu & Đề Thi</span>
+                            </div>
+                            <div>
+                                <span class="block text-2xl sm:text-3xl font-black text-indigo-600 dark:text-indigo-400">50+</span>
+                                <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Mô Phỏng Lab</span>
+                            </div>
+                            <div>
+                                <span class="block text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400">100%</span>
+                                <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Miễn Phí Học</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Right Tech Avatar 3D Frame -->
                     <div class="lg:col-span-5 flex justify-center">
-                        <div class="relative w-72 h-72 sm:w-88 sm:h-88 lg:w-96 lg:h-96 animate-float">
-                            <!-- Neon Glow Outer Ring -->
-                            <div class="absolute -inset-2 rounded-3xl bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 opacity-75 blur-xl animate-pulse-slow"></div>
-                            
-                            <!-- Main Image Frame Container -->
-                            <div class="relative w-full h-full rounded-3xl overflow-hidden border-2 border-white/20 bg-slate-900 shadow-2xl group">
-                                <img src="./images/images.jpg" alt="Alex Nguyen Avatar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                                
-                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
-
-                                <!-- Floating Badge Info -->
-                                <div class="absolute bottom-4 left-4 right-4 p-3.5 rounded-2xl glass border border-white/10 flex items-center justify-between">
+                        <div class="relative w-full max-w-md aspect-square rounded-3xl bg-gradient-to-tr from-blue-600/20 via-indigo-600/20 to-purple-600/20 p-6 flex items-center justify-center border border-slate-200/50 dark:border-slate-800/50 shadow-2xl">
+                            <div class="w-full h-full rounded-2xl bg-white dark:bg-slate-800/90 shadow-xl p-6 flex flex-col justify-between space-y-4">
+                                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 pb-3">
                                     <div class="flex items-center space-x-3">
-                                        <div class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></div>
-                                        <div>
-                                            <p class="text-xs font-bold text-slate-800 dark:text-white">TechPulse Founder</p>
-                                            <p class="text-[10px] text-slate-500 dark:text-slate-400">Trang tin & So sánh công nghệ</p>
+                                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center font-bold">
+                                            <i class="fa-solid fa-atom"></i>
                                         </div>
+                                        <span class="font-bold text-sm">Trải Nghiệm Trực Quan</span>
                                     </div>
-                                    <a href="./index.html" target="_blank" class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center hover:bg-cyan-500 hover:text-white transition-all">
-                                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-                                    </a>
+                                    <span class="text-[10px] font-bold bg-emerald-500/10 text-emerald-600 px-2.5 py-1 rounded-full">Trực tuyến</span>
+                                </div>
+
+                                <div class="space-y-3">
+                                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-700/50 flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-chart-line text-blue-500"></i>
+                                            <span class="text-xs font-semibold">Dao động cơ Vật Lý</span>
+                                        </div>
+                                        <span class="text-xs font-bold text-blue-500">HTML5 Canvas</span>
+                                    </div>
+                                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-700/50 flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-vial text-purple-500"></i>
+                                            <span class="text-xs font-semibold">Bảng Tuần Hoàn & Đo pH</span>
+                                        </div>
+                                        <span class="text-xs font-bold text-purple-500">Hóa Học</span>
+                                    </div>
+                                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-700/50 flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-code text-indigo-500"></i>
+                                            <span class="text-xs font-semibold">Thuật Toán Bubble Sort</span>
+                                        </div>
+                                        <span class="text-xs font-bold text-indigo-500">Tin Học</span>
+                                    </div>
+                                </div>
+
+                                <div class="pt-2">
+                                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                                        <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-full w-3/4"></div>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-2 text-center">Đã cập nhật hệ thống mô phỏng mới nhất 2026</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>
 
-        <!-- About Me Section -->
-        <section id="about" class="py-20 bg-slate-100/50 dark:bg-slate-900/40 border-y border-slate-200/60 dark:border-slate-800/60">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center max-w-2xl mx-auto mb-14">
-                    <span class="text-cyan-500 font-bold text-xs uppercase tracking-widest">Hồ Sơ Cá Nhân</span>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading mt-1">Về Tôi & Hành Trình Công Nghệ</h2>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                    <div class="lg:col-span-6 space-y-5">
-                        <h3 class="text-2xl font-bold font-heading">Sáng tạo giải pháp từ những dòng code tinh gọn & Công nghệ đột phá.</h3>
-                        <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
-                            Với hơn 6 năm hoạt động trong lĩnh vực lập trình và phát triển phần mềm, tôi tập trung vào nghiên cứu hệ sinh thái AI, Web3, tối ưu hóa trải nghiệm giao diện người dùng và phát triển các sản phẩm phần mềm đột phá.
-                        </p>
-                        <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
-                            Gần đây nhất, tôi vừa hoàn thành dự án <strong>TechPulse</strong> — Cổng thông tin tin tức công nghệ hiện đại tích hợp công cụ so sánh thông số kỹ thuật thiết bị di động & AI.
-                        </p>
-
-                        <!-- Key Highlights Info Tags -->
-                        <div class="pt-2 flex flex-wrap gap-2">
-                            <span class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300"><i class="fa-solid fa-check text-cyan-500 mr-1.5"></i>Full-Stack Web Dev</span>
-                            <span class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300"><i class="fa-solid fa-check text-cyan-500 mr-1.5"></i>UI/UX Architecture</span>
-                            <span class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300"><i class="fa-solid fa-check text-cyan-500 mr-1.5"></i>AI / Machine Learning</span>
-                            <span class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300"><i class="fa-solid fa-check text-cyan-500 mr-1.5"></i>Cloud & DevOps</span>
-                        </div>
-                    </div>
-
-                    <!-- Counter Stats Cards Grid -->
-                    <div class="lg:col-span-6 grid grid-cols-2 gap-4">
-                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-sm text-center">
-                            <span class="block text-4xl font-extrabold font-heading text-cyan-500">6+</span>
-                            <span class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 block">Năm Kinh Nghiệm</span>
-                        </div>
-                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-sm text-center">
-                            <span class="block text-4xl font-extrabold font-heading text-indigo-500">45+</span>
-                            <span class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 block">Dự Án Hoàn Thành</span>
-                        </div>
-                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-sm text-center">
-                            <span class="block text-4xl font-extrabold font-heading text-purple-500">12</span>
-                            <span class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 block">Giải Thưởng Tech Hackathon</span>
-                        </div>
-                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-sm text-center">
-                            <span class="block text-4xl font-extrabold font-heading text-emerald-500">100k+</span>
-                            <span class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 block">Lượt Đọc Blog Công Nghệ</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Skills & Tech Stack Section -->
-        <section id="skills" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="learning-paths" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-14">
-                <span class="text-cyan-500 font-bold text-xs uppercase tracking-widest">Năng Lực Chuyên Môn</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold font-heading mt-1">Kỹ Năng & Tech Stack Nòng Cốt</h2>
+                <span class="text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-widest">Định Hướng Tri Thức</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold mt-1">Lộ Trình Học Tập Cốt Lõi</h2>
+                <p class="text-slate-500 text-sm mt-2">Tổng hợp kiến thức trọng tâm theo từng môn học chuẩn chương trình giáo dục.</p>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
-                <!-- Skill Card 1 -->
-                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-cyan-500 dark:hover:border-cyan-500 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
-                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
-                        <i class="fa-brands fa-js"></i>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Subject Card: Toán -->
+                <div class="bg-white dark:bg-slate-800/80 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center text-xl font-bold mb-4">
+                        <i class="fa-solid fa-calculator"></i>
                     </div>
-                    <h4 class="font-bold text-sm">JavaScript ES6+</h4>
-                    <p class="text-[11px] text-slate-400 mt-0.5">Advanced / Async</p>
+                    <h3 class="text-xl font-bold mb-2">Toán Học</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Giải tích, Đại số, Hình học không gian, Lượng giác & Xác suất thống kê.</p>
+                    <ul class="text-xs space-y-2 mb-4 text-slate-600 dark:text-slate-300">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-blue-500 mr-2"></i>Đạo hàm & Ứng dụng khảo sát</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-blue-500 mr-2"></i>Tích phân & Diện tích hình phẳng</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-blue-500 mr-2"></i>Hình học tọa độ Oxyz</li>
+                    </ul>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-blue-600 h-full w-4/5"></div>
+                    </div>
                 </div>
 
-                <!-- Skill Card 2 -->
-                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-cyan-500 dark:hover:border-cyan-500 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
-                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
-                        <i class="fa-brands fa-react"></i>
+                <!-- Subject Card: Vật Lý -->
+                <div class="bg-white dark:bg-slate-800/80 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center text-xl font-bold mb-4">
+                        <i class="fa-solid fa-atom"></i>
                     </div>
-                    <h4 class="font-bold text-sm">React & Next.js</h4>
-                    <p class="text-[11px] text-slate-400 mt-0.5">Frontend Architecture</p>
+                    <h3 class="text-xl font-bold mb-2">Vật Lý</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Cơ học dao động, Sóng cơ, Dòng điện xoay chiều & Vật lý hạt nhân.</p>
+                    <ul class="text-xs space-y-2 mb-4 text-slate-600 dark:text-slate-300">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i>Dao động điều hòa con lắc</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i>Sóng dừng & Giao thoa sóng</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i>Mạch RLC nối tiếp</li>
+                    </ul>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-indigo-600 h-full w-2/3"></div>
+                    </div>
                 </div>
 
-                <!-- Skill Card 3 -->
-                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-cyan-500 dark:hover:border-cyan-500 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
-                    <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
-                        <i class="fa-brands fa-css3-alt"></i>
+                <!-- Subject Card: Hóa Học -->
+                <div class="bg-white dark:bg-slate-800/80 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center text-xl font-bold mb-4">
+                        <i class="fa-solid fa-vial"></i>
                     </div>
-                    <h4 class="font-bold text-sm">Tailwind CSS</h4>
-                    <p class="text-[11px] text-slate-400 mt-0.5">UI Systems Design</p>
+                    <h3 class="text-xl font-bold mb-2">Hóa Học</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Hóa vô cơ, Este - Lipit, Bảng tuần hoàn & Phản ứng Oxi hóa - Khử.</p>
+                    <ul class="text-xs space-y-2 mb-4 text-slate-600 dark:text-slate-300">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-purple-500 mr-2"></i>Cấu tạo nguyên tử & Bảng tuần hoàn</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-purple-500 mr-2"></i>Thí nghiệm chuẩn độ pH</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-purple-500 mr-2"></i>Hợp chất Cacbohidrat</li>
+                    </ul>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-purple-600 h-full w-3/4"></div>
+                    </div>
                 </div>
 
-                <!-- Skill Card 4 -->
-                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-cyan-500 dark:hover:border-cyan-500 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
-                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
-                        <i class="fa-brands fa-python"></i>
+                <!-- Subject Card: Ngữ Văn -->
+                <div class="bg-white dark:bg-slate-800/80 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-xl font-bold mb-4">
+                        <i class="fa-solid fa-feather"></i>
                     </div>
-                    <h4 class="font-bold text-sm">Python AI/ML</h4>
-                    <p class="text-[11px] text-slate-400 mt-0.5">Data & LLM Models</p>
+                    <h3 class="text-xl font-bold mb-2">Ngữ Văn</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Nghị luận xã hội, Nghị luận văn học & Phương pháp phân tích tác phẩm.</p>
+                    <ul class="text-xs space-y-2 mb-4 text-slate-600 dark:text-slate-300">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-amber-500 mr-2"></i>Kỹ năng viết đoạn văn 200 chữ</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-amber-500 mr-2"></i>Sơ đồ tư duy tác phẩm trọng tâm</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-amber-500 mr-2"></i>Chủ đề văn học hiện đại</li>
+                    </ul>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-amber-600 h-full w-1/2"></div>
+                    </div>
                 </div>
 
-                <!-- Skill Card 5 -->
-                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-cyan-500 dark:hover:border-cyan-500 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
-                        <i class="fa-brands fa-node"></i>
+                <!-- Subject Card: Tiếng Anh -->
+                <div class="bg-white dark:bg-slate-800/80 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-xl font-bold mb-4">
+                        <i class="fa-solid fa-language"></i>
                     </div>
-                    <h4 class="font-bold text-sm">Node.js API</h4>
-                    <p class="text-[11px] text-slate-400 mt-0.5">REST & GraphQL</p>
+                    <h3 class="text-xl font-bold mb-2">Tiếng Anh</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Ngữ pháp cốt lõi, Từ vựng theo chủ đề, Đọc hiểu & Luyện thi chứng chỉ.</p>
+                    <ul class="text-xs space-y-2 mb-4 text-slate-600 dark:text-slate-300">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"></i>12 Thì tiếng Anh tổng hợp</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"></i>Mệnh đề quan hệ & Câu bị động</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-emerald-500 mr-2"></i>Kỹ năng Reading & Collocations</li>
+                    </ul>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-emerald-600 h-full w-5/6"></div>
+                    </div>
                 </div>
 
-                <!-- Skill Card 6 -->
-                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:border-cyan-500 dark:hover:border-cyan-500 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
-                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-cloud"></i>
+                <!-- Subject Card: Tin Học -->
+                <div class="bg-white dark:bg-slate-800/80 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-600 flex items-center justify-center text-xl font-bold mb-4">
+                        <i class="fa-solid fa-code"></i>
                     </div>
-                    <h4 class="font-bold text-sm">Cloud & Docker</h4>
-                    <p class="text-[11px] text-slate-400 mt-0.5">AWS & Deployments</p>
+                    <h3 class="text-xl font-bold mb-2">Tin Học & Lập Trình</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Cấu trúc dữ liệu & Giải thuật, Python, HTML/CSS/JS & Cơ sở dữ liệu.</p>
+                    <ul class="text-xs space-y-2 mb-4 text-slate-600 dark:text-slate-300">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-cyan-500 mr-2"></i>Mô phỏng thuật toán Sắp xếp</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-cyan-500 mr-2"></i>Lập trình Python căn bản</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-cyan-500 mr-2"></i>Thiết kế giao diện Web</li>
+                    </ul>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-cyan-600 h-full w-4/5"></div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Featured Projects Section -->
-        <section id="projects" class="py-20 bg-slate-100/50 dark:bg-slate-900/40 border-t border-slate-200/60 dark:border-slate-800/60">
+        <section id="labs" class="py-20 bg-slate-100/60 dark:bg-slate-900/40 border-y border-slate-200/60 dark:border-slate-800/60">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
-                    <div>
-                        <span class="text-cyan-500 font-bold text-xs uppercase tracking-widest">Sản Phẩm Đột Phá</span>
-                        <h2 class="text-3xl sm:text-4xl font-extrabold font-heading mt-1">Dự Án Tiêu Biểu</h2>
-                    </div>
-                    <p class="text-slate-500 text-sm max-w-md">Tuyển tập các sản phẩm web app, phần mềm và giao diện công nghệ tiên tiến do tôi thiết kế & phát triển.</p>
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span class="text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-widest">Trải Nghiệm Trực Quan</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold mt-1">Phòng Thí Nghiệm & Mô Phỏng Tương Tác</h2>
+                    <p class="text-slate-500 text-sm mt-2">Thực hành trực tiếp các hiện tượng Vật lý, Hóa học và Thuật toán lập trình ngay trên trình duyệt.</p>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    
-                    <!-- PROJECT #1 PINNED & FEATURED: TECH HUB PORTAL -->
-                    <div class="lg:col-span-12 rounded-3xl bg-white dark:bg-slate-800/90 border-2 border-cyan-500/50 shadow-2xl overflow-hidden relative group">
-                        <!-- Pinned Tag Badge -->
-                        <div class="absolute top-4 right-4 z-20 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-extrabold px-3.5 py-1.5 rounded-full shadow-lg flex items-center space-x-1.5">
-                            <i class="fa-solid fa-thumbtack"></i>
-                            <span>DỰ ÁN NỔI BẬT NHẤT</span>
+                <!-- Tab Buttons -->
+                <div class="flex justify-center space-x-2 sm:space-x-4 mb-8">
+                    <button onclick="switchLabTab('physics')" id="tabPhysicsBtn" class="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-blue-600 text-white shadow-md transition-all">
+                        <i class="fa-solid fa-pendulum mr-1.5"></i>Vật Lý: Con Lắc Đơn
+                    </button>
+                    <button onclick="switchLabTab('chemistry')" id="tabChemBtn" class="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 transition-all">
+                        <i class="fa-solid fa-vial mr-1.5"></i>Hóa Học: Bảng pH & Nguyên Tố
+                    </button>
+                    <button onclick="switchLabTab('algorithm')" id="tabAlgoBtn" class="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 transition-all">
+                        <i class="fa-solid fa-bars-staggered mr-1.5"></i>Tin Học: Bubble Sort
+                    </button>
+                </div>
+
+                <!-- 1. LAB VẬT LÝ: CON LẮC ĐƠN -->
+                <div id="labPhysicsContent" class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700 shadow-xl">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-7 bg-slate-900 rounded-2xl p-4 flex flex-col items-center justify-center relative min-h-[320px]">
+                            <canvas id="pendulumCanvas" width="450" height="320" class="w-full h-auto max-w-[450px]"></canvas>
                         </div>
-                        <div class="grid grid-cols-1 lg:grid-cols-12 items-center">
-                    <!-- PROJECT #2 -->
-                    <div class="lg:col-span-6 rounded-3xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-lg overflow-hidden flex flex-col justify-between group hover:border-cyan-500 transition-colors">
-                        <div class="relative h-60 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80" alt="AI Agent Assistant" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        </div>
-                        <div class="p-6 space-y-4">
-                            <span class="text-xs font-bold text-indigo-500 uppercase tracking-wider">AI & Data</span>
-                            <h3 class="text-xl font-extrabold font-heading">Neural Chatbot Agent Pro</h3>
-                            <p class="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">
-                                Trợ lý ảo trí tuệ nhân tạo hỗ trợ doanh nghiệp tự động hóa phản hồi khách hàng và phân tích dữ liệu theo thời gian thực.
-                            </p>
-                    </div>
-                            <div class="flex flex-wrap gap-2 text-[11px] font-semibold text-slate-500">
-                                <span class="bg-slate-100 dark:bg-slate-700/60 px-2.5 py-1 rounded-md">Python</span>
-                                <span class="bg-slate-100 dark:bg-slate-700/60 px-2.5 py-1 rounded-md">OpenAI API</span>
-                                <span class="bg-slate-100 dark:bg-slate-700/60 px-2.5 py-1 rounded-md">React</span>
+                        <div class="lg:col-span-5 space-y-5">
+                            <h3 class="text-2xl font-bold">Dao Động Con Lắc Đơn</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Điều chỉnh thông số chiều dài dây $L$ và gia tốc trọng trường $g$ để quan sát chu kỳ dao động $T = 2\pi\sqrt{L/g}$.</p>
+
+                            <!-- Controls -->
+                            <div class="space-y-4 text-xs font-semibold">
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span>Chiều dài dây (L): <strong id="lengthVal">150</strong> cm</span>
+                                    </div>
+                                    <input type="range" id="lengthInput" min="50" max="220" value="150" class="w-full accent-blue-600">
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span>Gia tốc trọng trường (g): <strong id="gravityVal">9.8</strong> m/s²</span>
+                                    </div>
+                                    <input type="range" id="gravityInput" min="1" max="20" step="0.1" value="9.8" class="w-full accent-blue-600">
+                                </div>
+
+                                <div class="p-4 rounded-xl bg-blue-50 dark:bg-slate-900/60 border border-blue-100 dark:border-slate-700">
+                                    <span class="block text-[11px] text-slate-400 mb-1">Chu kỳ tính toán lý thuyết:</span>
+                                    <span id="calculatedPeriod" class="text-lg font-black text-blue-600 dark:text-blue-400">T ≈ 1.78s</span>
+                                </div>
+                            </div>
+
+                            <div class="flex space-x-3 pt-2">
+                                <button onclick="togglePendulum()" id="pendulumPlayBtn" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-md">
+                                    <i class="fa-solid fa-play mr-1"></i>Bắt Đầu
+                                </button>
+                                <button onclick="resetPendulum()" class="px-5 py-3 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-bold text-xs">
+                                    <i class="fa-solid fa-rotate-right mr-1"></i>Đặt Lại
+                                </button>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- PROJECT #3 -->
-                    <div class="lg:col-span-6 rounded-3xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-lg overflow-hidden flex flex-col justify-between group hover:border-cyan-500 transition-colors">
-                        <div class="relative h-60 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Crypto Dashboard" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <!-- 2. LAB HÓA HỌC: BẢNG TUẦN HOÀN & MÔ PHỎNG PH -->
+                <div id="labChemistryContent" class="hidden bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700 shadow-xl space-y-8">
+                    <!-- Bảng các nguyên tố tiêu biểu -->
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">1. Tra Cứu Nguyên Tố Hóa Học</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Bấm vào từng nguyên tố để xem thông tin chi tiết nguyên tử khối và tính chất.</p>
+                        
+                        <div class="grid grid-cols-4 sm:grid-cols-7 gap-2 sm:gap-3" id="elementsGrid">
+                            <!-- Elements dynamically populated -->
                         </div>
-                        <div class="p-6 space-y-4">
-                            <span class="text-xs font-bold text-purple-500 uppercase tracking-wider">Web3 & Finance</span>
-                            <h3 class="text-xl font-extrabold font-heading">SaaS Analytics & Crypto Dashboard</h3>
-                            <p class="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">
-                                Bảng điều khiển tài chính hiện đại quản lý dòng tiền, giao dịch tiền mã hóa và dự báo chỉ số kinh doanh bằng ML.
-                            </p>
-                            <div class="flex flex-wrap gap-2 text-[11px] font-semibold text-slate-500">
-                                <span class="bg-slate-100 dark:bg-slate-700/60 px-2.5 py-1 rounded-md">Next.js</span>
-                                <span class="bg-slate-100 dark:bg-slate-700/60 px-2.5 py-1 rounded-md">TypeScript</span>
-                                <span class="bg-slate-100 dark:bg-slate-700/60 px-2.5 py-1 rounded-md">Chart.js</span>
+
+                        <!-- Element Detail Box -->
+                        <div id="elementDetailBox" class="mt-4 p-4 rounded-2xl bg-purple-50 dark:bg-slate-900/60 border border-purple-100 dark:border-slate-700 flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div id="elemSymbol" class="w-12 h-12 rounded-xl bg-purple-600 text-white font-black text-xl flex items-center justify-center">H</div>
+                                <div>
+                                    <h4 id="elemName" class="font-bold text-sm">Hydro (Hydrogen)</h4>
+                                    <p id="elemDesc" class="text-xs text-slate-500 dark:text-slate-400">Số hiệu nguyên tử: 1 | Nguyên tử khối: 1.008 g/mol</p>
+                                </div>
                             </div>
+                            <span id="elemGroup" class="text-xs font-bold text-purple-600 dark:text-purple-400 bg-purple-200/50 dark:bg-purple-900/40 px-3 py-1 rounded-full">Phi kim</span>
                         </div>
                     </div>
 
+                    <!-- Thử nghiệm pH -->
+                    <div class="border-t border-slate-200 dark:border-slate-700 pt-6">
+                        <h3 class="text-xl font-bold mb-2">2. Mô Phỏng Đo Độ pH Dung Dịch</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Kéo thanh trượt để thay đổi nồng độ pH từ Axit (1-6) sang Trung tính (7) đến Bazơ (8-14).</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                            <div class="md:col-span-4 flex flex-col items-center justify-center p-6 bg-slate-900 rounded-2xl">
+                                <div id="phFlask" class="w-24 h-32 rounded-b-3xl border-4 border-slate-400 relative overflow-hidden flex items-end justify-center transition-all duration-500" style="background-color: rgba(239, 68, 68, 0.8);">
+                                    <span id="phDisplayValue" class="mb-4 text-white font-black text-xl drop-shadow">pH = 1.0</span>
+                                </div>
+                            </div>
+                            <div class="md:col-span-8 space-y-4">
+                                <div class="flex justify-between text-xs font-bold">
+                                    <span class="text-red-500">Axit mạnh (pH 1)</span>
+                                    <span class="text-emerald-500">Trung tính (pH 7)</span>
+                                    <span class="text-purple-500">Bazơ mạnh (pH 14)</span>
+                                </div>
+                                <input type="range" id="phInput" min="1" max="14" step="0.5" value="1" oninput="updatePhSimulator(this.value)" class="w-full accent-purple-600">
+                                
+                                <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900/60 text-xs space-y-1">
+                                    <p class="font-bold">Môi trường: <span id="phEnvironmentText" class="text-red-500">Axit Rất Mạnh</span></p>
+                                    <p class="text-slate-500 dark:text-slate-400" id="phExampleText">Ví dụ: Axit Dạ Dày (HCl), Axit Pin Ắc Quy.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. LAB TIN HỌC: BUBBLE SORT VISUALIZER -->
+                <div id="labAlgorithmContent" class="hidden bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700 shadow-xl">
+                    <div class="space-y-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div>
+                                <h3 class="text-2xl font-bold">Trực Quan Thuật Toán Sắp Xếp (Bubble Sort)</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Thuật toán so sánh từng cặp phần tử liền kề và đổi chỗ nếu chúng sai thứ tự.</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="generateNewArray()" class="px-4 py-2.5 bg-slate-200 dark:bg-slate-700 font-bold text-xs rounded-xl">
+                                    <i class="fa-solid fa-shuffle mr-1"></i>Tạo Mảng Mới
+                                </button>
+                                <button onclick="startBubbleSort()" id="sortStartBtn" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md">
+                                    <i class="fa-solid fa-play mr-1"></i>Chạy Thuật Toán
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Bar Visualizer Canvas -->
+                        <div id="barsContainer" class="h-64 bg-slate-900 rounded-2xl p-4 flex items-end justify-center space-x-2 sm:space-x-3 overflow-x-auto">
+                            <!-- Dynamically generated bars -->
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center text-xs">
+                            <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-900/60">
+                                <span class="block text-slate-400">Độ phức tạp TB</span>
+                                <strong class="text-indigo-500 text-sm">O(n²)</strong>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-900/60">
+                                <span class="block text-slate-400">Số phép so sánh</span>
+                                <strong id="compareCount" class="text-blue-500 text-sm">0</strong>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-900/60">
+                                <span class="block text-slate-400">Số lần hoán đổi</span>
+                                <strong id="swapCount" class="text-emerald-500 text-sm">0</strong>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-900/60">
+                                <span class="block text-slate-400">Trạng thái</span>
+                                <strong id="sortStatusText" class="text-amber-500 text-sm">Sẵn sàng</strong>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Special Featured Tech Website Banner Section -->
-        <section id="tech-hub-banner" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 text-white p-8 sm:p-12 shadow-2xl border border-cyan-500/30">
-                <!-- Glowing Orb Background Effect -->
-                <div class="absolute top-0 right-0 w-80 h-80 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        <section id="library" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                <div>
+                    <span class="text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-widest">Kho Sách & Tài Liệu</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold mt-1">Sách Giáo Khoa & Đề Thi Tuyển Chọn</h2>
+                </div>
+                <!-- Filter Pills -->
+                <div class="flex flex-wrap gap-2 text-xs font-bold">
+                    <button onclick="filterDocs('all')" class="doc-filter-btn px-4 py-2 rounded-xl bg-blue-600 text-white shadow-sm">Tất Cả</button>
+                    <button onclick="filterDocs('toan')" class="doc-filter-btn px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Toán</button>
+                    <button onclick="filterDocs('ly')" class="doc-filter-btn px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Lý</button>
+                    <button onclick="filterDocs('hoa')" class="doc-filter-btn px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Hóa</button>
+                    <button onclick="filterDocs('anh')" class="doc-filter-btn px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Tiếng Anh</button>
+                </div>
+            </div>
 
-                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                    <div class="lg:col-span-8 space-y-4 text-center lg:text-left">
-                        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold uppercase tracking-wider border border-cyan-500/40">
-                            <i class="fa-solid fa-star text-amber-400"></i>
-                            <span>Sản phẩm đặc sắc phát triển bởi Alex</span>
+            <!-- Documents Grid -->
+            <div id="documentsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Book Item 1 -->
+                <div class="doc-card bg-white dark:bg-slate-800/80 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700/60 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between" data-subject="toan">
+                    <div class="space-y-3">
+                        <div class="w-full h-44 rounded-xl bg-gradient-to-tr from-blue-500 to-indigo-600 p-4 flex flex-col justify-between text-white relative overflow-hidden">
+                            <span class="text-[10px] uppercase font-extrabold tracking-wider bg-white/20 px-2.5 py-1 rounded-md w-fit">Toán Học 12</span>
+                            <div>
+                                <h4 class="font-extrabold text-base leading-tight">Chuyên Đề Đạo Hàm & Khảo Sát Hàm Số</h4>
+                                <p class="text-[11px] text-blue-100 mt-1">Ấn bản 2026</p>
+                            </div>
                         </div>
-                        <h2 class="text-3xl sm:text-4xl font-black font-heading leading-tight">
-                            Ghé thăm <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-300">Trang Web Tin Tức & So Sánh Công Nghệ</span> Do Tôi Thiết Kế!
-                        </h2>
-                        <p class="text-slate-300 text-sm sm:text-base max-w-2xl">
-                            Khám phá giao diện sản phẩm công nghệ thế hệ mới, so sánh chi tiết thông số chip/RAM/pin giữa các siêu phẩm di động và đọc các bài phân tích AI mới nhất.
-                        </p>
+                        <h3 class="font-bold text-sm line-clamp-1">1000 Câu Trắc Nghiệm Đạo Hàm Có Đáp Án</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Phân loại dạng bài từ nhận biết, thông hiểu đến vận dụng cao thi tốt nghiệp THPT.</p>
                     </div>
+                    <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between">
+                        <button onclick="openPdfModal('Chuyên Đề Đạo Hàm & Khảo Sát Hàm Số')" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center">
+                            <i class="fa-solid fa-book-open mr-1.5"></i>Đọc Online
+                        </button>
+                        <a href="javascript:void(0)" onclick="fakeDownloadPDF('Toan_DaoHam_2026.pdf')" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-blue-600 hover:text-white transition-colors">
+                            <i class="fa-solid fa-download text-xs"></i>
+                        </a>
+                    </div>
+                </div>
 
-                    <div class="lg:col-span-4 flex justify-center lg:justify-end">
-                        <a href="./index.html" target="_blank" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-black text-base shadow-xl shadow-cyan-500/30 hover:scale-105 transition-all text-center flex items-center justify-center space-x-3">
-                            <span>TRUY CẬP NGAY</span>
-                            <i class="fa-solid fa-arrow-right"></i>
+                <!-- Book Item 2 -->
+                <div class="doc-card bg-white dark:bg-slate-800/80 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700/60 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between" data-subject="ly">
+                    <div class="space-y-3">
+                        <div class="w-full h-44 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 p-4 flex flex-col justify-between text-white relative overflow-hidden">
+                            <span class="text-[10px] uppercase font-extrabold tracking-wider bg-white/20 px-2.5 py-1 rounded-md w-fit">Vật Lý 12</span>
+                            <div>
+                                <h4 class="font-extrabold text-base leading-tight">Sổ Tay Công Thức Dao Động & Sóng Cơ</h4>
+                                <p class="text-[11px] text-indigo-100 mt-1">Tóm tắt ngắn gọn</p>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-sm line-clamp-1">Tổng Hợp Công Thức Vật Lý Thi THPT</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Bao gồm sơ đồ tư duy con lắc, giao thoa sóng và dòng điện xoay chiều RLC.</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between">
+                        <button onclick="openPdfModal('Sổ Tay Công Thức Dao Động & Sóng Cơ')" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center">
+                            <i class="fa-solid fa-book-open mr-1.5"></i>Đọc Online
+                        </button>
+                        <a href="javascript:void(0)" onclick="fakeDownloadPDF('VatLy_SoTayCongThuc.pdf')" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-blue-600 hover:text-white transition-colors">
+                            <i class="fa-solid fa-download text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Book Item 3 -->
+                <div class="doc-card bg-white dark:bg-slate-800/80 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700/60 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between" data-subject="hoa">
+                    <div class="space-y-3">
+                        <div class="w-full h-44 rounded-xl bg-gradient-to-tr from-purple-500 to-pink-600 p-4 flex flex-col justify-between text-white relative overflow-hidden">
+                            <span class="text-[10px] uppercase font-extrabold tracking-wider bg-white/20 px-2.5 py-1 rounded-md w-fit">Hóa Học</span>
+                            <div>
+                                <h4 class="font-extrabold text-base leading-tight">Bảng Nhận Biết Chất & Phản Ứng Đặc Trưng</h4>
+                                <p class="text-[11px] text-purple-100 mt-1">Hóa vô cơ & hữu cơ</p>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-sm line-clamp-1">Phương Pháp Giải Nhanh Bài Tập Hóa Học</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Bảo toàn khối lượng, bảo toàn electron và phương pháp đường chéo.</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between">
+                        <button onclick="openPdfModal('Bảng Nhận Biết Chất & Phản Ứng Đặc Trưng')" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center">
+                            <i class="fa-solid fa-book-open mr-1.5"></i>Đọc Online
+                        </button>
+                        <a href="javascript:void(0)" onclick="fakeDownloadPDF('HoaHoc_NhanBietChat.pdf')" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-blue-600 hover:text-white transition-colors">
+                            <i class="fa-solid fa-download text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Book Item 4 -->
+                <div class="doc-card bg-white dark:bg-slate-800/80 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700/60 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between" data-subject="anh">
+                    <div class="space-y-3">
+                        <div class="w-full h-44 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600 p-4 flex flex-col justify-between text-white relative overflow-hidden">
+                            <span class="text-[10px] uppercase font-extrabold tracking-wider bg-white/20 px-2.5 py-1 rounded-md w-fit">Tiếng Anh</span>
+                            <div>
+                                <h4 class="font-extrabold text-base leading-tight">3000 Từ Vựng Tiếng Anh Thông Dụng</h4>
+                                <p class="text-[11px] text-emerald-100 mt-1">Kèm ví dụ minh họa</p>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-sm line-clamp-1">Bộ Đề Thi Thử Tiếng Anh Chuẩn Cấu Trúc</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">10 đề thi thử đầy đủ đáp án và giải thích đáp án chi tiết từng câu.</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between">
+                        <button onclick="openPdfModal('3000 Từ Vựng Tiếng Anh Thông Dụng')" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center">
+                            <i class="fa-solid fa-book-open mr-1.5"></i>Đọc Online
+                        </button>
+                        <a href="javascript:void(0)" onclick="fakeDownloadPDF('TiengAnh_3000TuVung.pdf')" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-blue-600 hover:text-white transition-colors">
+                            <i class="fa-solid fa-download text-xs"></i>
                         </a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Blog / News Section -->
-        <section id="blog" class="py-20 bg-slate-100/50 dark:bg-slate-900/40 border-t border-slate-200/60 dark:border-slate-800/60">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center max-w-2xl mx-auto mb-14">
-                    <span class="text-cyan-500 font-bold text-xs uppercase tracking-widest">Góc Chia Sẻ</span>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading mt-1">Bài Viết Công Nghệ Mới Nhất</h2>
+        <section id="quiz" class="py-20 bg-slate-100/60 dark:bg-slate-900/40 border-y border-slate-200/60 dark:border-slate-800/60">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-10">
+                    <span class="text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-widest">Kiểm Tra Trực Tuyến</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold mt-1">Trắc Nghiệm Đánh Giá Kiến Thức</h2>
+                    <p class="text-slate-500 text-sm mt-2">Thử thách với bộ câu hỏi kiểm tra ngẫu nhiên các môn học.</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Article 1 -->
-                    <article class="bg-white dark:bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700/60 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between">
-                        <div>
-                            <div class="relative h-48 overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" alt="Blog Post 1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                                <span class="absolute top-3 left-3 bg-cyan-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">AI & Future</span>
-                            </div>
-                            <div class="p-6 space-y-2">
-                                <span class="text-xs text-slate-400">15/09/2026 • 5 phút đọc</span>
-                                <h3 class="text-lg font-bold font-heading group-hover:text-cyan-500 transition-colors">Xu hướng phát triển Chip bán dẫn tích hợp AI trong năm 2026</h3>
-                                <p class="text-slate-500 dark:text-slate-400 text-xs line-clamp-2">Phân tích sâu kiến trúc vi mạch mới giúp tăng tốc độ xử lý các mô hình LLM trực tiếp trên thiết bị di động.</p>
-                            </div>
+                <!-- Quiz Card Frame -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-slate-700 shadow-xl space-y-6">
+                    <!-- Progress & Timer -->
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-4">
+                        <span class="text-xs font-bold text-slate-400">Câu hỏi <strong id="currentQuizIdxText" class="text-blue-600 dark:text-blue-400">1</strong>/3</span>
+                        <div class="flex items-center space-x-2 text-xs font-bold text-amber-500 bg-amber-500/10 px-3 py-1.5 rounded-full">
+                            <i class="fa-regular fa-clock"></i>
+                            <span id="quizTimerText">05:00</span>
                         </div>
-                        <div class="px-6 pb-6 pt-2">
-                            <a href="#" onclick="alert('Cảm ơn bạn đã đọc bài viết!')" class="text-xs font-bold text-cyan-500 hover:underline inline-flex items-center">
-                                Đọc chi tiết <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i>
-                            </a>
-                        </div>
-                    </article>
+                    </div>
 
-                    <!-- Article 2 -->
-                    <article class="bg-white dark:bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700/60 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between">
-                        <div>
-                            <div class="relative h-48 overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=600&q=80" alt="Blog Post 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                                <span class="absolute top-3 left-3 bg-indigo-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Frontend</span>
-                            </div>
-                            <div class="p-6 space-y-2">
-                                <span class="text-xs text-slate-400">10/09/2026 • 8 phút đọc</span>
-                                <h3 class="text-lg font-bold font-heading group-hover:text-cyan-500 transition-colors">Tối ưu hóa Performance cho Single Page Application</h3>
-                                <p class="text-slate-500 dark:text-slate-400 text-xs line-clamp-2">Bí quyết giúp website đạt điểm số Lighthouse tối đa 100/100 với Tailwind CSS và Vanilla JS.</p>
-                            </div>
+                    <!-- Question Text -->
+                    <div id="quizQuestionBox">
+                        <h3 id="quizQuestionTitle" class="text-lg sm:text-xl font-bold mb-4">Câu 1: Chu kỳ dao động nhỏ của con lắc đơn phụ thuộc vào yếu tố nào sau đây?</h3>
+                        
+                        <!-- Options list -->
+                        <div id="quizOptionsList" class="space-y-3">
+                            <!-- Populated dynamically -->
                         </div>
-                        <div class="px-6 pb-6 pt-2">
-                            <a href="#" onclick="alert('Cảm ơn bạn đã đọc bài viết!')" class="text-xs font-bold text-cyan-500 hover:underline inline-flex items-center">
-                                Đọc chi tiết <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i>
-                            </a>
-                        </div>
-                    </article>
+                    </div>
 
-                    <!-- Article 3 -->
-                    <article class="bg-white dark:bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700/60 shadow-sm hover:shadow-xl transition-all group flex flex-col justify-between">
-                        <div>
-                            <div class="relative h-48 overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" alt="Blog Post 3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                                <span class="absolute top-3 left-3 bg-purple-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">Tech Experience</span>
-                            </div>
-                            <div class="p-6 space-y-2">
-                                <span class="text-xs text-slate-400">02/09/2026 • 6 phút đọc</span>
-                                <h3 class="text-lg font-bold font-heading group-hover:text-cyan-500 transition-colors">Xây dựng Trang Tin Tức Công Nghệ Chuẩn SEO & Responsive</h3>
-                                <p class="text-slate-500 dark:text-slate-400 text-xs line-clamp-2">Hành trình thiết kế và hoàn thiện ứng dụng TechPulse Portal từ ý tưởng đến sản phẩm thực tế.</p>
-                            </div>
-                        </div>
-                        <div class="px-6 pb-6 pt-2">
-                            <a href="./index.html" target="_blank" class="text-xs font-bold text-cyan-500 hover:underline inline-flex items-center">
-                                Xem Demo Dự Án <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i>
-                            </a>
-                        </div>
-                    </article>
+                    <!-- Explanation Box (Hidden by default) -->
+                    <div id="quizExplanationBox" class="hidden p-4 rounded-2xl bg-blue-50 dark:bg-slate-900/80 border border-blue-200 dark:border-slate-700 text-xs space-y-1">
+                        <p class="font-bold text-blue-600 dark:text-blue-400"><i class="fa-solid fa-circle-info mr-1.5"></i>Giải thích chi tiết:</p>
+                        <p id="quizExplanationText" class="text-slate-600 dark:text-slate-300">Công thức chu kỳ con lắc đơn là T = 2π√(L/g), do đó chu kỳ chỉ phụ thuộc vào chiều dài dây treo L và gia tốc trọng trường g tại nơi đặt con lắc.</p>
+                    </div>
+
+                    <!-- Action Controls -->
+                    <div class="flex justify-between items-center pt-2">
+                        <button onclick="resetQuiz()" class="text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                            <i class="fa-solid fa-rotate-left mr-1"></i>Làm lại
+                        </button>
+                        <button onclick="nextQuizQuestion()" id="quizNextBtn" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-md">
+                            Câu Tiếp Theo <i class="fa-solid fa-arrow-right ml-1.5"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Contact Section -->
-        <section id="contact" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                
-                <div class="lg:col-span-5 space-y-6">
-                    <span class="text-cyan-500 font-bold text-xs uppercase tracking-widest">Kết Nối Với Tôi</span>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading">Hãy Bắt Đầu Một Dự Án Công Nghệ Đột Phá!</h2>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                        Bạn có ý tưởng dự án mới, cần tư vấn giải pháp phần mềm hoặc muốn trải nghiệm trang Tech Hub? Hãy liên hệ với tôi qua form hoặc mạng xã hội.
+        <section id="planner" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+                <div class="lg:col-span-5 space-y-4">
+                    <span class="text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-widest">Lập Kế Hoạch Học Tập</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold">Quản Lý Bài Tập & Công Việc Nhanh Chóng</h2>
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        Thêm các nhiệm vụ bài tập về nhà, lịch thi thử và danh mục cần hoàn thành. Dữ liệu được lưu trữ trực tiếp trên thiết bị của bạn.
                     </p>
 
-                    <div class="space-y-4 pt-2">
-                        <div class="flex items-center space-x-4">
-                            <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center">
-                                <i class="fa-solid fa-envelope text-lg"></i>
-                            </div>
-                            <div>
-                                <p class="text-[11px] text-slate-400">Email Trực Tiếp</p>
-                                <p class="text-sm font-bold">alex.nguyen.tech@gmail.com</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center space-x-4">
-                            <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
-                                <i class="fa-solid fa-location-dot text-lg"></i>
-                            </div>
-                            <div>
-                                <p class="text-[11px] text-slate-400">Địa Điểm</p>
-                                <p class="text-sm font-bold">Hà Nội / Thành phố Hồ Chí Minh, Việt Nam</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Social Icons -->
-                    <div class="pt-4 flex space-x-3 text-lg">
-                        <a href="#" aria-label="Github Profile" class="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-cyan-500 hover:text-white transition-all"><i class="fa-brands fa-github"></i></a>
-                        <a href="#" aria-label="LinkedIn Profile" class="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-cyan-500 hover:text-white transition-all"><i class="fa-brands fa-linkedin"></i></a>
-                        <a href="#" aria-label="Facebook Profile" class="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-cyan-500 hover:text-white transition-all"><i class="fa-brands fa-facebook"></i></a>
-                        <a href="#" aria-label="Telegram" class="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-cyan-500 hover:text-white transition-all"><i class="fa-brands fa-telegram"></i></a>
-                    </div>
-                </div>
-
-                <!-- Contact Form -->
-                <div class="lg:col-span-7 bg-white dark:bg-slate-800/80 p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-700/60 shadow-xl">
-                    <form onsubmit="handleFormSubmit(event)" class="space-y-4">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold mb-1.5 text-slate-700 dark:text-slate-300">Họ & Tên</label>
-                                <input type="text" required placeholder="Nguyễn Văn A" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold mb-1.5 text-slate-700 dark:text-slate-300">Địa Chỉ Email</label>
-                                <input type="email" required placeholder="email@example.com" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
-                            </div>
-                        </div>
-
+                    <!-- Add Task Form -->
+                    <form onsubmit="addNewTask(event)" class="space-y-3 pt-2">
                         <div>
-                            <label class="block text-xs font-bold mb-1.5 text-slate-700 dark:text-slate-300">Tiêu Đề Messsage</label>
-                            <input type="text" placeholder="Hợp tác dự án / Đặt câu hỏi..." class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            <label class="block text-xs font-bold mb-1">Tên bài tập / Việc cần làm</label>
+                            <input type="text" id="taskTitleInput" required placeholder="Ví dụ: Ôn tập 20 câu đạo hàm..." class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
-
                         <div>
-                            <label class="block text-xs font-bold mb-1.5 text-slate-700 dark:text-slate-300">Nội Dung Tin Nhắn</label>
-                            <textarea rows="4" required placeholder="Chi tiết yêu cầu của bạn..." class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
+                            <label class="block text-xs font-bold mb-1">Mức độ ưu tiên</label>
+                            <select id="taskPriorityInput" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="cao">Ưu tiên Cao (Hạn gấp)</option>
+                                <option value="trungbinh" selected>Ưu tiên Trung bình</option>
+                                <option value="thap">Ưu tiên Thấp</option>
+                            </select>
                         </div>
-
-                        <button type="submit" class="w-full py-4 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-600 hover:to-indigo-700 text-white rounded-xl font-bold text-sm shadow-lg shadow-cyan-500/25 transition-all">
-                            Gửi Tin Nhắn
+                        <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-md transition-all">
+                            <i class="fa-solid fa-plus mr-1.5"></i>Thêm Công Việc
                         </button>
                     </form>
-                    
-                    <div id="formNotification" class="hidden mt-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 text-xs text-center font-bold">
-                        <i class="fa-solid fa-circle-check mr-2"></i>Tin nhắn của bạn đã được gửi thành công! Alex sẽ phản hồi sớm nhất.
-                    </div>
                 </div>
 
+                <!-- Task List Box -->
+                <div class="lg:col-span-7 bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-lg space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
+                        <h3 class="font-bold text-base">Danh Sách Việc Cần Làm (<span id="taskCounterText">0</span>)</h3>
+                        <button onclick="clearAllTasks()" class="text-xs font-bold text-red-500 hover:underline">Xóa tất cả</button>
+                    </div>
+
+                    <div id="tasksContainer" class="space-y-3 min-h-[200px] max-h-[360px] overflow-y-auto pr-1">
+                        <!-- Dynamic Tasks -->
+                    </div>
+                </div>
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
-                
                 <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 rounded-xl bg-cyan-500 flex items-center justify-center text-slate-950 font-black">
-                        AN
+                    <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-lg">
+                        <i class="fa-solid fa-graduation-cap"></i>
                     </div>
-                    <span class="text-white font-bold text-lg font-heading">Alex Nguyen Portfolio</span>
+                    <span class="text-white font-extrabold text-lg">EduHub Vietnam</span>
                 </div>
 
-                <div class="flex flex-wrap justify-center space-x-6 text-xs font-medium">
-                    <a href="#about" class="hover:text-cyan-400 transition-colors">Giới Thiệu</a>
-                    <a href="#projects" class="hover:text-cyan-400 transition-colors">Dự Án</a>
-                    <a href="./index.html" target="_blank" class="text-cyan-400 font-bold hover:underline">Trang Tech Hub</a>
-                    <a href="#blog" class="hover:text-cyan-400 transition-colors">Blog</a>
-                    <a href="#contact" class="hover:text-cyan-400 transition-colors">Liên Hệ</a>
+                <div class="flex flex-wrap justify-center space-x-6 text-xs font-semibold">
+                    <a href="#hero" class="hover:text-blue-400 transition-colors">Trang Chủ</a>
+                    <a href="#learning-paths" class="hover:text-blue-400 transition-colors">Lộ Trình</a>
+                    <a href="#labs" class="hover:text-blue-400 transition-colors">Thí Nghiệm</a>
+                    <a href="#library" class="hover:text-blue-400 transition-colors">Kho Tài Liệu</a>
+                    <a href="#quiz" class="hover:text-blue-400 transition-colors">Trắc Nghiệm</a>
                 </div>
 
-                <p class="text-xs text-slate-500">&copy; 2026 Alex Nguyen. Tất cả quyền được bảo lưu.</p>
+                <p class="text-xs text-slate-500">&copy; 2026 EduHub. Cổng học tập mở giáo dục Việt Nam.</p>
             </div>
         </div>
     </footer>
 
+    <div id="pdfModal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-4xl w-full h-[85vh] flex flex-col overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-file-pdf text-red-500 text-2xl"></i>
+                    <div>
+                        <h3 id="pdfModalTitle" class="font-bold text-sm sm:text-base">Tài liệu học tập PDF</h3>
+                        <span class="text-[11px] text-slate-400">Đang ở chế độ xem trực tuyến</span>
+                    </div>
+                </div>
+                <button onclick="closePdfModal()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Simulated Reader Body -->
+            <div class="flex-grow p-6 overflow-y-auto bg-slate-100 dark:bg-slate-950 flex justify-center">
+                <div class="bg-white text-slate-900 w-full max-w-2xl min-h-[600px] p-8 shadow-lg rounded-xl space-y-6 text-sm leading-relaxed">
+                    <div class="border-b pb-4 text-center">
+                        <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">BỘ GIÁO DỤC VÀ ĐÀO TẠO - EDUHUB</span>
+                        <h1 id="pdfReaderDocName" class="text-2xl font-black mt-2">Chuyên Đề Học Tập Mẫu</h1>
+                        <p class="text-xs text-slate-500 mt-1">Trang 1 / 12 • Mã tài liệu: #ED-2026-PDF</p>
+                    </div>
+
+                    <div class="space-y-4 text-xs">
+                        <h3 class="font-bold text-sm text-slate-800">CHƯƠNG 1: TỔNG QUAN KIẾN THỨC CỐT LÕI</h3>
+                        <p>Tài liệu này tổng hợp toàn bộ lý thuyết trọng tâm và phương pháp giải bài tập trắc nghiệm đã được thẩm định. Học sinh có thể theo dõi trực tiếp các công thức bên dưới:</p>
+                        
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 font-mono text-center text-blue-700 font-bold">
+                            T = 2π √(L / g) &nbsp;|&nbsp; pH = -log[H+] &nbsp;|&nbsp; f(x)' = lim [f(x+h) - f(x)] / h
+                        </div>
+
+                        <p>Mọi câu hỏi thắc mắc bài tập có thể gửi qua biểu tượng hỗ trợ góc dưới bên phải màn hình để được giải đáp.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer Controls -->
+            <div class="px-6 py-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-bold">
+                <span class="text-slate-400">Trang 1 / 12</span>
+                <div class="flex space-x-2">
+                    <button class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl">Trang trước</button>
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-xl">Trang tiếp</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed bottom-6 right-6 z-40 flex flex-col space-y-3">
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=support@eduhub.edu.vn&su=Ho%20Tro%20Hoc%20Tap%20EduHub" target="_blank" title="Gửi Mail Hỗ Trợ Qua Gmail Web" class="w-12 h-12 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+            <i class="fa-solid fa-envelope text-lg"></i>
+        </a>
+        <a href="https://t.me" target="_blank" title="Kênh Telegram EduHub" class="w-12 h-12 rounded-full bg-sky-500 text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+            <i class="fa-brands fa-telegram text-lg"></i>
+        </a>
+    </div>
+
     <script>
-        // 1. Theme Persistence with localStorage
+        // 1. Dark/Light Mode Switcher
         function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'light') {
-                document.documentElement.classList.remove('dark');
-            } else {
+            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
             }
         }
-
-        function toggleTheme() {
+        function toggleDarkMode() {
             if (document.documentElement.classList.contains('dark')) {
                 document.documentElement.classList.remove('dark');
                 localStorage.setItem('theme', 'light');
@@ -643,97 +813,457 @@
             }
         }
 
-        // 2. Typewriter Effect
-        const words = ["Full-Stack Developer", "AI Enthusiast", "Tech Blogger", "UI/UX Architect"];
-        let wordIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
+        function toggleMobileNav() {
+            document.getElementById('mobileNavMenu').classList.toggle('hidden');
+        }
 
-        function typeEffect() {
-            const currentWord = words[wordIndex];
-            const target = document.getElementById("typewriterText");
+        // 2. Physics Pendulum Simulator Logic
+        let canvas = document.getElementById('pendulumCanvas');
+        let ctx = canvas ? canvas.getContext('2d') : null;
+        let isPendulumRunning = false;
+        let angle = Math.PI / 4;
+        let angleVelocity = 0;
+        let angleAcceleration = 0;
+        let lengthVal = 150;
+        let gravityVal = 9.8;
 
-            if(!target) return;
+        document.getElementById('lengthInput').addEventListener('input', function(e) {
+            lengthVal = parseFloat(e.target.value);
+            document.getElementById('lengthVal').innerText = lengthVal;
+            updatePeriodCalc();
+        });
 
-            if (isDeleting) {
-                target.innerText = currentWord.substring(0, charIndex - 1);
-                charIndex--;
+        document.getElementById('gravityInput').addEventListener('input', function(e) {
+            gravityVal = parseFloat(e.target.value);
+            document.getElementById('gravityVal').innerText = gravityVal;
+            updatePeriodCalc();
+        });
+
+        function updatePeriodCalc() {
+            let T = 2 * Math.PI * Math.sqrt((lengthVal / 100) / gravityVal);
+            document.getElementById('calculatedPeriod').innerText = "T ≈ " + T.toFixed(2) + "s";
+        }
+
+        function togglePendulum() {
+            isPendulumRunning = !isPendulumRunning;
+            let btn = document.getElementById('pendulumPlayBtn');
+            if (isPendulumRunning) {
+                btn.innerHTML = '<i class="fa-solid fa-pause mr-1"></i>Tạm Dừng';
+                btn.classList.replace('bg-blue-600', 'bg-amber-600');
             } else {
-                target.innerText = currentWord.substring(0, charIndex + 1);
-                charIndex++;
+                btn.innerHTML = '<i class="fa-solid fa-play mr-1"></i>Bắt Đầu';
+                btn.classList.replace('bg-amber-600', 'bg-blue-600');
             }
-
-            let typeSpeed = isDeleting ? 60 : 120;
-
-            if (!isDeleting && charIndex === currentWord.length) {
-                typeSpeed = 2000; // Pause at end of word
-                isDeleting = true;
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                wordIndex = (wordIndex + 1) % words.length;
-                typeSpeed = 500;
-            }
-
-            setTimeout(typeEffect, typeSpeed);
         }
 
-        // 3. Mobile Navigation Menu Toggle
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('hidden');
+        function resetPendulum() {
+            isPendulumRunning = false;
+            angle = Math.PI / 4;
+            angleVelocity = 0;
+            angleAcceleration = 0;
+            let btn = document.getElementById('pendulumPlayBtn');
+            btn.innerHTML = '<i class="fa-solid fa-play mr-1"></i>Bắt Đầu';
+            btn.classList.replace('bg-amber-600', 'bg-blue-600');
+            drawPendulum();
         }
 
-        // 4. Contact Form Handler
-        function handleFormSubmit(e) {
+        function drawPendulum() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let originX = canvas.width / 2;
+            let originY = 40;
+            let bobX = originX + lengthVal * Math.sin(angle);
+            let bobY = originY + lengthVal * Math.cos(angle);
+
+            if (isPendulumRunning) {
+                angleAcceleration = (-1 * (gravityVal / (lengthVal / 10))) * Math.sin(angle);
+                angleVelocity += angleAcceleration * 0.05;
+                angle += angleVelocity * 0.05;
+                angleVelocity *= 0.995; // Damping
+            }
+
+            // Draw rod
+            ctx.beginPath();
+            ctx.moveTo(originX, originY);
+            ctx.lineTo(bobX, bobY);
+            ctx.strokeStyle = "#3b82f6";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Draw base line
+            ctx.beginPath();
+            ctx.moveTo(originX - 40, originY);
+            ctx.lineTo(originX + 40, originY);
+            ctx.strokeStyle = "#94a3b8";
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            // Draw Bob
+            ctx.beginPath();
+            ctx.arc(bobX, bobY, 18, 0, 2 * Math.PI);
+            ctx.fillStyle = "#2563eb";
+            ctx.fill();
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            requestAnimationFrame(drawPendulum);
+        }
+
+        // 3. Chemistry Lab Data & pH Logic
+        const elementsData = [
+            { symbol: 'H', name: 'Hydro', num: 1, mass: '1.008', group: 'Phi kim', color: 'bg-purple-600' },
+            { symbol: 'He', name: 'Heli', num: 2, mass: '4.0026', group: 'Khí hiếm', color: 'bg-blue-600' },
+            { symbol: 'C', name: 'Cacbon', num: 6, mass: '12.011', group: 'Phi kim', color: 'bg-purple-600' },
+            { symbol: 'N', name: 'Nito', num: 7, mass: '14.007', group: 'Phi kim', color: 'bg-purple-600' },
+            { symbol: 'O', name: 'Oxi', num: 8, mass: '15.999', group: 'Phi kim', color: 'bg-purple-600' },
+            { symbol: 'Na', name: 'Natri', num: 11, mass: '22.990', group: 'Kim loại kiềm', color: 'bg-emerald-600' },
+            { symbol: 'Cl', name: 'Clo', num: 17, mass: '35.45', group: 'Halogen', color: 'bg-amber-600' },
+            { symbol: 'Fe', name: 'Sắt', num: 26, mass: '55.845', group: 'Kim loại chuyển tiếp', color: 'bg-indigo-600' }
+        ];
+
+        function initChemistryLab() {
+            const grid = document.getElementById('elementsGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            elementsData.forEach(el => {
+                let card = document.createElement('div');
+                card.className = `element-card p-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 cursor-pointer text-center`;
+                card.onclick = () => selectElement(el);
+                card.innerHTML = `
+                    <span class="text-[9px] text-slate-400 block">${el.num}</span>
+                    <strong class="text-base block my-0.5">${el.symbol}</strong>
+                    <span class="text-[10px] text-slate-500 truncate block">${el.name}</span>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function selectElement(el) {
+            document.getElementById('elemSymbol').innerText = el.symbol;
+            document.getElementById('elemName').innerText = `${el.name} (${el.symbol})`;
+            document.getElementById('elemDesc').innerText = `Số hiệu nguyên tử: ${el.num} | Nguyên tử khối: ${el.mass} g/mol`;
+            document.getElementById('elemGroup').innerText = el.group;
+        }
+
+        function updatePhSimulator(val) {
+            const ph = parseFloat(val);
+            document.getElementById('phDisplayValue').innerText = `pH = ${ph.toFixed(1)}`;
+            const flask = document.getElementById('phFlask');
+            const envText = document.getElementById('phEnvironmentText');
+            const exText = document.getElementById('phExampleText');
+
+            let color = '';
+            if (ph < 3) {
+                color = 'rgba(239, 68, 68, 0.85)'; // Red
+                envText.innerText = 'Axit Rất Mạnh';
+                envText.className = 'text-red-500';
+                exText.innerText = 'Ví dụ: Axit Dạ Dày (HCl), Pin Ắc Quy.';
+            } else if (ph < 7) {
+                color = 'rgba(245, 158, 11, 0.85)'; // Orange/Yellow
+                envText.innerText = 'Axit Yếu';
+                envText.className = 'text-amber-500';
+                exText.innerText = 'Ví dụ: Nước Cam, Cà Phê, Nước Mưa.';
+            } else if (ph === 7) {
+                color = 'rgba(16, 185, 129, 0.85)'; // Green
+                envText.innerText = 'Dung Dịch Trung Tính';
+                envText.className = 'text-emerald-500';
+                exText.innerText = 'Ví dụ: Nước Tinh Khiết H2O.';
+            } else if (ph <= 11) {
+                color = 'rgba(59, 130, 246, 0.85)'; // Blue
+                envText.innerText = 'Bazơ Yếu';
+                envText.className = 'text-blue-500';
+                exText.innerText = 'Ví dụ: Nước Biển, Baking Soda.';
+            } else {
+                color = 'rgba(147, 51, 234, 0.85)'; // Purple
+                envText.innerText = 'Bazơ Rất Mạnh';
+                envText.className = 'text-purple-500';
+                exText.innerText = 'Ví dụ: Dung Dịch Xà Phòng, Nước Tẩy NaOH.';
+            }
+            flask.style.backgroundColor = color;
+        }
+
+        // 4. Algorithm Visualizer (Bubble Sort)
+        let arrayData = [45, 20, 75, 32, 90, 12, 60, 50];
+        let isSorting = false;
+
+        function renderArrayBars() {
+            const container = document.getElementById('barsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            arrayData.forEach((val, idx) => {
+                let bar = document.createElement('div');
+                bar.id = `bar-${idx}`;
+                bar.style.height = `${val * 2.2}px`;
+                bar.className = `w-8 sm:w-10 bg-indigo-500 rounded-t-lg transition-all duration-300 flex items-end justify-center pb-1 text-[10px] text-white font-bold`;
+                bar.innerText = val;
+                container.appendChild(bar);
+            });
+        }
+
+        function generateNewArray() {
+            if (isSorting) return;
+            arrayData = Array.from({length: 8}, () => Math.floor(Math.random() * 80) + 15);
+            document.getElementById('compareCount').innerText = '0';
+            document.getElementById('swapCount').innerText = '0';
+            document.getElementById('sortStatusText').innerText = 'Sẵn sàng';
+            renderArrayBars();
+        }
+
+        async function startBubbleSort() {
+            if (isSorting) return;
+            isSorting = true;
+            document.getElementById('sortStatusText').innerText = 'Đang sắp xếp...';
+
+            let compares = 0;
+            let swaps = 0;
+            let len = arrayData.length;
+
+            for (let i = 0; i < len; i++) {
+                for (let j = 0; j < len - i - 1; j++) {
+                    compares++;
+                    document.getElementById('compareCount').innerText = compares;
+
+                    let bar1 = document.getElementById(`bar-${j}`);
+                    let bar2 = document.getElementById(`bar-${j+1}`);
+                    if (bar1 && bar2) {
+                        bar1.classList.replace('bg-indigo-500', 'bg-amber-500');
+                        bar2.classList.replace('bg-indigo-500', 'bg-amber-500');
+                    }
+
+                    await new Promise(r => setTimeout(r, 400));
+
+                    if (arrayData[j] > arrayData[j + 1]) {
+                        swaps++;
+                        document.getElementById('swapCount').innerText = swaps;
+                        let temp = arrayData[j];
+                        arrayData[j] = arrayData[j + 1];
+                        arrayData[j + 1] = temp;
+                        renderArrayBars();
+                    }
+
+                    if (bar1 && bar2) {
+                        bar1.classList.replace('bg-amber-500', 'bg-indigo-500');
+                        bar2.classList.replace('bg-amber-500', 'bg-indigo-500');
+                    }
+                }
+            }
+            document.getElementById('sortStatusText').innerText = 'Hoàn thành!';
+            isSorting = false;
+        }
+
+        // 5. Switch Lab Tabs
+        function switchLabTab(tab) {
+            document.getElementById('labPhysicsContent').classList.add('hidden');
+            document.getElementById('labChemistryContent').classList.add('hidden');
+            document.getElementById('labAlgorithmContent').classList.add('hidden');
+
+            document.getElementById('tabPhysicsBtn').className = 'px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300';
+            document.getElementById('tabChemBtn').className = 'px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300';
+            document.getElementById('tabAlgoBtn').className = 'px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300';
+
+            if (tab === 'physics') {
+                document.getElementById('labPhysicsContent').classList.remove('hidden');
+                document.getElementById('tabPhysicsBtn').className = 'px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-blue-600 text-white shadow-md';
+            } else if (tab === 'chemistry') {
+                document.getElementById('labChemistryContent').classList.remove('hidden');
+                document.getElementById('tabChemBtn').className = 'px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-purple-600 text-white shadow-md';
+            } else if (tab === 'algorithm') {
+                document.getElementById('labAlgorithmContent').classList.remove('hidden');
+                document.getElementById('tabAlgoBtn').className = 'px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-indigo-600 text-white shadow-md';
+            }
+        }
+
+        // 6. Library Filter & Search
+        function filterDocs(subject) {
+            const cards = document.querySelectorAll('.doc-card');
+            cards.forEach(c => {
+                if (subject === 'all' || c.dataset.subject === subject) {
+                    c.classList.remove('hidden');
+                } else {
+                    c.classList.add('hidden');
+                }
+            });
+        }
+
+        function handleGlobalSearch(query) {
+            const q = query.toLowerCase().trim();
+            const cards = document.querySelectorAll('.doc-card');
+            cards.forEach(c => {
+                const text = c.innerText.toLowerCase();
+                if (text.includes(q)) {
+                    c.classList.remove('hidden');
+                } else {
+                    c.classList.add('hidden');
+                }
+            });
+        }
+
+        function fakeDownloadPDF(fileName) {
+            alert("Đang tải file " + fileName + " về máy tính của bạn!");
+        }
+
+        function openPdfModal(docName) {
+            document.getElementById('pdfReaderDocName').innerText = docName;
+            document.getElementById('pdfModal').classList.remove('hidden');
+        }
+
+        function closePdfModal() {
+            document.getElementById('pdfModal').classList.add('hidden');
+        }
+
+        // 7. Interactive Quiz Module
+        const quizData = [
+            {
+                q: "Câu 1: Chu kỳ dao động nhỏ của con lắc đơn phụ thuộc vào yếu tố nào sau đây?",
+                options: ["Chiều dài dây L và gia tốc g", "Khối lượng vật nặng m", "Biên độ dao động", "Nhiệt độ môi trường"],
+                ans: 0,
+                exp: "Công thức T = 2π√(L/g), do đó chu kỳ chỉ phụ thuộc chiều dài dây L và gia tốc trọng trường g."
+            },
+            {
+                q: "Câu 2: Dung dịch nào sau đây làm quỳ tím chuyển sang màu đỏ?",
+                options: ["NaOH", "HCl", "NaCl", "Ethanol"],
+                ans: 1,
+                exp: "Axit HCl phân ly ra ion H+ làm quỳ tím chuyển đỏ, còn NaOH là bazơ làm quỳ tím chuyển xanh."
+            },
+            {
+                q: "Câu 3: Độ phức tạp thời gian trung bình của thuật toán Sắp xếp nổi bọt (Bubble Sort) là gì?",
+                options: ["O(n)", "O(n log n)", "O(n²)", "O(1)"],
+                ans: 2,
+                exp: "Bubble Sort sử dụng 2 vòng lặp lồng nhau nên độ phức tạp trung bình là O(n²)."
+            }
+        ];
+        let currentQuizIdx = 0;
+
+        function loadQuizQuestion() {
+            const item = quizData[currentQuizIdx];
+            document.getElementById('currentQuizIdxText').innerText = currentQuizIdx + 1;
+            document.getElementById('quizQuestionTitle').innerText = item.q;
+            document.getElementById('quizExplanationBox').classList.add('hidden');
+
+            const list = document.getElementById('quizOptionsList');
+            list.innerHTML = '';
+            item.options.forEach((opt, idx) => {
+                let btn = document.createElement('button');
+                btn.className = 'w-full text-left p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all flex items-center justify-between';
+                btn.innerHTML = `<span>${opt}</span> <i class="fa-regular fa-circle text-slate-300"></i>`;
+                btn.onclick = () => checkQuizAnswer(idx, btn);
+                list.appendChild(btn);
+            });
+        }
+
+        function checkQuizAnswer(selectedIdx, btnEl) {
+            const item = quizData[currentQuizIdx];
+            const list = document.getElementById('quizOptionsList').children;
+            
+            for (let i = 0; i < list.length; i++) {
+                list[i].disabled = true;
+            }
+
+            if (selectedIdx === item.ans) {
+                btnEl.classList.add('bg-emerald-500/10', 'border-emerald-500', 'text-emerald-600');
+                btnEl.querySelector('i').className = 'fa-solid fa-circle-check text-emerald-500';
+            } else {
+                btnEl.classList.add('bg-red-500/10', 'border-red-500', 'text-red-500');
+                btnEl.querySelector('i').className = 'fa-solid fa-circle-xmark text-red-500';
+                
+                // Highlight correct one
+                list[item.ans].classList.add('bg-emerald-500/10', 'border-emerald-500', 'text-emerald-600');
+            }
+
+            document.getElementById('quizExplanationText').innerText = item.exp;
+            document.getElementById('quizExplanationBox').classList.remove('hidden');
+        }
+
+        function nextQuizQuestion() {
+            currentQuizIdx = (currentQuizIdx + 1) % quizData.length;
+            loadQuizQuestion();
+        }
+
+        function resetQuiz() {
+            currentQuizIdx = 0;
+            loadQuizQuestion();
+        }
+
+        // 8. Study Planner / LocalStorage Tasks
+        let tasks = JSON.parse(localStorage.getItem('eduhub_tasks')) || [
+            { id: 1, title: 'Hoàn thành 10 câu trắc nghiệm Toán Đạo Hàm', priority: 'cao', completed: false }
+        ];
+
+        function saveAndRenderTasks() {
+            localStorage.setItem('eduhub_tasks', JSON.stringify(tasks));
+            const container = document.getElementById('tasksContainer');
+            document.getElementById('taskCounterText').innerText = tasks.length;
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (tasks.length === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-400 text-center py-8">Chưa có bài tập nào. Hãy thêm công việc mới!</p>';
+                return;
+            }
+
+            tasks.forEach(t => {
+                let div = document.createElement('div');
+                div.className = `p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs`;
+                
+                let priorityBadge = t.priority === 'cao' ? '<span class="text-[10px] bg-red-500/10 text-red-500 font-bold px-2 py-0.5 rounded-md">Cao</span>' : '<span class="text-[10px] bg-blue-500/10 text-blue-500 font-bold px-2 py-0.5 rounded-md">Thường</span>';
+
+                div.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTaskState(${t.id})" class="accent-blue-600 w-4 h-4 rounded">
+                        <span class="${t.completed ? 'line-through text-slate-400' : 'font-semibold'}">${t.title}</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        ${priorityBadge}
+                        <button onclick="deleteTask(${t.id})" class="text-slate-400 hover:text-red-500 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function addNewTask(e) {
             e.preventDefault();
-            const notification = document.getElementById('formNotification');
-            notification.classList.remove('hidden');
-            e.target.reset();
+            const input = document.getElementById('taskTitleInput');
+            const priority = document.getElementById('taskPriorityInput').value;
+            if (!input.value.trim()) return;
 
-            setTimeout(() => {
-                notification.classList.add('hidden');
-            }, 5000);
+            tasks.push({
+                id: Date.now(),
+                title: input.value.trim(),
+                priority: priority,
+                completed: false
+            });
+            input.value = '';
+            saveAndRenderTasks();
         }
 
-        // Initialize App State
+        function toggleTaskState(id) {
+            tasks = tasks.map(t => t.id === id ? {...t, completed: !t.completed} : t);
+            saveAndRenderTasks();
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            saveAndRenderTasks();
+        }
+
+        function clearAllTasks() {
+            tasks = [];
+            saveAndRenderTasks();
+        }
+
+        // Initialize Application
         window.onload = function() {
             initTheme();
-            typeEffect();
+            drawPendulum();
+            initChemistryLab();
+            renderArrayBars();
+            loadQuizQuestion();
+            saveAndRenderTasks();
+            updatePeriodCalc();
         };
     </script>
-    <!-- Floating Social Chat Buttons -->
-    <!-- Floating Contact Widget (Góc dưới bên phải) -->
-<div style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 12px;">
-
-  <!-- 1. Email -->
-  <a <a href="https://mail.google.com/mail/?view=cm&fs=1&to=hoangtuan22062010bylc@gmail.com&su=Liên%20hệ%20từ%20Website" 
-   target="_blank" rel="noopener noreferrer"
-     style="width: 50px; height: 50px; background-color: #EA4335; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s;"
-     onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Gửi Email">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-  </a>
-
-  <!-- 2. Zalo -->
-  <a href="https://zalo.me/0983341293" target="_blank" rel="noopener noreferrer" 
-     style="width: 50px; height: 50px; background-color: #0068FF; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s;"
-     onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Chat qua Zalo">
-    <span style="color: white; font-weight: bold; font-family: sans-serif; font-size: 13px;">Zalo</span>
-  </a>
-
-  <!-- 3. Messenger -->
-  <a href="https://m.me/hoangnhattuan2206" target="_blank" rel="noopener noreferrer" 
-     style="width: 50px; height: 50px; background-color: #0084FF; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s;"
-     onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Chat qua Messenger">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.477 2 2 6.145 2 11.258c0 2.91 1.45 5.513 3.717 7.185V22l3.418-1.876c.925.257 1.908.394 2.865.394 5.523 0 10-4.145 10-9.26C22 6.145 17.523 2 12 2zm1.09 12.38l-2.55-2.72-4.97 2.72 5.47-5.8 2.59 2.72 4.93-2.72-5.47 5.8z"/></svg>
-  </a>
-
-  <!-- 4. Telegram -->
-  <a href="https://t.me/username_telegram" target="_blank" rel="noopener noreferrer" 
-     style="width: 50px; height: 50px; background-color: #24A1DE; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s;"
-     onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Chat qua Telegram">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
-  </a>
-
-</div>
 </body>
 </html>
