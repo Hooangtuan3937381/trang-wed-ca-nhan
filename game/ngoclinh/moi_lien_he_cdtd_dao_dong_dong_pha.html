@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thí Nghiệm Vật Lý 3D: CĐTĐ & Dao Động Điều Hòa</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- OrbitControls CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col overflow-x-hidden">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900/90 border-b border-slate-800 px-4 py-2.5 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-indigo-600/30 border border-indigo-500/50 rounded-xl text-indigo-400">
+                    <i class="fa-solid fa-atom text-xl animate-spin" style="animation-duration: 10s;"></i>
+                </div>
+                <div>
+                    <h1 class="text-base md:text-lg font-bold bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+                        Mô Phỏng 3D Vật Lý 11: Mối Liên Hệ CĐTĐ & Dao Động Điều Hòa
+                    </h1>
+                    <p class="text-xs text-slate-400">Thí nghiệm Bàn xoay & Con lắc đơn | Tính toán li độ, vận tốc, gia tốc theo góc quay Δφ</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 text-xs font-medium">
+                <span id="status-badge" class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Đang mô phỏng
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-3 md:p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+        <!-- LEFT COLUMN: 3D Scene Viewport (7 Cols) -->
+        <section class="lg:col-span-7 flex flex-col gap-3">
+            <!-- 3D Canvas Container -->
+            <div class="relative w-full aspect-square sm:aspect-[4/3] bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl flex flex-col">
+                
+                <!-- Camera View Presets Toolbar -->
+                <div class="absolute top-3 left-3 z-10 flex flex-wrap gap-1.5 glass-panel p-1.5 rounded-xl text-xs">
+                    <button id="cam-front" class="cam-btn px-2.5 py-1.5 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-500 transition-all flex items-center gap-1 shadow">
+                        <i class="fa-solid fa-square-full text-cyan-300"></i> <span>1. Trực diện (Bóng trùng)</span>
+                    </button>
+                    <button id="cam-iso" class="cam-btn px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 font-medium hover:bg-slate-700 transition-all flex items-center gap-1">
+                        <i class="fa-solid fa-cube"></i> <span>2. 3D Toàn Cảnh</span>
+                    </button>
+                    <button id="cam-side" class="cam-btn px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 font-medium hover:bg-slate-700 transition-all flex items-center gap-1">
+                        <i class="fa-solid fa-arrows-left-right-to-line"></i> <span>3. Góc Nghiêng (Độ sâu)</span>
+                    </button>
+                    <button id="cam-top" class="cam-btn px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 font-medium hover:bg-slate-700 transition-all flex items-center gap-1">
+                        <i class="fa-solid fa-circle-notch"></i> <span>4. Từ Trên Xuống</span>
+                    </button>
+                </div>
+
+                <!-- 3D WebGL Canvas -->
+                <div id="canvas-3d-container" class="w-full h-full flex-1 cursor-grab active:cursor-grabbing relative">
+                    <!-- Loading State -->
+                    <div id="loading-spinner" class="absolute inset-0 flex items-center justify-center bg-slate-950 z-20">
+                        <div class="flex flex-col items-center gap-3">
+                            <i class="fa-solid fa-spinner text-3xl text-indigo-500 animate-spin"></i>
+                            <span class="text-xs text-slate-400">Đang khởi tạo không gian 3D...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scene Legends -->
+                <div class="absolute bottom-3 left-3 right-3 z-10 glass-panel p-2 rounded-xl text-[11px] flex flex-wrap items-center justify-between gap-2 border border-slate-700/50">
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <span class="flex items-center gap-1 text-amber-400"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> Thanh nhỏ (R=15cm)</span>
+                        <span class="flex items-center gap-1 text-rose-400"><span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span> Con lắc đơn (Cung tròn)</span>
+                        <span class="flex items-center gap-1 text-cyan-300"><span class="w-2.5 h-2.5 rounded-full bg-cyan-300"></span> Bóng đổ trên màn</span>
+                    </div>
+                    <span class="text-slate-400 text-[10px]"><i class="fa-solid fa-arrows-rotate mr-1"></i> Dùng chuột / Chạm để xoay camera</span>
+                </div>
+            </div>
+
+            <!-- Notice Banner -->
+            <div class="bg-indigo-950/50 border border-indigo-800/50 rounded-xl p-2.5 flex items-center gap-2.5 text-xs text-indigo-200">
+                <i class="fa-solid fa-shield-halved text-amber-400 text-sm flex-shrink-0"></i>
+                <div>
+                    <strong>Mô phỏng vật lý thực tế:</strong> Con lắc đơn treo ở vị trí $Z = -12\text{ cm}$ phía sau bàn xoay, đung đưa theo cung tròn thẳng đứng chuẩn xác. Ở góc nhìn Trực diện, hai bóng đổ hoàn toàn trùng khít!
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT COLUMN: Control Panel, Calculations, Graph & Theory (7 Cols in Tab layout) -->
+        <section class="lg:col-span-5 flex flex-col gap-3">
+            
+            <!-- Tab Headers -->
+            <div class="flex bg-slate-900 border border-slate-800 p-1 rounded-xl text-xs font-semibold">
+                <button id="tab-btn-angle" class="tab-btn flex-1 py-2 rounded-lg bg-indigo-600 text-white transition-all flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-calculator"></i> Góc Quay & Tính Toán
+                </button>
+                <button id="tab-btn-controls" class="tab-btn flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-sliders"></i> Điều Khiển
+                </button>
+                <button id="tab-btn-graph" class="tab-btn flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-chart-line"></i> Đồ Thị x - t
+                </button>
+                <button id="tab-btn-theory" class="tab-btn flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-graduation-cap"></i> Lý Thuyết
+                </button>
+            </div>
+
+            <!-- TAB 1: ANGULAR DISPLACEMENT CALCULATION PANEL & DATA TABLE -->
+            <div id="tab-content-angle" class="tab-content flex flex-col gap-3 max-h-[620px] overflow-y-auto pr-1">
+                
+                <!-- Section 1: Angle Input Box & Presets -->
+                <div class="glass-panel p-3.5 rounded-2xl flex flex-col gap-3 border-l-4 border-indigo-500">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-compass text-amber-400"></i> Nhập góc quay của bàn xoay (Δφ)
+                        </h3>
+                        <span class="text-[10px] text-slate-400">Tính từ mốc $t = 0$</span>
+                    </div>
+
+                    <!-- Input Angle Row -->
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 relative">
+                            <input type="number" id="input-angle-deg" value="90" min="0" max="7200" step="15"
+                                   class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm font-mono font-bold text-amber-400 focus:outline-none focus:border-indigo-500 pr-8">
+                            <span class="absolute right-3 top-2.5 text-xs text-slate-400 font-bold">°</span>
+                        </div>
+                        <button id="btn-apply-angle" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-bold rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-lg shadow-indigo-600/30">
+                            <i class="fa-solid fa-play"></i> Áp dụng vào 3D
+                        </button>
+                    </div>
+
+                    <!-- Quick Angle Preset Buttons -->
+                    <div class="flex flex-col gap-1.5">
+                        <span class="text-[10px] text-slate-400 font-medium">Nút chọn nhanh góc quay Δφ:</span>
+                        <div class="grid grid-cols-5 gap-1.5">
+                            <button class="btn-preset-angle bg-slate-800 hover:bg-slate-700 text-slate-200 py-1 rounded-lg text-xs font-mono font-semibold transition-all border border-slate-700" data-deg="0">0°</button>
+                            <button class="btn-preset-angle bg-slate-800 hover:bg-slate-700 text-slate-200 py-1 rounded-lg text-xs font-mono font-semibold transition-all border border-slate-700" data-deg="30">30°</button>
+                            <button class="btn-preset-angle bg-slate-800 hover:bg-slate-700 text-slate-200 py-1 rounded-lg text-xs font-mono font-semibold transition-all border border-slate-700" data-deg="45">45°</button>
+                            <button class="btn-preset-angle bg-slate-800 hover:bg-slate-700 text-slate-200 py-1 rounded-lg text-xs font-mono font-semibold transition-all border border-slate-700" data-deg="60">60°</button>
+                            <button class="btn-preset-angle bg-indigo-900/60 text-indigo-200 border border-indigo-500/50 py-1 rounded-lg text-xs font-mono font-semibold transition-all" data-deg="90">90°</button>
+                            <button class="btn-preset-angle bg-slate-800 hover:bg-slate-700 text-slate-200 py-1 rounded-lg text-xs font-mono font-semibold transition-all border border-slate-700" data-deg="120">120°</button>
+                            <button class="btn-preset-angle bg-slate-800 hover:bg-slate-700 text-slate-200 py-1 rounded-lg text-xs font-mono font-semibold transition-all border border-slate-700" data-deg="180">180°</button>
+                            <button class="btn-preset-angle bg-slate-800 hover:bg-slate-700 text-slate-200 py-1 rounded-lg text-xs font-mono font-semibold transition-all border border-slate-700" data-deg="270">270°</button>
+                            <button class="btn-preset-angle bg-slate-800 hover:bg-slate-700 text-slate-200 py-1 rounded-lg text-xs font-mono font-semibold transition-all border border-slate-700" data-deg="360">360°</button>
+                            <button class="btn-preset-angle bg-slate-800 hover:bg-slate-700 text-slate-200 py-1 rounded-lg text-xs font-mono font-semibold transition-all border border-slate-700" data-deg="720">720°</button>
+                        </div>
+                    </div>
+
+                    <!-- Initial Phase Option φ0 -->
+                    <div class="flex items-center justify-between text-xs pt-1 border-t border-slate-800">
+                        <span class="text-slate-300 font-medium">Pha ban đầu ($\varphi_0$):</span>
+                        <select id="select-phase0" class="bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-indigo-500">
+                            <option value="-1.570796" selected>φ0 = -π/2 (VTCB đi lên - SGK)</option>
+                            <option value="0">φ0 = 0 (Biên dương +A)</option>
+                            <option value="1.570796">φ0 = +π/2 (VTCB đi xuống)</option>
+                            <option value="3.141593">φ0 = π (Biên âm -A)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Section 2: Calculated Physics Results Cards -->
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <!-- Calculated Time -->
+                    <div class="glass-panel p-2.5 rounded-xl flex flex-col gap-0.5 border-l-4 border-amber-400">
+                        <span class="text-slate-400 text-[10px]">Thời gian tương ứng ($t$):</span>
+                        <span class="text-base font-bold font-mono text-amber-400"><span id="calc-t">0.250</span> <span class="text-xs font-normal text-slate-400">s</span></span>
+                        <span class="text-[9px] text-slate-500">$t = \Delta\varphi / \omega$ (<span id="calc-t-ms">250</span> ms)</span>
+                    </div>
+
+                    <!-- Calculated Displacement x -->
+                    <div class="glass-panel p-2.5 rounded-xl flex flex-col gap-0.5 border-l-4 border-cyan-400">
+                        <span class="text-slate-400 text-[10px]">Li độ dao động ($x$):</span>
+                        <span class="text-base font-bold font-mono text-cyan-400"><span id="calc-x">15.00</span> <span class="text-xs font-normal text-slate-400">cm</span></span>
+                        <span class="text-[9px] text-slate-500">$x = A\cos(\omega t + \varphi_0) = $ <span id="calc-x-m">0.150</span> m</span>
+                    </div>
+
+                    <!-- Calculated Velocity v -->
+                    <div class="glass-panel p-2.5 rounded-xl flex flex-col gap-0.5 border-l-4 border-emerald-400">
+                        <span class="text-slate-400 text-[10px]">Vận tốc tức thời ($v$):</span>
+                        <span class="text-base font-bold font-mono text-emerald-400"><span id="calc-v">0.00</span> <span class="text-xs font-normal text-slate-400">cm/s</span></span>
+                        <span class="text-[9px] text-slate-500">$v = -\omega A\sin(\Phi) = $ <span id="calc-v-m">0.000</span> m/s</span>
+                    </div>
+
+                    <!-- Calculated Acceleration a -->
+                    <div class="glass-panel p-2.5 rounded-xl flex flex-col gap-0.5 border-l-4 border-purple-400">
+                        <span class="text-slate-400 text-[10px]">Gia tốc tức thời ($a$):</span>
+                        <span class="text-base font-bold font-mono text-purple-400"><span id="calc-a">-592.2</span> <span class="text-xs font-normal text-slate-400">cm/s²</span></span>
+                        <span class="text-[9px] text-slate-500">$a = -\omega^2 x = $ <span id="calc-a-m">-5.922</span> m/s²</span>
+                    </div>
+                </div>
+
+                <!-- Section 3: Comprehensive Summary Data Table -->
+                <div class="glass-panel p-3 rounded-2xl flex flex-col gap-2">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-1.5">
+                            <i class="fa-solid fa-table text-emerald-400"></i> Bảng tổng hợp giá trị vật lý chuẩn
+                        </h3>
+                        <span class="text-[10px] text-slate-400">Click dòng để nhảy 3D</span>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-slate-800">
+                        <table class="w-full text-center text-[11px] border-collapse font-mono">
+                            <thead>
+                                <tr class="bg-slate-800/90 text-slate-300 font-sans">
+                                    <th class="p-1.5 border-b border-slate-700">Δφ</th>
+                                    <th class="p-1.5 border-b border-slate-700">t (s)</th>
+                                    <th class="p-1.5 border-b border-slate-700 text-cyan-300">x (cm)</th>
+                                    <th class="p-1.5 border-b border-slate-700 text-emerald-300">v (cm/s)</th>
+                                    <th class="p-1.5 border-b border-slate-700 text-purple-300">a (cm/s²)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summary-table-body" class="divide-y divide-slate-800/50 text-slate-300">
+                                <!-- Populated dynamically by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB 2: CONTROLS & DASHBOARD -->
+            <div id="tab-content-controls" class="tab-content hidden flex-col gap-3">
+                
+                <!-- Playback Toolbar -->
+                <div class="glass-panel p-3 rounded-2xl flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <button id="btn-play-pause" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold rounded-xl text-xs transition-all flex items-center gap-2 shadow-lg shadow-indigo-600/30">
+                            <i class="fa-solid fa-pause"></i> <span>Tạm dừng</span>
+                        </button>
+                        <button id="btn-reset" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 font-semibold rounded-xl text-xs transition-all flex items-center gap-1.5 border border-slate-700">
+                            <i class="fa-solid fa-rotate-left"></i> <span>Về t=0</span>
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-xs">
+                        <span class="text-slate-400">Tốc độ:</span>
+                        <select id="select-speed" class="bg-slate-800 border border-slate-700 text-slate-200 rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-indigo-500">
+                            <option value="0.25">0.25x</option>
+                            <option value="0.5">0.5x (Chậm)</option>
+                            <option value="1" selected>1.0x (Thực)</option>
+                            <option value="1.5">1.5x</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Sliders -->
+                <div class="glass-panel p-3.5 rounded-2xl flex flex-col gap-3.5">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800 pb-2 flex items-center justify-between">
+                        <span><i class="fa-solid fa-gear text-indigo-400 mr-1.5"></i> Thông số thí nghiệm</span>
+                    </h3>
+
+                    <!-- Radius Slider -->
+                    <div class="flex flex-col gap-1.5">
+                        <div class="flex items-center justify-between text-xs">
+                            <label for="slider-radius" class="text-slate-300 font-medium">Bán kính $R$ = Biên độ $A$:</label>
+                            <span class="text-amber-400 font-bold font-mono"><span id="val-radius">15</span> cm</span>
+                        </div>
+                        <input type="range" id="slider-radius" min="5" max="22" step="1" value="15" 
+                               class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-400">
+                    </div>
+
+                    <!-- Omega Slider -->
+                    <div class="flex flex-col gap-1.5">
+                        <div class="flex items-center justify-between text-xs">
+                            <label for="slider-omega" class="text-slate-300 font-medium">Tốc độ quay bàn ($\omega$):</label>
+                            <span class="text-cyan-400 font-bold font-mono"><span id="val-omega">6.28</span> rad/s (<span id="val-omega-pi">2.0π</span>)</span>
+                        </div>
+                        <input type="range" id="slider-omega" min="1.57" max="12.57" step="0.314" value="6.28" 
+                               class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                    </div>
+                </div>
+
+                <!-- Display Checkboxes -->
+                <div class="glass-panel p-3 rounded-2xl flex flex-col gap-2">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 pb-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-eye text-emerald-400"></i> Bật / Tắt thành phần
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white p-1.5 rounded-lg bg-slate-800/40">
+                            <input type="checkbox" id="toggle-pendulum" checked class="rounded accent-rose-500">
+                            <span>Con lắc đơn (Phía sau)</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white p-1.5 rounded-lg bg-slate-800/40">
+                            <input type="checkbox" id="toggle-shadows" checked class="rounded accent-cyan-500">
+                            <span>Bóng đổ trên màn</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white p-1.5 rounded-lg bg-slate-800/40">
+                            <input type="checkbox" id="toggle-rays" checked class="rounded accent-amber-500">
+                            <span>Tia sáng chiếu thẳng</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white p-1.5 rounded-lg bg-slate-800/40">
+                            <input type="checkbox" id="toggle-vectors" checked class="rounded accent-emerald-500">
+                            <span>Vectơ Vận tốc $v$</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Real-time Live Stats -->
+                <div class="glass-panel p-2.5 rounded-xl flex items-center justify-around text-xs text-center">
+                    <div>
+                        <div class="text-slate-400 text-[10px]">Thời gian $t$</div>
+                        <div class="font-mono font-bold text-indigo-400 text-xs"><span id="dash-time">0.00</span> s</div>
+                    </div>
+                    <div class="h-5 w-[1px] bg-slate-800"></div>
+                    <div>
+                        <div class="text-slate-400 text-[10px]">Chu kỳ $T$</div>
+                        <div class="font-mono font-bold text-slate-200 text-xs"><span id="dash-period">1.00</span> s</div>
+                    </div>
+                    <div class="h-5 w-[1px] bg-slate-800"></div>
+                    <div>
+                        <div class="text-slate-400 text-[10px]">Chiều dài dây $L$</div>
+                        <div class="font-mono font-bold text-amber-400 text-xs"><span id="dash-length">24.8</span> cm</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB 3: REAL-TIME GRAPH -->
+            <div id="tab-content-graph" class="tab-content hidden flex-col gap-3">
+                <div class="glass-panel p-3 rounded-2xl flex flex-col gap-2">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-1.5">
+                            <i class="fa-solid fa-chart-line text-cyan-400"></i> Đồ thị ly độ $x(t)$ theo thời gian
+                        </h3>
+                        <span class="text-[10px] text-slate-400 font-mono">Đồng bộ mô hình 3D</span>
+                    </div>
+
+                    <!-- Graph 2D Canvas -->
+                    <div class="relative w-full h-56 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
+                        <canvas id="canvas-graph" class="w-full h-full block"></canvas>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="flex items-center justify-between text-[11px] text-slate-400 px-1">
+                        <span class="flex items-center gap-1 text-cyan-400"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span> Đồ thị $x(t) = A \cos(\omega t + \varphi_0)$</span>
+                        <button id="btn-clear-graph" class="hover:text-white transition-colors text-[10px] bg-slate-800 px-2 py-0.5 rounded border border-slate-700">
+                            Xóa đồ thị
+                        </button>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-3 rounded-2xl text-xs space-y-1.5 text-slate-300">
+                    <h4 class="font-bold text-amber-400 flex items-center gap-1">
+                        <i class="fa-solid fa-magnifying-glass"></i> Nhận xét đồ thị sơ đồ SGK:
+                    </h4>
+                    <ul class="list-disc list-inside space-y-1 text-slate-400 text-[11px] leading-relaxed">
+                        <li>Dạng đường hình sin tuần hoàn với biên độ $A = 15\text{ cm}$.</li>
+                        <li>Tại $t = 0$: Góc quay $\Delta\varphi = 0^\circ$, $x = 0$ (Vị trí cân bằng đi lên).</li>
+                        <li>Tại $t = T/4$: Góc quay $\Delta\varphi = 90^\circ$, $x = +A = +15\text{ cm}$ (Biên dương).</li>
+                        <li>Tại $t = T/2$: Góc quay $\Delta\varphi = 180^\circ$, $x = 0$ (VTCB đi xuống).</li>
+                        <li>Tại $t = 3T/4$: Góc quay $\Delta\varphi = 270^\circ$, $x = -A = -15\text{ cm}$ (Biên âm).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TAB 4: LESSON & THEORY -->
+            <div id="tab-content-theory" class="tab-content hidden flex-col gap-3 max-h-[580px] overflow-y-auto pr-1">
+                
+                <div class="glass-panel p-3.5 rounded-2xl space-y-2.5">
+                    <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-2">
+                        <i class="fa-solid fa-graduation-cap text-base"></i> Mối liên hệ Vật lý cốt lõi
+                    </h3>
+                    <p class="text-xs text-slate-200 leading-relaxed bg-indigo-950/40 p-2.5 rounded-xl border border-indigo-800/40">
+                        <strong>Định lý:</strong> Hình chiếu vuông góc của một điểm chuyển động tròn đều lên một đường thẳng nằm trong mặt phẳng quỹ đạo là một <strong>dao động điều hòa</strong>.
+                    </p>
+                    
+                    <div class="overflow-x-auto pt-1">
+                        <table class="w-full text-left text-[11px] border-collapse">
+                            <thead>
+                                <tr class="bg-slate-800/80 text-slate-300">
+                                    <th class="p-2 border border-slate-700">Chuyển động tròn đều</th>
+                                    <th class="p-2 border border-slate-700">Dao động điều hòa</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-400">
+                                <tr>
+                                    <td class="p-1.5 border border-slate-800">Bán kính $R = 15\text{ cm}$</td>
+                                    <td class="p-1.5 border border-slate-800 text-amber-400 font-semibold">Biên độ $A = R = 15\text{ cm}$</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1.5 border border-slate-800">Tốc độ góc $\omega = 2\pi\text{ rad/s}$</td>
+                                    <td class="p-1.5 border border-slate-800 text-cyan-400 font-semibold">Tần số góc $\omega = 2\pi\text{ rad/s}$</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1.5 border border-slate-800">Góc quay $\Delta\varphi = \omega t$</td>
+                                    <td class="p-1.5 border border-slate-800 text-indigo-300 font-semibold">Pha dao động $\Phi = \omega t + \varphi_0$</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1.5 border border-slate-800">Tốc độ dài $v = \omega R = 30\pi\text{ cm/s}$</td>
+                                    <td class="p-1.5 border border-slate-800 text-emerald-400 font-semibold">Vận tốc cực đại $v_{\max} = 94.25\text{ cm/s}$</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1.5 border border-slate-800">Gia tốc hướng tâm $a_{ht} = \omega^2 R$</td>
+                                    <td class="p-1.5 border border-slate-800 text-purple-400 font-semibold">Gia tốc cực đại $a_{\max} = 592.2\text{ cm/s}^2$</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-3.5 rounded-2xl space-y-2">
+                    <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-calculator"></i> Công thức con lắc đơn đung đưa
+                    </h4>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Chu kỳ dao động con lắc $T = 2\pi \sqrt{\frac{L}{g}} \Rightarrow L = \frac{g}{\omega^2} \approx 24.85\text{ cm}$. Góc lệch cực đại $\theta_{\max} = \arcsin(A/L) \approx 37.1^\circ$.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- JavaScript Simulation Engine -->
+    <script>
+        // Simulation Physics Parameters & State
+        const state = {
+            isRunning: true,
+            time: 0,
+            speedMultiplier: 1.0,
+            radius: 15.0,        // R = A = 15 cm
+            omega: 2 * Math.PI,  // w = 2*pi rad/s
+            phase0: -Math.PI / 2,// Default initial phase (-pi/2 for SGK graph starting at 0 moving up)
+            angleInputDeg: 90,   // Input angle in degrees
+            showPendulum: true,
+            showShadows: true,
+            showRays: true,
+            showVectors: true,
+            history: []          // stores graph coordinates
+        };
+
+        // Standard summary angles for the data table
+        const standardAngles = [0, 30, 45, 60, 90, 120, 180, 270, 360];
+
+        // Three.js Scene Globals
+        let scene, camera, renderer, controls;
+        let turntable, pin, screenMesh;
+        let shadowPin, shadowBob;
+        let pendulumPivot, pendulumString, pendulumBob;
+        let velocityVectorArrow, lightRayGroup;
+
+        // Graph Canvas Globals
+        let graphCanvas, graphCtx;
+
+        window.onload = function() {
+            init3DScene();
+            initGraphCanvas();
+            initEventListeners();
+            
+            // Calculate initial angular values
+            updateAngleCalculationUI();
+
+            // Hide Loading Spinner
+            document.getElementById('loading-spinner').style.display = 'none';
+
+            // Start Main Simulation Loop
+            animate(0);
+        };
+
+        function init3DScene() {
+            const container = document.getElementById('canvas-3d-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            // 1. Scene setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0f1d);
+            scene.fog = new THREE.FogExp2(0x0a0f1d, 0.006);
+
+            // 2. Camera setup - Default Front View for overlapping shadows
+            camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+            camera.position.set(0, 16, 58);
+
+            // 3. Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            // 4. OrbitControls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.target.set(0, 14, -26); // Target screen center
+            controls.update();
+
+            // 5. Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
+
+            const frontLight = new THREE.DirectionalLight(0xffffff, 1.0);
+            frontLight.position.set(0, 20, 50);
+            frontLight.castShadow = true;
+            scene.add(frontLight);
+
+            const fillLight = new THREE.DirectionalLight(0x6366f1, 0.4);
+            fillLight.position.set(-30, 20, -10);
+            scene.add(fillLight);
+
+            // 6. Floor & Grid
+            const gridHelper = new THREE.GridHelper(100, 40, 0x334155, 0x1e293b);
+            gridHelper.position.y = -0.1;
+            scene.add(gridHelper);
+
+            // 7. TURNTABLE (BÀN XOAY) - Centered at (0, 0, 0)
+            const turntableGeo = new THREE.CylinderGeometry(23, 23, 1.2, 64);
+            const turntableMat = new THREE.MeshStandardMaterial({
+                color: 0x1e293b,
+                roughness: 0.3,
+                metalness: 0.8
+            });
+            turntable = new THREE.Mesh(turntableGeo, turntableMat);
+            turntable.position.set(0, 0, 0);
+            scene.add(turntable);
+
+            // Circular Track Ring on Turntable (Radius = 15cm)
+            const ringGeo = new THREE.RingGeometry(14.8, 15.2, 64);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b, side: THREE.DoubleSide });
+            const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+            ringMesh.rotation.x = Math.PI / 2;
+            ringMesh.position.y = 0.61;
+            turntable.add(ringMesh);
+
+            // Center Axis Pole
+            const centerPoleGeo = new THREE.CylinderGeometry(0.8, 0.8, 5, 32);
+            const centerPoleMat = new THREE.MeshStandardMaterial({ color: 0x64748b, metalness: 0.9 });
+            const centerPole = new THREE.Mesh(centerPoleGeo, centerPoleMat);
+            centerPole.position.set(0, 1.5, 0);
+            scene.add(centerPole);
+
+            // 8. VERTICAL PIN (THANH NHỎ CÁCH TÂM 15 CM)
+            const pinGroup = new THREE.Group();
+            const pinMeshGeo = new THREE.CylinderGeometry(0.5, 0.5, 8, 32);
+            const pinMeshMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xd97706, emissiveIntensity: 0.3 });
+            const pinMesh = new THREE.Mesh(pinMeshGeo, pinMeshMat);
+            pinMesh.position.y = 4;
+            pinGroup.add(pinMesh);
+
+            const tipGeo = new THREE.SphereGeometry(0.7, 16, 16);
+            const tipMat = new THREE.MeshStandardMaterial({ color: 0xfcb316 });
+            const tipMesh = new THREE.Mesh(tipGeo, tipMat);
+            tipMesh.position.y = 8;
+            pinGroup.add(tipMesh);
+
+            pin = pinGroup;
+            scene.add(pin);
+
+            // 9. SIMPLE PENDULUM (CON LẮC ĐƠN PHÍA SAU BÀN XOAY - Z = -12 cm)
+            const pendZ = -12;
+            const pivotY = 32;
+            const stringLength = 20;
+
+            const pendGroup = new THREE.Group();
+
+            // Stand
+            const standGeo = new THREE.BoxGeometry(45, 1, 2);
+            const standMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.6 });
+            const standMesh = new THREE.Mesh(standGeo, standMat);
+            standMesh.position.set(0, pivotY, pendZ);
+            pendGroup.add(standMesh);
+
+            const pillarGeo = new THREE.CylinderGeometry(0.6, 0.6, pivotY, 16);
+            const pillarMat = new THREE.MeshStandardMaterial({ color: 0x334155 });
+            const pLeft = new THREE.Mesh(pillarGeo, pillarMat);
+            pLeft.position.set(-22, pivotY / 2, pendZ);
+            const pRight = new THREE.Mesh(pillarGeo, pillarMat);
+            pRight.position.set(22, pivotY / 2, pendZ);
+            pendGroup.add(pLeft);
+            pendGroup.add(pRight);
+
+            // Pendulum String Line
+            const stringGeo = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(0, pivotY, pendZ),
+                new THREE.Vector3(0, pivotY - stringLength, pendZ)
+            ]);
+            const stringMat = new THREE.LineBasicMaterial({ color: 0xf8fafc, linewidth: 2 });
+            pendulumString = new THREE.Line(stringGeo, stringMat);
+            pendGroup.add(pendulumString);
+
+            // Pendulum Bob Ball
+            const bobGeo = new THREE.SphereGeometry(1.6, 32, 32);
+            const bobMat = new THREE.MeshStandardMaterial({
+                color: 0xf43f5e,
+                roughness: 0.2,
+                metalness: 0.6,
+                emissive: 0xbe123c,
+                emissiveIntensity: 0.2
+            });
+            pendulumBob = new THREE.Mesh(bobGeo, bobMat);
+            pendulumBob.position.set(0, pivotY - stringLength, pendZ);
+            pendGroup.add(pendulumBob);
+
+            pendulumPivot = pendGroup;
+            scene.add(pendulumPivot);
+
+            // 10. SCREEN (MÀN CHẮN PHÍA SAU CÙNG - Z = -26 cm)
+            const screenGeo = new THREE.PlaneGeometry(64, 32);
+            const screenMat = new THREE.MeshStandardMaterial({
+                color: 0xf8fafc,
+                roughness: 0.9,
+                side: THREE.DoubleSide
+            });
+            screenMesh = new THREE.Mesh(screenGeo, screenMat);
+            screenMesh.position.set(0, 16, -26);
+            scene.add(screenMesh);
+
+            const frameGeo = new THREE.BoxGeometry(66, 34, 1);
+            const frameMat = new THREE.MeshStandardMaterial({ color: 0x1e293b });
+            const frameMesh = new THREE.Mesh(frameGeo, frameMat);
+            frameMesh.position.set(0, 16, -26.6);
+            scene.add(frameMesh);
+
+            const screenGrid = new THREE.GridHelper(64, 20, 0xcbd5e1, 0xe2e8f0);
+            screenGrid.rotation.x = Math.PI / 2;
+            screenGrid.position.set(0, 16, -25.9);
+            scene.add(screenGrid);
+
+            // 11. SHADOW OVERLAY MESHES ON SCREEN
+            const shadowPinGeo = new THREE.CylinderGeometry(0.5, 0.5, 8, 16);
+            const shadowMatPin = new THREE.MeshBasicMaterial({ color: 0x020617, transparent: true, opacity: 0.85 });
+            shadowPin = new THREE.Mesh(shadowPinGeo, shadowMatPin);
+            shadowPin.position.set(0, 4, -25.8);
+            scene.add(shadowPin);
+
+            const shadowBobGeo = new THREE.SphereGeometry(1.6, 32, 32);
+            const shadowMatBob = new THREE.MeshBasicMaterial({ color: 0x4c0519, transparent: true, opacity: 0.85 });
+            shadowBob = new THREE.Mesh(shadowBobGeo, shadowMatBob);
+            shadowBob.position.set(0, 14, -25.8);
+            scene.add(shadowBob);
+
+            // 12. LIGHT RAYS
+            lightRayGroup = new THREE.Group();
+            const rayMat = new THREE.LineDashedMaterial({
+                color: 0xfde047,
+                dashSize: 1,
+                gapSize: 0.8,
+                opacity: 0.35,
+                transparent: true
+            });
+
+            for (let i = -3; i <= 3; i++) {
+                const pts = [new THREE.Vector3(i * 8, 14, 40), new THREE.Vector3(i * 8, 14, -25.5)];
+                const rGeo = new THREE.BufferGeometry().setFromPoints(pts);
+                const rLine = new THREE.Line(rGeo, rayMat);
+                rLine.computeLineDistances();
+                lightRayGroup.add(rLine);
+            }
+            scene.add(lightRayGroup);
+
+            // 13. VELOCITY VECTOR ARROW
+            velocityVectorArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, -1), new THREE.Vector3(15, 4, 0), 8, 0x10b981, 2, 1);
+            scene.add(velocityVectorArrow);
+
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        function initGraphCanvas() {
+            graphCanvas = document.getElementById('canvas-graph');
+            graphCtx = graphCanvas.getContext('2d');
+            resizeGraphCanvas();
+        }
+
+        function resizeGraphCanvas() {
+            if (!graphCanvas) return;
+            const rect = graphCanvas.parentElement.getBoundingClientRect();
+            graphCanvas.width = rect.width;
+            graphCanvas.height = rect.height;
+        }
+
+        // Calculates Physics Values for any arbitrary Angular Displacement (Delta Phi in Degrees)
+        function calculatePhysicsForAngle(deg) {
+            const rad = (deg * Math.PI) / 180;
+            const w = state.omega;
+            const A = state.radius;
+            const phi0 = state.phase0;
+
+            const t = rad / w; // time in seconds
+            const currentPhase = rad + phi0;
+
+            const x = A * Math.cos(currentPhase);                      // cm
+            const v = -w * A * Math.sin(currentPhase);                  // cm/s
+            const a = -w * w * x;                                       // cm/s^2
+
+            return {
+                deg,
+                rad,
+                t,
+                t_ms: t * 1000,
+                x,
+                x_m: x / 100,
+                v,
+                v_m: v / 100,
+                a,
+                a_m: a / 100
+            };
+        }
+
+        // Updates Calculation UI Cards & Summary Table based on inputs
+        function updateAngleCalculationUI() {
+            const deg = parseFloat(document.getElementById('input-angle-deg').value) || 0;
+            state.angleInputDeg = deg;
+
+            const res = calculatePhysicsForAngle(deg);
+
+            // Update UI Cards
+            document.getElementById('calc-t').innerText = res.t.toFixed(3);
+            document.getElementById('calc-t-ms').innerText = res.t_ms.toFixed(0);
+            document.getElementById('calc-x').innerText = res.x.toFixed(2);
+            document.getElementById('calc-x-m').innerText = res.x_m.toFixed(3);
+            document.getElementById('calc-v').innerText = res.v.toFixed(2);
+            document.getElementById('calc-v-m').innerText = res.v_m.toFixed(3);
+            document.getElementById('calc-a').innerText = res.a.toFixed(1);
+            document.getElementById('calc-a-m').innerText = res.a_m.toFixed(3);
+
+            // Re-render Summary Data Table
+            renderSummaryTable();
+        }
+
+        // Populates the summary data table dynamically
+        function renderSummaryTable() {
+            const tbody = document.getElementById('summary-table-body');
+            tbody.innerHTML = '';
+
+            standardAngles.forEach(deg => {
+                const res = calculatePhysicsForAngle(deg);
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-indigo-900/40 cursor-pointer transition-colors border-b border-slate-800/40';
+                tr.innerHTML = `
+                    <td class="p-1.5 font-bold text-amber-400">${deg}°</td>
+                    <td class="p-1.5 text-slate-300">${res.t.toFixed(3)}s</td>
+                    <td class="p-1.5 font-bold text-cyan-400">${res.x.toFixed(2)}</td>
+                    <td class="p-1.5 font-bold text-emerald-400">${res.v.toFixed(1)}</td>
+                    <td class="p-1.5 font-bold text-purple-400">${res.a.toFixed(0)}</td>
+                `;
+                tr.onclick = () => {
+                    document.getElementById('input-angle-deg').value = deg;
+                    updateAngleCalculationUI();
+                    applyAngleTo3D(deg);
+                };
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Applies calculated angle/time state to the active 3D model & graph
+        function applyAngleTo3D(deg) {
+            const res = calculatePhysicsForAngle(deg);
+            state.time = res.t;
+            state.isRunning = false;
+
+            const playPauseBtn = document.getElementById('btn-play-pause');
+            playPauseBtn.innerHTML = `<i class="fa-solid fa-play"></i> <span>Tiếp tục</span>`;
+            playPauseBtn.className = playPauseBtn.className.replace('bg-indigo-600', 'bg-emerald-600');
+            document.getElementById('status-badge').innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> Tạm dừng tại ${deg}°`;
+
+            updatePhysics(0);
+        }
+
+        function initEventListeners() {
+            // Camera Preset Buttons
+            document.getElementById('cam-front').onclick = () => setCameraPreset('front');
+            document.getElementById('cam-iso').onclick = () => setCameraPreset('iso');
+            document.getElementById('cam-side').onclick = () => setCameraPreset('side');
+            document.getElementById('cam-top').onclick = () => setCameraPreset('top');
+
+            // Tabs
+            document.getElementById('tab-btn-angle').onclick = () => switchTab('angle');
+            document.getElementById('tab-btn-controls').onclick = () => switchTab('controls');
+            document.getElementById('tab-btn-graph').onclick = () => switchTab('graph');
+            document.getElementById('tab-btn-theory').onclick = () => switchTab('theory');
+
+            // Angle Input & Presets
+            const angleInput = document.getElementById('input-angle-deg');
+            angleInput.oninput = updateAngleCalculationUI;
+            angleInput.onchange = updateAngleCalculationUI;
+
+            document.querySelectorAll('.btn-preset-angle').forEach(btn => {
+                btn.onclick = () => {
+                    const deg = parseFloat(btn.getAttribute('data-deg'));
+                    angleInput.value = deg;
+                    updateAngleCalculationUI();
+                    applyAngleTo3D(deg);
+                };
+            });
+
+            document.getElementById('btn-apply-angle').onclick = () => {
+                const deg = parseFloat(angleInput.value) || 0;
+                applyAngleTo3D(deg);
+            };
+
+            document.getElementById('select-phase0').onchange = (e) => {
+                state.phase0 = parseFloat(e.target.value);
+                state.history = [];
+                updateAngleCalculationUI();
+                updatePhysics(0);
+            };
+
+            // Playback
+            const playPauseBtn = document.getElementById('btn-play-pause');
+            playPauseBtn.onclick = () => {
+                state.isRunning = !state.isRunning;
+                if (state.isRunning) {
+                    playPauseBtn.innerHTML = `<i class="fa-solid fa-pause"></i> <span>Tạm dừng</span>`;
+                    playPauseBtn.className = playPauseBtn.className.replace('bg-emerald-600', 'bg-indigo-600');
+                    document.getElementById('status-badge').innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Đang mô phỏng`;
+                } else {
+                    playPauseBtn.innerHTML = `<i class="fa-solid fa-play"></i> <span>Tiếp tục</span>`;
+                    playPauseBtn.className = playPauseBtn.className.replace('bg-indigo-600', 'bg-emerald-600');
+                    document.getElementById('status-badge').innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> Đã tạm dừng`;
+                }
+            };
+
+            document.getElementById('btn-reset').onclick = () => {
+                state.time = 0;
+                state.history = [];
+                document.getElementById('input-angle-deg').value = 0;
+                updateAngleCalculationUI();
+                updatePhysics(0);
+            };
+
+            document.getElementById('select-speed').onchange = (e) => {
+                state.speedMultiplier = parseFloat(e.target.value);
+            };
+
+            // Sliders
+            document.getElementById('slider-radius').oninput = (e) => {
+                state.radius = parseFloat(e.target.value);
+                document.getElementById('val-radius').innerText = state.radius.toFixed(0);
+                updateAngleCalculationUI();
+            };
+
+            document.getElementById('slider-omega').oninput = (e) => {
+                state.omega = parseFloat(e.target.value);
+                document.getElementById('val-omega').innerText = state.omega.toFixed(2);
+                document.getElementById('val-omega-pi').innerText = (state.omega / Math.PI).toFixed(1) + 'π';
+                updateAngleCalculationUI();
+            };
+
+            // Toggles
+            document.getElementById('toggle-pendulum').onchange = (e) => state.showPendulum = e.target.checked;
+            document.getElementById('toggle-shadows').onchange = (e) => state.showShadows = e.target.checked;
+            document.getElementById('toggle-rays').onchange = (e) => state.showRays = e.target.checked;
+            document.getElementById('toggle-vectors').onchange = (e) => state.showVectors = e.target.checked;
+
+            document.getElementById('btn-clear-graph').onclick = () => state.history = [];
+        }
+
+        function setCameraPreset(preset) {
+            document.querySelectorAll('.cam-btn').forEach(btn => {
+                btn.className = 'cam-btn px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 font-medium hover:bg-slate-700 transition-all flex items-center gap-1';
+            });
+
+            if (preset === 'front') {
+                document.getElementById('cam-front').className = 'cam-btn px-2.5 py-1.5 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-500 transition-all flex items-center gap-1 shadow';
+                animateCameraTo(new THREE.Vector3(0, 16, 58), new THREE.Vector3(0, 14, -26));
+            } else if (preset === 'iso') {
+                document.getElementById('cam-iso').className = 'cam-btn px-2.5 py-1.5 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-500 transition-all flex items-center gap-1 shadow';
+                animateCameraTo(new THREE.Vector3(34, 28, 38), new THREE.Vector3(0, 8, -12));
+            } else if (preset === 'side') {
+                document.getElementById('cam-side').className = 'cam-btn px-2.5 py-1.5 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-500 transition-all flex items-center gap-1 shadow';
+                animateCameraTo(new THREE.Vector3(-52, 16, -5), new THREE.Vector3(0, 12, -12));
+            } else if (preset === 'top') {
+                document.getElementById('cam-top').className = 'cam-btn px-2.5 py-1.5 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-500 transition-all flex items-center gap-1 shadow';
+                animateCameraTo(new THREE.Vector3(0, 68, -10), new THREE.Vector3(0, 0, -10));
+            }
+        }
+
+        function animateCameraTo(targetPos, targetLookAt) {
+            const startPos = camera.position.clone();
+            const startLookAt = controls.target.clone();
+            let progress = 0;
+
+            function step() {
+                progress += 0.05;
+                if (progress <= 1) {
+                    camera.position.lerpVectors(startPos, targetPos, progress);
+                    controls.target.lerpVectors(startLookAt, targetLookAt, progress);
+                    controls.update();
+                    requestAnimationFrame(step);
+                }
+            }
+            step();
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = 'tab-btn flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1.5';
+            });
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+
+            document.getElementById(`tab-btn-${tabName}`).className = 'tab-btn flex-1 py-2 rounded-lg bg-indigo-600 text-white transition-all flex items-center justify-center gap-1.5';
+            document.getElementById(`tab-content-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-content-${tabName}`).classList.add('flex');
+
+            if (tabName === 'graph') resizeGraphCanvas();
+        }
+
+        function updatePhysics(dt) {
+            if (state.isRunning) {
+                state.time += dt * state.speedMultiplier;
+            }
+
+            const R = state.radius;
+            const w = state.omega;
+            const t = state.time;
+
+            // Phase and SHM
+            const phase = w * t + state.phase0;
+            const x = R * Math.cos(phase);
+            const v = -w * R * Math.sin(phase);
+            const a = -w * w * x;
+
+            // Turntable Pin 3D Coordinates
+            const pinX = R * Math.cos(phase);
+            const pinZ = R * Math.sin(phase);
+
+            // Pendulum Arc Motion (Z = -12 cm)
+            const L_visual = 20;
+            const pivotY = 32;
+            const pendZ = -12;
+
+            const sinTheta = Math.max(-0.95, Math.min(0.95, x / L_visual));
+            const theta = Math.asin(sinTheta);
+            const cosTheta = Math.cos(theta);
+
+            const bobX = x;
+            const bobY = pivotY - L_visual * cosTheta;
+
+            // Record Graph History
+            state.history.push({ t, x });
+            if (state.history.length > 400) state.history.shift();
+
+            // Live Dashboards Update
+            document.getElementById('dash-time').innerText = t.toFixed(2);
+            
+            const T = (2 * Math.PI) / w;
+            document.getElementById('dash-period').innerText = T.toFixed(2);
+            const realL = (981 / (w * w)).toFixed(1);
+            document.getElementById('dash-length').innerText = realL;
+
+            // Sync current rotated angle in degrees back to input if running
+            if (state.isRunning) {
+                const currentDeg = ((w * t * 180 / Math.PI) % 360);
+                // Keep angle clean
+                state.angleInputDeg = currentDeg;
+            }
+
+            // Update 3D Meshes in Scene
+            pin.position.set(pinX, 0, pinZ);
+
+            pendulumBob.position.set(bobX, bobY, pendZ);
+            
+            const stringPoints = [new THREE.Vector3(0, pivotY, pendZ), new THREE.Vector3(bobX, bobY, pendZ)];
+            pendulumString.geometry.dispose();
+            pendulumString.geometry = new THREE.BufferGeometry().setFromPoints(stringPoints);
+
+            pendulumPivot.visible = state.showPendulum;
+
+            shadowPin.position.x = pinX;
+            shadowPin.visible = state.showShadows;
+
+            shadowBob.position.x = bobX;
+            shadowBob.position.y = bobY;
+            shadowBob.visible = state.showPendulum && state.showShadows;
+
+            lightRayGroup.visible = state.showRays;
+
+            if (state.showVectors) {
+                velocityVectorArrow.visible = true;
+                const vDir = new THREE.Vector3(-Math.sin(phase), 0, Math.cos(phase)).normalize();
+                velocityVectorArrow.position.set(pinX, 4, pinZ);
+                velocityVectorArrow.setDirection(vDir);
+                velocityVectorArrow.setLength(Math.min(Math.abs(v) * 0.12 + 2, 14), 2, 1);
+            } else {
+                velocityVectorArrow.visible = false;
+            }
+        }
+
+        function drawGraph() {
+            if (!graphCtx || document.getElementById('tab-content-graph').classList.contains('hidden')) return;
+
+            const w = graphCanvas.width;
+            const h = graphCanvas.height;
+            const cy = h / 2;
+
+            graphCtx.fillStyle = '#020617';
+            graphCtx.fillRect(0, 0, w, h);
+
+            graphCtx.strokeStyle = '#1e293b';
+            graphCtx.lineWidth = 1;
+
+            const marginY = 22;
+            const maxAmpl = Math.max(state.radius, 1);
+
+            graphCtx.beginPath();
+            graphCtx.moveTo(0, marginY);
+            graphCtx.lineTo(w, marginY);
+            graphCtx.moveTo(0, cy);
+            graphCtx.lineTo(w, cy);
+            graphCtx.moveTo(0, h - marginY);
+            graphCtx.lineTo(w, h - marginY);
+            graphCtx.stroke();
+
+            graphCtx.fillStyle = '#94a3b8';
+            graphCtx.font = '10px Inter, sans-serif';
+            graphCtx.fillText(`+${state.radius.toFixed(0)} cm`, 6, marginY - 4);
+            graphCtx.fillText(`0`, 6, cy - 3);
+            graphCtx.fillText(`-${state.radius.toFixed(0)} cm`, 6, h - marginY + 11);
+
+            if (state.history.length < 2) return;
+
+            const timeSpan = 3.0;
+            const latestT = state.history[state.history.length - 1].t;
+            const minT = Math.max(0, latestT - timeSpan);
+
+            const valToY = (val) => cy - (val / maxAmpl) * (cy - marginY);
+            const timeToX = (t) => w - ((latestT - t) / timeSpan) * w;
+
+            graphCtx.strokeStyle = '#06b6d4';
+            graphCtx.lineWidth = 2.5;
+            graphCtx.beginPath();
+            let started = false;
+
+            for (let pt of state.history) {
+                if (pt.t < minT) continue;
+                const px = timeToX(pt.t);
+                const py = valToY(pt.x);
+                if (!started) { graphCtx.moveTo(px, py); started = true; }
+                else { graphCtx.lineTo(px, py); }
+            }
+            graphCtx.stroke();
+
+            const currentPt = state.history[state.history.length - 1];
+            const curX = timeToX(currentPt.t);
+            const curY = valToY(currentPt.x);
+
+            graphCtx.fillStyle = '#22d3ee';
+            graphCtx.beginPath();
+            graphCtx.arc(curX, curY, 5, 0, Math.PI * 2);
+            graphCtx.fill();
+
+            graphCtx.strokeStyle = '#ffffff';
+            graphCtx.lineWidth = 2;
+            graphCtx.stroke();
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('canvas-3d-container');
+            if (!container) return;
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            resizeGraphCanvas();
+        }
+
+        let lastTime = 0;
+        function animate(now) {
+            requestAnimationFrame(animate);
+
+            const dt = Math.min((now - lastTime) / 1000, 0.1) || 0.016;
+            lastTime = now;
+
+            updatePhysics(dt);
+            controls.update();
+            renderer.render(scene, camera);
+            drawGraph();
+        }
+    </script>
+</body>
+</html>
