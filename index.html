@@ -1265,5 +1265,22 @@
             updatePeriodCalc();
         };
     </script>
+    
+<!-- Thư viện Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const SUPABASE_URL = "https://cudzndkigzvytjlawbbb.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_y84vBqGvBSf5bmx2TViq2w_umSrZh__";
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+  console.log("Đã khởi tạo kết nối Supabase!");
+</script>
+</body>
+
 </body>
 </html>
