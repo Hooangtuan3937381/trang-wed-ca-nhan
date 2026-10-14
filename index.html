@@ -1266,7 +1266,7 @@
         };
     </script>
     
-<!-- Thư viện Supabase -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -1278,9 +1278,20 @@
     SUPABASE_PUBLISHABLE_KEY
   );
 
-  console.log("Đã khởi tạo kết nối Supabase!");
+  async function testSupabase() {
+    const { data, error } = await supabaseClient.auth.getSession();
+
+    if (error) {
+      console.error("Lỗi Supabase:", error.message);
+      return;
+    }
+
+    console.log("Supabase hoạt động!", data);
+  }
+
+  testSupabase();
 </script>
-</body>
+
 
 </body>
 </html>
